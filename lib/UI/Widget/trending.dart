@@ -1,0 +1,89 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:manga_app/model/manga_model.dart';
+
+class Trending extends StatefulWidget {
+  const Trending({super.key});
+
+  @override
+  State<Trending> createState() => _TrendingState();
+}
+
+class _TrendingState extends State<Trending> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future <List<MangaModel>> fetchData() async {
+    final dio = Dio();
+    final response = await dio.get("https://b0ynhanghe0.github.io/comic/categorized.json");
+    final List<dynamic> body = response.data["hot"];
+    return body.map((e) {
+      return MangaModel.fromJson(e);
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<MangaModel>>(
+      future: fetchData(), 
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text("Error: ${snapshot.error}"));
+        } else if (snapshot.hasData){
+          List<MangaModel> manga = snapshot.data!;
+          return _buildUI(context, manga);
+        } else {
+          return const Center(child: Text("No data found!"));
+        }
+      }
+    );
+  }
+}
+
+Widget _buildUI(BuildContext context, List<MangaModel> manga) {
+  return SizedBox(
+      height: 180,
+      child: ListView.builder(
+        itemCount: manga.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 30, top: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    manga[index].storyimage,
+                    width: 90,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                SizedBox(
+                  width: 100, 
+                  height: 35, 
+                  child: Text(
+                    manga[index].storyname,
+                    // overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "Ubuntu",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
