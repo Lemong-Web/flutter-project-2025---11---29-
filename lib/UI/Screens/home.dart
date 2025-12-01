@@ -22,9 +22,11 @@ class _HomeState extends State<Home> {
 
   Future <List<MangaModel>> fetchData({String? searchText}) async {
     final dio = Dio();
-    final response = await dio.get("https://b0ynhanghe0.github.io/comic/home.json");
+    String url = "https://b0ynhanghe0.github.io/comic/home.json";
     if (searchText != null) {
+      url = "https://b0ynhanghe0.github.io/comic/story/$searchText.json";
     }
+    final response = await dio.get(url);
     final List<dynamic> body = response.data;
     return body.map((e) {
       return MangaModel.fromJson(e);
@@ -153,12 +155,12 @@ class _HomeState extends State<Home> {
                       urllinkcraw: data.urllinkcraw, 
                       storytauthor: data.storytauthor, views: data.views),
                   );
-                  }
-                ),
+                }
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
+}

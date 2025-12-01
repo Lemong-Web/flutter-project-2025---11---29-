@@ -25,7 +25,7 @@ class MangaModel {
 
   
   factory MangaModel.fromJson(Map <String, dynamic> data) {
-    final storyid = data['storyID'] as String? ?? "";
+    final storyid = data['storyid'] as String? ?? "";
     final storyname = data['storyname'] as String? ?? "";
     final storyothername = data['storyothername'] as String? ?? "";
     final storyimage  = data['storyimage'] as String? ?? "";

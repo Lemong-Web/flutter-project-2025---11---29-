@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:manga_app/UI/Screens/detail_screen.dart';
 import 'package:manga_app/model/manga_model.dart';
 
 class Trending extends StatefulWidget {
@@ -51,36 +52,56 @@ Widget _buildUI(BuildContext context, List<MangaModel> manga) {
         itemCount: manga.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 30, top: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    manga[index].storyimage,
-                    width: 90,
-                    height: 120,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                SizedBox(
-                  width: 100, 
-                  height: 35, 
-                  child: Text(
-                    manga[index].storyname,
-                    // overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Ubuntu",
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => DetailScreen(
+                    storyid: manga[index].storyid,
+                    storyname: manga[index].storyname,
+                    storyothername: manga[index].storyothername,
+                    storyimage: manga[index].storyimage,
+                    storydes: manga[index].storydes,
+                    storygenres: manga[index].storygenres,
+                    urllinkcraw: manga[index].urllinkcraw,
+                    storytauthor: manga[index].storytauthor,
+                    views: manga[index].views,
+                  )
+                )
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30, top: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      manga[index].storyimage,
+                      width: 90,
+                      height: 120,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 6),
+                  SizedBox(
+                    width: 100, 
+                    height: 35, 
+                    child: Text(
+                      manga[index].storyname,
+                      // overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Ubuntu",
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
