@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/reading_screen.dart';
 import 'package:manga_app/UI/Widget/detailbtn.dart';
 import 'package:manga_app/model/number_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 
 class DetailScreen extends StatefulWidget {
@@ -36,6 +38,7 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   bool isFavorite = false;
+  int? lastIndex;
 
   Dio dio = Dio();
   Future<NumberModel> fetchChapters() async {
@@ -44,9 +47,22 @@ class _DetailScreenState extends State<DetailScreen> {
     return NumberModel.fromJson(data);
   }
 
+  void saveLastIndex(int index) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt("last_read_index", index);
+  }
+
+  void loadLastIndex() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      lastIndex = prefs.getInt("last_read_index");
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    loadLastIndex();
   }
 
   void isFavoritebool() {
@@ -100,7 +116,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 _buildUIwallpaper(),
                 _buildUIdetail(chapters),
                 Expanded(
-                  child: _buildUIlist(chapters, chapterlist))
+                  child: _buildUIlist(chapters, chapterlist)),
+                _continue(chapterlist)
               ],
             );
           } else {
@@ -185,7 +202,10 @@ class _DetailScreenState extends State<DetailScreen> {
         decoration: BoxDecoration(
           // ignore: deprecated_member_use
           color: Color(0xffFFFFFF).withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12)
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12)
+          )
         ),
         child: ListView.builder(
          itemCount: chapterlist.chapters.length,
@@ -209,7 +229,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
               ),
               trailing: Detailbtn(
-                onPressed: () {
+                onPressed: () async {
+                  saveLastIndex(index);
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ReadingScreen(
                     storyID: widget.storyid, 
                     chapterID: chapterlist.chapters[index], 
@@ -217,8 +238,65 @@ class _DetailScreenState extends State<DetailScreen> {
                 }
               ),
             );
-          }
+          },
         ),
       );
     }
-  }
+
+    Widget _continue(NumberModel chapterlist) {
+      return Container(
+        width: double.infinity,
+        height: 60,
+        decoration: BoxDecoration(
+          color: const Color(0xFF393D5E)
+        ),
+        child: Center(
+          child: Container(
+            padding: EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xff9D00FF),
+                  Color(0xffc11c84)
+                ]
+              )
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => ReadingScreen(
+                    storyID: widget.storyid, 
+                    chapterID: lastIndex == null 
+                      ? chapterlist.chapters[0]
+                      : chapterlist.chapters[lastIndex!], 
+                    initalPage: 0)));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  color: Colors.pinkAccent
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Text(
+                        lastIndex == null
+                        ? "Bắt đâu đọc chuyện"
+                        : "Đọc tiếp từ chương: $lastIndex",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+    }

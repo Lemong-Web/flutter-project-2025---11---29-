@@ -14,6 +14,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String searchKey = "";
   
   @override
   void initState() {
@@ -23,20 +24,29 @@ class _HomeState extends State<Home> {
   Future <List<MangaModel>> fetchData({String? searchText}) async {
     final dio = Dio();
     String url = "https://b0ynhanghe0.github.io/comic/home.json";
-    if (searchText != null) {
-      url = "https://b0ynhanghe0.github.io/comic/story/$searchText.json";
-    }
     final response = await dio.get(url);
     final List<dynamic> body = response.data;
-    return body.map((e) {
-      return MangaModel.fromJson(e);
+    List<MangaModel> list = body.map((e) {
+       return MangaModel.fromJson(e);
     }).toList();
+
+    if (searchText != null && searchText.isNotEmpty) {
+      // Where là 1 hàm lọc filter
+      // nó duyệt qua từng phần tử trong List, kiểm tra điều kiện bên trong, và chỉ giữ lại phần tử có điều kiện = true
+      // trả về Iterable nên phải toList()
+      list = list.where((manga) {
+        // đây là điều kiện của Where
+        // nếu phần tử có chứa tên truyện trùng với nội dung Search, thì điều kiện = true và được dữ lại
+        return manga.storyname.toLowerCase().contains(searchText.toLowerCase());
+      }).toList();
+    }
+    return list;
   }
    
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<MangaModel>>(
-      future: fetchData(), 
+      future: fetchData(searchText: searchKey), 
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -73,7 +83,9 @@ class _HomeState extends State<Home> {
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: TextField(
                 onSubmitted: (value) {
-                  fetchData(searchText: value);
+                  setState(() {
+                    searchKey = value;
+                  });
                 },
                 decoration: InputDecoration(
                   prefixIcon: Icon(
@@ -154,13 +166,13 @@ class _HomeState extends State<Home> {
                       storygenres: data.storygenres, 
                       urllinkcraw: data.urllinkcraw, 
                       storytauthor: data.storytauthor, views: data.views),
-                  );
-                }
+                    );
+                  }
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
-}

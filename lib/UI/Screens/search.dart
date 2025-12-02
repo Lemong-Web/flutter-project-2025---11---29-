@@ -1,7 +1,10 @@
+// import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:manga_app/UI/Screens/search_result.dart';
 import 'package:manga_app/UI/Screens/tagpage.dart';
 import 'package:manga_app/UI/Widget/tagbutton.dart';
 import 'package:manga_app/UI/Widget/trending.dart';
+// import 'package:manga_app/model/manga_model.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -11,6 +14,25 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
+  String searchKey = "";
+  // Dio dio = Dio();
+
+  // Future <List<MangaModel>> fetchData() async {
+  //   String url = "https://b0ynhanghe0.github.io/comic/home.json";
+  //   final response = await dio.get(url);
+  //   final List<dynamic> body = response.data;
+  //   List<MangaModel> manhua = body.map((e) {
+  //     return MangaModel.fromJson(e);
+  //   }).toList();
+    
+  //   if (searchKey.isNotEmpty) {
+  //     manhua = manhua.where((a) {
+  //       return a.storyname.toLowerCase().contains(searchKey.toLowerCase());
+  //     }).toList();
+  //   }
+  //   return manhua;
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,8 +58,15 @@ class _SearchState extends State<Search> {
                   ),
                   filled: true,
                   // ignore: deprecated_member_use
-                  fillColor: Color(0xFFA0A1AD)
+                  fillColor: Color(0xFFA0A1AD),
                 ),
+                onSubmitted: (value) {
+                  setState(() {
+                    searchKey = value;
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => SearchResult(searchKey: searchKey)));
+                  });
+                },
               ),
             ),
 
