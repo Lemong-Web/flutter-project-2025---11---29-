@@ -1,9 +1,15 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import 'package:manga_app/UI/Screens/navigation.dart';
 
 class Splash extends StatefulWidget {
-  const Splash({super.key});
+
+  const Splash({
+    super.key,
+  });
 
   @override
   State<Splash> createState() => _SplashState();

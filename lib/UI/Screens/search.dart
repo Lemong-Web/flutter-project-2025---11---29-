@@ -4,6 +4,7 @@ import 'package:manga_app/UI/Screens/search_result.dart';
 import 'package:manga_app/UI/Screens/tagpage.dart';
 import 'package:manga_app/UI/Widget/tagbutton.dart';
 import 'package:manga_app/UI/Widget/trending.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:manga_app/model/manga_model.dart';
 
 class Search extends StatefulWidget {
@@ -15,24 +16,26 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   String searchKey = "";
-  // Dio dio = Dio();
+  List<String> searchText = [];
 
-  // Future <List<MangaModel>> fetchData() async {
-  //   String url = "https://b0ynhanghe0.github.io/comic/home.json";
-  //   final response = await dio.get(url);
-  //   final List<dynamic> body = response.data;
-  //   List<MangaModel> manhua = body.map((e) {
-  //     return MangaModel.fromJson(e);
-  //   }).toList();
-    
-  //   if (searchKey.isNotEmpty) {
-  //     manhua = manhua.where((a) {
-  //       return a.storyname.toLowerCase().contains(searchKey.toLowerCase());
-  //     }).toList();
-  //   }
-  //   return manhua;
-  // }
+  void searchHistory(List<String>? value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList("searchValue", value!);
+  }
 
+  void loadSearchHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      searchText = prefs.getStringList("searchValue") ?? [];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadSearchHistory();
+  }
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +66,8 @@ class _SearchState extends State<Search> {
                 onSubmitted: (value) {
                   setState(() {
                     searchKey = value;
+                    searchText.add(value);
+                    searchHistory(searchText);
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) => SearchResult(searchKey: searchKey)));
                   });
@@ -161,6 +166,45 @@ class _SearchState extends State<Search> {
                       )),
                     )
                   ],
+                ),
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    itemCount: searchText.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 33),
+                        child: ListTile(
+                          minTileHeight: 10,
+                          title: Text(
+                            searchText[index],
+                            style: TextStyle(
+                              color: Color(0xffB8B8B8),
+                              fontFamily: "Ubuntu"
+                            ),
+                          ),
+                        trailing: Padding(
+                          padding: const EdgeInsets.only(right: 65),
+                          child: Container(
+                            width: 26,
+                            height: 26,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle
+                            ),
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () {}, 
+                              icon: Icon(
+                                Icons.clear,
+                                size: 20,
+                              )),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  ),
                 )
               ],
             ),

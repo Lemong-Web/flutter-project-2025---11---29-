@@ -6,6 +6,7 @@ import 'package:manga_app/UI/Screens/profile.dart';
 import 'package:manga_app/UI/Screens/search.dart';
 
 class Navigation extends StatefulWidget {
+  
   const Navigation({super.key});
 
   @override

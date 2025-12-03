@@ -6,8 +6,6 @@ import 'package:manga_app/UI/Widget/detailbtn.dart';
 import 'package:manga_app/model/number_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class DetailScreen extends StatefulWidget {
    final String storyid;
    final String storyname;
@@ -37,7 +35,7 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  bool isFavorite = false;
+  bool lastStatus = false;
   int? lastIndex;
 
   Dio dio = Dio();
@@ -49,13 +47,28 @@ class _DetailScreenState extends State<DetailScreen> {
 
   void saveLastIndex(int index) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt("last_read_index", index);
+    await prefs.setInt("last_read_index_${widget.storyid}", index);
   }
 
   void loadLastIndex() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      lastIndex = prefs.getInt("last_read_index");
+      lastIndex = prefs.getInt("last_read_index_${widget.storyid}");
+    });
+  }
+
+  void saveStatus(String storyId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      lastStatus = !lastStatus;
+    });
+    await prefs.setBool("favorite_$storyId", lastStatus);
+  }
+  
+  void loadStatus() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      lastStatus = prefs.getBool("favorite_${widget.storyid}") ?? false;
     });
   }
 
@@ -63,14 +76,9 @@ class _DetailScreenState extends State<DetailScreen> {
   void initState() {
     super.initState();
     loadLastIndex();
+    loadStatus();
   }
 
-  void isFavoritebool() {
-    setState(() {
-      isFavorite = !isFavorite;
-    });
-  }
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,11 +99,11 @@ class _DetailScreenState extends State<DetailScreen> {
                 Spacer(),
                 IconButton(
                   onPressed: () {
-                    isFavoritebool();
+                    saveStatus(widget.storyid);
                   }, 
                   icon: Icon(
                     Icons.favorite,
-                    color: isFavorite ? Colors.red : Colors.white)
+                    color: lastStatus ? Colors.red : Colors.white)
                 ),
             ],
           )),
