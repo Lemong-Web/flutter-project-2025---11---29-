@@ -37,6 +37,7 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   bool lastStatus = false;
   int? lastIndex;
+  
 
   Dio dio = Dio();
   Future<NumberModel> fetchChapters() async {

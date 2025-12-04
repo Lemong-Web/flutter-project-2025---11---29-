@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:manga_app/UI/Screens/detail_screen.dart';
 import 'package:manga_app/model/manga_model.dart';
 
 class Tagpage extends StatefulWidget {
@@ -78,20 +79,35 @@ class _TagpageState extends State<Tagpage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 12, left: 12, bottom: 12, right: 8),
-                    child: Container(
-                      padding: EdgeInsets.all(1),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color(0xffFA8BFF),
-                            Color(0xff2BD2FF)
-                          ]           
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context){
+                          return DetailScreen(
+                            storyid: manga[index].storyid, 
+                            storyname: manga[index].storyname, 
+                            storyothername: manga[index].storyothername, 
+                            storyimage: manga[index].storyimage, 
+                            storydes: manga[index].storydes, 
+                            storygenres: manga[index].storygenres,
+                            urllinkcraw: manga[index].urllinkcraw, 
+                            storytauthor: manga[index].storytauthor, views: manga[index].views);
+                        }));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xffFA8BFF),
+                              Color(0xff2BD2FF)
+                            ]           
+                          ),
+                          borderRadius: BorderRadius.circular(12)
                         ),
-                        borderRadius: BorderRadius.circular(12)
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(manga[index].storyimage),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(manga[index].storyimage),
+                        ),
                       ),
                     ),
                   ),

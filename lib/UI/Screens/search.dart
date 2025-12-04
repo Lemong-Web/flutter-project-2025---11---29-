@@ -30,6 +30,22 @@ class _SearchState extends State<Search> {
     });
   }
 
+  void removeSearchistory(int index) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      searchText.removeAt(index);
+      prefs.setStringList("searchValue", searchText);
+    });
+  }
+
+  void removeEntireHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      searchText.clear();
+      prefs.setStringList("searchValue", searchText);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -88,7 +104,6 @@ class _SearchState extends State<Search> {
               ),
 
             Trending(),
-              
             Row(
               children: [
                 Padding(
@@ -157,18 +172,27 @@ class _SearchState extends State<Search> {
                         ]
                       ).createShader(bound);
                     },
-                    child: Text(
-                      "Clear",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold
-                      )),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          removeEntireHistory();
+                        });
+                      },
+                      child: Text(
+                        "Clear",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.white,
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold
+                        )),
+                    ),
                     )
                   ],
                 ),
                 SizedBox(
-                  height: 100,
+                  height: 170,
                   child: ListView.builder(
                     itemCount: searchText.length,
                     itemBuilder: (context, index) {
@@ -192,13 +216,28 @@ class _SearchState extends State<Search> {
                               color: Colors.white,
                               shape: BoxShape.circle
                             ),
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {}, 
-                              icon: Icon(
-                                Icons.clear,
-                                size: 20,
-                              )),
+                            child: ShaderMask(
+                              shaderCallback: (bounds) {
+                                return LinearGradient(
+                                  colors: [
+                                    Color(0xffFA8BFF),
+                                    Color(0xff2BD2FF)
+                                  ]
+                                ).createShader(bounds);
+                              },
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  setState(() {
+                                    removeSearchistory(index);
+                                  });
+                                }, 
+                                icon: Icon(
+                                  Icons.clear,
+                                  size: 20,
+                                  color: Colors.white,
+                                )),
+                            ),
                             ),
                           ),
                         ),
