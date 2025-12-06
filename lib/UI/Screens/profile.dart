@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manga_app/UI/Screens/account_setting.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -195,28 +196,33 @@ class _ProfileState extends State<Profile> {
                 ) 
               ),
 
-              ListTile(
-                visualDensity: const VisualDensity(vertical: -4),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 19),
-                dense: true,
-                minVerticalPadding: 5,
-                leading: Icon(
-                  Icons.settings,
-                  color: Color(0xff04004F),
-                  size: 17,
-                ),
-                title: const Text(
-                  "Settings",
-                  style: TextStyle(
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AccountSetting()));
+                },
+                child: ListTile(
+                  visualDensity: const VisualDensity(vertical: -4),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 19),
+                  dense: true,
+                  minVerticalPadding: 5,
+                  leading: Icon(
+                    Icons.settings,
                     color: Color(0xff04004F),
-                    fontSize: 17
+                    size: 17,
                   ),
+                  title: const Text(
+                    "Settings",
+                    style: TextStyle(
+                      color: Color(0xff04004F),
+                      fontSize: 17
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.chevron_right,
+                    color: Color(0xff04004F),
+                    size: 17
+                  ) 
                 ),
-                trailing: Icon(
-                  Icons.chevron_right,
-                  color: Color(0xff04004F),
-                  size: 17
-                ) 
               )
             ],
           ),
