@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
+// ValueNotìier dùng để quản lý trạng thái của AuthService trong ứng dụng Flutter.
+// Nó cho phép các widget lắng nghe và phản hồi khi có sự thay đổi trong trạng thái xác thực người dùng.
+// Bằng cách sử dụng ValueNotifier, chúng ta có thể dễ dàng cập nhật giao diện người dùng khi 
+// người dùng đăng nhập, đăng xuất hoặc khi có sự thay đổi khác liên quan đến xác thực.
 ValueNotifier<AuthService> authService = ValueNotifier(AuthService()); 
 
 class AuthService {

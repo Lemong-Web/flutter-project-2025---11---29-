@@ -16,7 +16,7 @@ class _AccountSettingState extends State<AccountSetting> {
     try {
      await authService.value.signOut();
     } on FirebaseException catch (e) {
-      print(e.message);
+      print('Error signing out: $e');
     }
   }
 
@@ -27,6 +27,7 @@ class _AccountSettingState extends State<AccountSetting> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Color(0xFF393D5E),
+        foregroundColor: Colors.white,
         title: Text(
           "Account Setting",
           style: TextStyle(
@@ -40,27 +41,64 @@ class _AccountSettingState extends State<AccountSetting> {
       );
     }
     Widget buildUI() {
-      return ListView(
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePassword()));
-            },
-            child: ListTile(
-              leading: const Icon(Icons.password, color: Colors.black),
-              title: const Text("Change Password")
-            ),
+      return Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Container(
+          height: 400,
+          decoration: BoxDecoration(
+            // ignore: deprecated_member_use
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(12)
           ),
-          GestureDetector(
-            onTap: () {
-              logout();
-            },
-            child: ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text("Log out", style: TextStyle(color: Colors.red))
-            ),
-          )
-        ],
+          child: ListView(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePassword()));
+                },
+                child: ListTile(
+                  leading: const Icon(Icons.password, color: Colors.black),
+                  title: const Text(
+                    "Change Password",
+                    style: TextStyle(
+                      fontSize: 15
+                    )),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 15),
+                ),
+              ),
+
+              GestureDetector(
+                onTap: () {
+                  logout();
+                  Navigator.pop(context);
+                },
+                child: ListTile(
+                  leading: const Icon(Icons.logout, color: Colors.red),
+                  title: const Text(
+                    "Log out", 
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 15)),
+                      trailing: Icon(Icons.arrow_forward_ios, size: 15),
+                ),
+              ),
+                GestureDetector(
+                onTap: () {
+
+                },
+                child: ListTile(
+                  leading: Icon(Icons.delete, color: Colors.red),
+                  title: Text(
+                    "Delete Account",
+                    style: TextStyle(
+                      color: Colors.red
+                  )),
+                  trailing: Icon(Icons.arrow_forward_ios, size: 15),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
   }

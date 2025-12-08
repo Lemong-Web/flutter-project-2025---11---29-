@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ),
               ),
-      
+
               const SizedBox(height: 20),
               TextFormField(
                 controller: passwordText,
@@ -110,21 +110,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildUIbutton() {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Checkbox(
-              checkColor: Colors.amber,
-              value: isCheck,
-              onChanged: (bool? value){
-                setState(() {
-                  isCheck = value!;
-                });
-              }
-            ),
-            Text("Remember Me")
-          ],
-        ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             minimumSize: Size(200, 50),
@@ -138,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
               login();
             });
           }, 
+
           child: Text(
             "Đăng Nhập",
             style: TextStyle(

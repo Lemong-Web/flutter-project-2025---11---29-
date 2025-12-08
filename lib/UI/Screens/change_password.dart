@@ -20,8 +20,45 @@ class _ChangePasswordState extends State<ChangePassword> {
         currentPassword: currentPasswords.text, 
         newPassword: newPasswords.text, 
         email: emailText.text);
+
+        if(mounted) {
+          showDialog(
+            context: context, 
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Thành Công"),
+                content: const Text("Đổi mật khẩu thành công"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }, 
+                    child: const Text("Ok")
+                  )
+                ],
+              );
+            });
+        }
     } catch (e) {
-      print(e);
+      if(mounted) {
+        showDialog(
+          context: context, 
+          builder: (context) {
+            return AlertDialog(
+              title: const Text("Lỗi"),
+              content: Text(e.toString()),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }, 
+                  child: const Text("Ok")
+                )
+              ],
+            );
+          }
+        );
+      }
     }
   }
 

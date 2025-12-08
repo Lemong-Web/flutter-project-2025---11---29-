@@ -36,6 +36,9 @@ class _NavigationState extends State<Navigation> {
           });
         },
         children: [
+          // Home(),
+          // Search(),
+          // Bookshelf(),
           Profile(),
         ],
       ),
