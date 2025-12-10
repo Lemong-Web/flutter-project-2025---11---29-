@@ -32,6 +32,7 @@ class _TagpageState extends State<Tagpage> {
     return Scaffold(
       backgroundColor: Color(0xFF393D5E),
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Color(0xFF393D5E),
         title: Text(
           widget.tag,

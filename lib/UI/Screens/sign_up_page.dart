@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,8 +15,8 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   TextEditingController controllerEmail = TextEditingController();
-  TextEditingController controllerUsername = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
+  TextEditingController controllerUsername = TextEditingController();
   String errorMessage = "";
   File? _image;
     
@@ -23,8 +24,14 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
      await authService.value.createAccount(
       email: controllerEmail.text, 
-      password: controllerPassword.text
+      password: controllerPassword.text,
     ); 
+    final uid = authService.value.currentUser!.uid;
+    final db = FirebaseFirestore.instance;
+    db.collection("users").doc(uid).set({
+      "username": controllerUsername.text,
+      "email": controllerEmail.text,
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userID', authService.value.currentUser?.uid ?? '');
     } on FirebaseAuthException catch (e) {
@@ -49,6 +56,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       backgroundColor: Color(0xFF393D5E),
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Color(0xFF393D5E),
         ),
         body: Column(
@@ -144,6 +152,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           onPressed: () async {
             register();
+            Navigator.pop(context);
           }, 
           child: Text(
             "Sign up",
@@ -187,8 +196,8 @@ class _SignUpPageState extends State<SignUpPage> {
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               hint: Text("Username:")
-            ),
+            )
           ),
         );
-        }
       }
+    }

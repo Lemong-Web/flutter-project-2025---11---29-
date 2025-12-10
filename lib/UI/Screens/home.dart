@@ -136,8 +136,10 @@ class _HomeState extends State<Home> {
               ),
             ),
             SizedBox(
-              height: 600,
+              height: 2190,
               child: GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   mainAxisExtent: 180
