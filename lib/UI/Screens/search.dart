@@ -20,29 +20,33 @@ class _SearchState extends State<Search> {
 
   void searchHistory(List<String>? value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList("searchValue", value!);
+    final uid =prefs.getString('userID') ?? "";
+    await prefs.setStringList("searchValue_$uid", value!);
   }
 
   void loadSearchHistory() async {
     final prefs = await SharedPreferences.getInstance();
+    final uid =prefs.getString('userID') ?? "";
     setState(() {
-      searchText = prefs.getStringList("searchValue") ?? [];
+      searchText = prefs.getStringList("searchValue_$uid") ?? [];
     });
   }
 
   void removeSearchistory(int index) async {
     final prefs = await SharedPreferences.getInstance();
+    final uid =prefs.getString('userID') ?? "";
     setState(() {
       searchText.removeAt(index);
-      prefs.setStringList("searchValue", searchText);
+      prefs.setStringList("searchValue_$uid", searchText);
     });
   }
 
   void removeEntireHistory() async {
     final prefs = await SharedPreferences.getInstance();
+    final uid =prefs.getString('userID') ?? "";
     setState(() {
       searchText.clear();
-      prefs.setStringList("searchValue", searchText);
+      prefs.setStringList("searchValue_$uid", searchText);
     });
   }
 

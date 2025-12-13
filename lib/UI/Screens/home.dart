@@ -5,6 +5,7 @@ import 'package:manga_app/UI/Screens/detail_screen.dart';
 import 'package:manga_app/UI/Widget/trending.dart';
 import 'package:manga_app/UI/Widget/view.dart';
 import 'package:manga_app/model/manga_model.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,11 +16,21 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String searchKey = "";
+  String userID = "";
   
   @override
   void initState() {
     super.initState();
+    // uidGet();
   }
+
+  // void uidGet() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final String? uid = prefs.getString('userID');
+  //   setState(() {
+  //     userID = uid ?? "";
+  //   });
+  // }
 
   Future <List<MangaModel>> fetchData({String? searchText}) async {
     final dio = Dio();
@@ -167,14 +178,13 @@ class _HomeState extends State<Home> {
                       storydes: data.storydes, 
                       storygenres: data.storygenres, 
                       urllinkcraw: data.urllinkcraw, 
-                      storytauthor: data.storytauthor, views: data.views),
-                    );
-                  }
+                      storytauthor: data.storytauthor, views: data.views));
+                    }
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
-  }

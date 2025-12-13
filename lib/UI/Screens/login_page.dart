@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/sign_up_page.dart';
 import 'package:manga_app/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,6 +23,9 @@ class _LoginPageState extends State<LoginPage> {
       email: emailText.text, 
       password: passwordText.text
       );
+    final prefs = await SharedPreferences.getInstance();
+    final user = FirebaseAuth.instance.currentUser;
+    prefs.setString('userID', user!.uid);
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message ?? "something gone wrong";
@@ -155,9 +159,10 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.white,
               decoration: TextDecoration.underline,
               decorationColor: Colors.white
-            )),
-          )
-        ],
-      );
-    }
+            )
+          ),
+        )
+      ],
+    );
   }
+}

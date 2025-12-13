@@ -24,11 +24,12 @@ class _BookshelfState extends State<Bookshelf> {
   Future<void> loadShelf() async {
     manhuaList = await fetchData();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> keys = prefs.getKeys().where((k) => k.startsWith("favorite_")).toList();
+    final uid = prefs.getString('userID') ?? '';
+    List<String> keys = prefs.getKeys().where((k) => k.startsWith("favorite_${uid}_")).toList();
     List<String> favoriteIds = keys.where((keys) {
       return prefs.getBool(keys) ?? false;
     }).map((keys) {
-      return keys.replaceFirst("favorite_", "");
+      return keys.replaceFirst("favorite_${uid}_", "");
     }).toList();
     
     // favoriteIds trả về những key là "true", loại bỏ "favorite_ chỉ giữ lại id",
@@ -72,7 +73,13 @@ class _BookshelfState extends State<Bookshelf> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (favoriteManhua.isEmpty) {
-            return const Center(child: Text('No favorite manhua found.'));
+            return const Center(child: Text(
+              'No favorite manhua found.', 
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.bold,
+                fontSize: 18 )));
           } else {
             return Padding(
               padding: const EdgeInsets.only(right: 20, left: 20, top: 20),

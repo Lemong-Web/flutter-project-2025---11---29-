@@ -52,30 +52,32 @@ class _DetailScreenState extends State<DetailScreen> {
 
   void saveLastIndex(int index) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt("last_read_index_${widget.storyid}", index);
+    final uid = prefs.getString('userID') ?? '';
+    await prefs.setInt("last_read_index_${uid}_${widget.storyid}", index);
   }
 
   void loadLastIndex() async {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString('userID') ?? '';
     setState(() {
-      lastIndex = prefs.getInt("last_read_index_${widget.storyid}");
+      lastIndex = prefs.getInt("last_read_index_${uid}_${widget.storyid}");
     });
   }
 
   void saveStatus(String storyId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    final uid = prefs.getString('userID') ?? '';
     setState(() {
       lastStatus = !lastStatus;
     });
-    await prefs.setBool("favorite_$storyId", lastStatus);
+    await prefs.setBool("favorite_${uid}_$storyId", lastStatus);
   }
 
   void loadStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString('userID') ?? '';
     setState(() {
-      lastStatus = prefs.getBool("favorite_${widget.storyid}") ?? false;
+      lastStatus = prefs.getBool("favorite_${uid}_${widget.storyid}") ?? false;
     });
   }
 

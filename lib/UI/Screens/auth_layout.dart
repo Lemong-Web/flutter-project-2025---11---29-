@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/login_page.dart';
-import 'package:manga_app/UI/Screens/navigation.dart';
+import 'package:manga_app/UI/Screens/splash.dart';
 import 'package:manga_app/auth_service.dart';
 
 class AuthLayout extends StatefulWidget {
@@ -23,7 +23,7 @@ class _AuthLayoutState extends State<AuthLayout> {
              if(snapshot.connectionState == ConnectionState.waiting){
               return const Center(child: CircularProgressIndicator());
              } else if (snapshot.hasData) {
-              widget = const Navigation();
+              widget = const Splash();
              } else {
               widget = const LoginPage();
              }
