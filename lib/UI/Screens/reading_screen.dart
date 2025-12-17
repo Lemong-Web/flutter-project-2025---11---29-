@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:manga_app/UI/Widget/drawerbtn.dart';
 import 'package:manga_app/model/chapter_detail.dart';
+import 'package:manga_app/model/number_model.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class ReadingScreen extends StatefulWidget {
@@ -25,11 +27,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
   final ScrollController _scrollController = ScrollController();
   double processValue = 0.0;
   late Future<ChapterDetail> _futureStory;
+  late Future<NumberModel> listchapter;
 
   @override
   void initState() {
     super.initState();
     _futureStory = fetchStory();
+    listchapter = fetchListChapters();
     _scrollController.addListener(() {
         processValue = _scrollController.offset / _scrollController.position.maxScrollExtent;
         if (processValue < 0.0) {
@@ -55,18 +59,70 @@ class _ReadingScreenState extends State<ReadingScreen> {
     return ChapterDetail.fromJson(data);
   }
 
+  Future<NumberModel> fetchListChapters() async {
+    final response = await dio.get(
+      "https://b0ynhanghe0.github.io/comic/chapter/${widget.storyID}/listchapter.json",
+    );
+    final data = response.data;
+    return NumberModel.fromJson(data);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold (
       backgroundColor: const Color(0xFF393D5E),
       appBar: AppBar(
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context), 
+          icon: Icon(Icons.arrow_back)),
         foregroundColor: const Color(0xffffffff),
         backgroundColor: const Color(0xFF393D5E),
-        title: Text(""),
       ),
-      body: _buildUI()
-    );
-  }
+      body: _buildUI(),
+      endDrawer: Drawer(
+        backgroundColor: const Color(0xFF393D5E),
+        width: 240,
+        shape: BeveledRectangleBorder(),
+        child: FutureBuilder(
+          future: listchapter, 
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else if (snapshot.hasData) {
+              final listChapters = snapshot.data!;
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount (
+                  crossAxisCount: 2,
+                  mainAxisExtent: 50
+                ),
+                  itemCount: listChapters.chapters.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: EdgeInsets.all(10),
+                      child: Drawerbtn(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context, 
+                            MaterialPageRoute(
+                              builder: (context) => ReadingScreen(
+                                storyID: widget.storyID, 
+                                chapterID: listChapters.chapters[index],
+                                initalPage: 0)));
+                              }, 
+                              chapNumber: 'Chap ${listChapters.chapters[index].replaceAll('json', '')}'
+                            ),
+                          );
+                        } 
+                      );
+                    } else {
+                      return const Center(child: Text("Failed to load the list"));
+                    } 
+                  }
+                )
+              ),
+            );
+          }
 
   Widget _buildUI() {
     return FutureBuilder(

@@ -40,6 +40,7 @@ class _DetailScreenState extends State<DetailScreen> {
   bool isExpanded = false;
   bool lastStatus = false;
   int? lastIndex;
+  late Future<NumberModel> chapters;
 
   Dio dio = Dio();
   Future<NumberModel> fetchChapters() async {
@@ -84,6 +85,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
+    chapters = fetchChapters();
     if(widget.storydes.length > 200){
       firstHalf =  widget.storydes.substring(0, 190);
       secondHalf = widget.storydes.substring(191, widget.storydes.length);
@@ -132,7 +134,7 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
 
       body: FutureBuilder(
-        future: fetchChapters(),
+        future: chapters,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -223,6 +225,7 @@ class _DetailScreenState extends State<DetailScreen> {
               curve: Curves.easeInOut,
               child: SizedBox(
                 width: 350,
+                // ignore: unrelated_type_equality_checks
                 child: secondHalf.length == "" 
                   ? Text(widget.storydes, style: TextStyle(color: Colors.grey, fontFamily: 'Inter'))
                   : Column(
@@ -275,7 +278,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 ).createShader(bound);
               },
               child: Text(
-                "Chapter (${chapterlist.chapters[index].replaceAll('.json', '')})",
+                "Chapter ${chapterlist.chapters[index].replaceAll('.json', '')}",
                 style: const TextStyle(
                   color: Colors.white,
                   fontFamily: "Inter",
@@ -325,8 +328,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   builder: (context) => ReadingScreen(
                     storyID: widget.storyid,
                     chapterID: lastIndex == null
-                        ? chapterlist.chapters[0]
-                        : chapterlist.chapters[lastIndex!],
+                      ? chapterlist.chapters[0]
+                      : chapterlist.chapters[lastIndex!],
                     initalPage: 0,
                   ),
                 ),

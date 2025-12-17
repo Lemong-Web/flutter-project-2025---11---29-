@@ -11,8 +11,10 @@ class Trending extends StatefulWidget {
 }
 
 class _TrendingState extends State<Trending> {
+  late Future<List<MangaModel>> date;
   @override
   void initState() {
+    date = fetchData();
     super.initState();
   }
 
@@ -28,7 +30,7 @@ class _TrendingState extends State<Trending> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<MangaModel>>(
-      future: fetchData(), 
+      future: date, 
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());

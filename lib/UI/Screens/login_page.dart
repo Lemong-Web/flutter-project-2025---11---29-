@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
      await authService.value.signIn(
       email: emailText.text, 
       password: passwordText.text
-      );
+      );  
     final prefs = await SharedPreferences.getInstance();
     final user = FirebaseAuth.instance.currentUser;
     prefs.setString('userID', user!.uid);
@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF393D5E),
+      backgroundColor: const Color(0xFF393D5E),
       body: Column(
         children: [
           _buildUIlogo(),
