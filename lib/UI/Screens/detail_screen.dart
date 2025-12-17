@@ -39,6 +39,7 @@ class _DetailScreenState extends State<DetailScreen> {
   late String secondHalf;
   bool isExpanded = false;
   bool lastStatus = false;
+  bool needWarp = true;
   int? lastIndex;
   late Future<NumberModel> chapters;
 
@@ -92,6 +93,7 @@ class _DetailScreenState extends State<DetailScreen> {
     } else {
       firstHalf = widget.storydes;
       secondHalf = "";
+      needWarp = false;
     }
     loadLastIndex();
     loadStatus();
@@ -240,19 +242,22 @@ class _DetailScreenState extends State<DetailScreen> {
                           isExpanded = !isExpanded;
                         });
                       }, 
-                      icon: Icon( 
+                      icon: needWarp 
+                      ? Icon( 
                         isExpanded 
                           ? Icons.arrow_upward
-                          : Icons.arrow_downward, color: Colors.white)) 
-                      ],
-                    ),
+                          : Icons.arrow_downward, color: Colors.white)
+                      : SizedBox(),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-      }
+        ),
+      );
+    }
 
   Widget _buildUIlist(List<NumberModel> chapters, chapterlist) {
     return Container(

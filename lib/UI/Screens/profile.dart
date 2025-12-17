@@ -49,8 +49,7 @@ class _ProfileState extends State<Profile> {
     final keys = prefs.getKeys();
 
     for(var key in keys) {
-      if (key.startsWith('last_read_index_') 
-      ||  key.startsWith('favorite_')) {
+      if (key.startsWith('last_read_index_') || key.startsWith('favorite_')) {
         await prefs.remove(key);
       }
     }

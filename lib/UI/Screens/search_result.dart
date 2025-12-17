@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
@@ -7,7 +9,7 @@ import 'package:manga_app/model/manga_model.dart';
 
 class SearchResult extends StatefulWidget {
   final String searchKey;
-   
+
   const SearchResult({
     super.key,
     required this.searchKey,
@@ -18,7 +20,10 @@ class SearchResult extends StatefulWidget {
 }
 
 class _SearchResultState extends State<SearchResult> {
+  bool isScrolling = false;
   Dio dio = Dio();
+  late Future <List<MangaModel>> searchedManhua; 
+
 
   Future <List<MangaModel>> fetchData({String? searchKey}) async {
     String url = "https://b0ynhanghe0.github.io/comic/home.json";
@@ -36,38 +41,71 @@ class _SearchResultState extends State<SearchResult> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    searchedManhua = fetchData(searchKey: widget.searchKey);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF393D5E),
-      appBar: AppBar(
+      appBar: isScrolling 
+      ? AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: const Color(0xFF393D5E),
-        title: Text(
-          '"${widget.searchKey}"',
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: "Inter",
-            fontSize: 20,
-            fontWeight: FontWeight.bold
-          )
+        title: Row(
+          children: [
+            Text(
+              '"${widget.searchKey}"',
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: "Inter",
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+              )
+            ),
+            IconButton(
+              onPressed: () {}, 
+              icon: Icon(Icons.layers_outlined) 
+            )
+          ],
         ),
-      ),
-      body: FutureBuilder(
-        future: fetchData(searchKey: widget.searchKey), 
-        builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (snapshot.hasData) {
-            final data = snapshot.data;
-            return _buildUI(data!);
-          } else {
-            return const Center(child: Text("No data found"));
+      )
+      : null,
+      
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollNotification) {
+          if (scrollNotification is ScrollStartNotification) {
+            setState(() {
+              isScrolling = false;
+            });
+          } else if (scrollNotification is ScrollEndNotification){
+            setState(() {
+              isScrolling = true;
+            });
+          } 
+          return true;
+        },
+        child: FutureBuilder(
+          future: searchedManhua, 
+          builder: (context, snapshot) {
+            if(snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else if (snapshot.hasData) {
+              final data = snapshot.data;
+              return _buildUI(data!);
+            } else {
+              return const Center(child: Text("No data found"));
+            }
           }
-        }
+        ),
       ),
     );
   }
+
   Widget _buildUI( List<MangaModel> data) {
     return ListView.builder(
       itemCount: data.length,
@@ -99,15 +137,20 @@ class _SearchResultState extends State<SearchResult> {
                           data[index].storyname,
                           style: TextStyle(
                             color: Colors.white,
-                            fontFamily: "Inter"
+                            fontFamily: "Inter",
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold
                           ),
                         ),
                         SizedBox(
-                          height: 75,
-                          child: Text(
-                            data[index].storydes,
-                            style: TextStyle(
-                              color: Colors.white
+                          height: 70,
+                          child: SingleChildScrollView(
+                            child: Text(
+                              data[index].storydes,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ),
@@ -143,7 +186,7 @@ class _SearchResultState extends State<SearchResult> {
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(4.0),
-                                child: Text("Đọc truyện"),
+                                child: Text("Đọc truyện", style: TextStyle(fontWeight: FontWeight.bold)),
                               ),
                             ),
                           ),
