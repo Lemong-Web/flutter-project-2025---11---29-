@@ -15,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailText = TextEditingController();
   TextEditingController passwordText = TextEditingController();
   bool isCheck = false;
+  bool hidePass = true;
   String errorMessage = '';
 
   void login() async {
@@ -37,16 +38,18 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF393D5E),
-      body: Column(
-        children: [
-          _buildUIlogo(),
-          _buildUIContainer(),
-          const SizedBox(height: 10),
-          _buildUIerror(),
-          _buildUIbutton(),
-          const SizedBox(height: 10),
-          _buildUInew()
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildUIlogo(),
+            _buildUIContainer(),
+            const SizedBox(height: 10),
+            _buildUIerror(),
+            _buildUIbutton(),
+            const SizedBox(height: 10),
+            _buildUInew()
+          ],
+        ),
       ),
     );
   }
@@ -81,7 +84,12 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 controller: emailText,
                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.email),
+                  // ignore: deprecated_member_use
+                  prefixIconColor: Colors.white.withOpacity(0.2),
                   labelText: "Email",
+                  // ignore: deprecated_member_use
+                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12)
                   )
@@ -91,8 +99,24 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: passwordText,
+                obscureText: hidePass ? true : false,
                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.lock),
+                  // ignore: deprecated_member_use
+                  prefixIconColor: Colors.white.withOpacity(0.2),
                   labelText: "Password",
+                  // ignore: deprecated_member_use
+                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState (() {
+                        hidePass = !hidePass;
+                      });
+                    }, 
+                    icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                  ),
+                  // ignore: deprecated_member_use
+                  suffixIconColor: Colors.white.withOpacity(0.2),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12)
                   ) 

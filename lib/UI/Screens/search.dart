@@ -240,17 +240,18 @@ class _SearchState extends State<Search> {
                                   Icons.clear,
                                   size: 20,
                                   color: Colors.white,
-                                )),
-                            ),
+                                )
+                              ),
                             ),
                           ),
                         ),
-                      );
-                    }
-                  ),
-                )
-              ],
-            ),
-          );
-        }
+                      ),
+                    );
+                  }
+                ),
+              )
+            ],
+          ),
+        );
       }
+    }

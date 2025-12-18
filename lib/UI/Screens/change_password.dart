@@ -13,14 +13,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController currentPasswords = TextEditingController();
   TextEditingController newPasswords = TextEditingController();
 
-
   void updatePassword() async {
     try {
       await authService.value.resetPasswordFromCurrentPassword(
         currentPassword: currentPasswords.text, 
-        newPassword: newPasswords.text, 
-        email: emailText.text);
-
+        newPassword: newPasswords.text);
         if(mounted) {
           showDialog(
             context: context, 
@@ -69,6 +66,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       backgroundColor: Color(0xFF393D5E),
       appBar: AppBar(
         backgroundColor: Color(0xFF393D5E),
+        foregroundColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -101,16 +99,6 @@ class _ChangePasswordState extends State<ChangePassword> {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            TextFormField(
-              controller: emailText,
-              decoration: InputDecoration(
-                hint: Text("Email"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8)
-                ),
-              ),
-            ),
-            
             const SizedBox(height: 10),
             TextFormField(
               controller: currentPasswords,

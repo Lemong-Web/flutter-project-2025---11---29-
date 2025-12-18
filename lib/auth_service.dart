@@ -57,10 +57,13 @@ class AuthService {
   Future<void> resetPasswordFromCurrentPassword({
     required String currentPassword,
     required String newPassword,
-    required String email,
   }) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || user.email == null ) {
+      throw Exception('User havent login or user dont have a email');
+    }
     AuthCredential credential =
-      EmailAuthProvider.credential(email: email, password: currentPassword);
+      EmailAuthProvider.credential(email: user.email!, password: currentPassword);
     await currentUser!.reauthenticateWithCredential(credential);
     await currentUser!.updatePassword(newPassword);
   }

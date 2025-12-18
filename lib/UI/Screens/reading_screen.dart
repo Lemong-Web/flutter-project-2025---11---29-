@@ -24,6 +24,7 @@ class ReadingScreen extends StatefulWidget {
 
 class _ReadingScreenState extends State<ReadingScreen> {
   bool toolBarVisible = true;
+  bool isScrolling  = false;
   final ScrollController _scrollController = ScrollController();
   double processValue = 0.0;
   late Future<ChapterDetail> _futureStory;
@@ -71,15 +72,31 @@ class _ReadingScreenState extends State<ReadingScreen> {
   Widget build(BuildContext context) {
     return Scaffold (
       backgroundColor: const Color(0xFF393D5E),
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context), 
-          icon: Icon(Icons.arrow_back)),
-        foregroundColor: const Color(0xffffffff),
-        backgroundColor: const Color(0xFF393D5E),
+      appBar: isScrolling 
+      ? null
+      : AppBar(
+          automaticallyImplyLeading: true,
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context), 
+            icon: Icon(Icons.arrow_back)),
+          foregroundColor: const Color(0xffffffff),
+          backgroundColor: const Color(0xFF393D5E),
+        ),
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollNotification) {
+          if (scrollNotification is ScrollStartNotification) {
+            setState(() {
+              isScrolling = true;
+            });
+          } else if (scrollNotification is ScrollEndNotification) {
+            setState(() {
+              isScrolling = false;
+            });
+          }
+          return true;
+        },
+        child: _buildUI()
       ),
-      body: _buildUI(),
       endDrawer: Drawer(
         backgroundColor: const Color(0xFF393D5E),
         width: 240,

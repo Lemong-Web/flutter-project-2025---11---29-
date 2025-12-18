@@ -20,7 +20,7 @@ class SearchResult extends StatefulWidget {
 }
 
 class _SearchResultState extends State<SearchResult> {
-  bool isScrolling = false;
+  bool layoutChange = false;
   Dio dio = Dio();
   late Future <List<MangaModel>> searchedManhua; 
 
@@ -50,44 +50,37 @@ class _SearchResultState extends State<SearchResult> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF393D5E),
-      appBar: isScrolling 
-      ? AppBar(
+      appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: const Color(0xFF393D5E),
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              '"${widget.searchKey}"',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: "Inter",
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-              )
+            Padding(
+              padding: const EdgeInsets.only(left: 100),
+              child: Text(
+                '"${widget.searchKey}"',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: "Inter",
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold
+                )
+              ),
             ),
             IconButton(
-              onPressed: () {}, 
+              onPressed: () {
+                setState(() {
+                  layoutChange = !layoutChange;
+                });
+              }, 
               icon: Icon(Icons.layers_outlined) 
             )
           ],
         ),
-      )
-      : null,
+      ),
       
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification) {
-          if (scrollNotification is ScrollStartNotification) {
-            setState(() {
-              isScrolling = false;
-            });
-          } else if (scrollNotification is ScrollEndNotification){
-            setState(() {
-              isScrolling = true;
-            });
-          } 
-          return true;
-        },
-        child: FutureBuilder(
+      body: FutureBuilder(
           future: searchedManhua, 
           builder: (context, snapshot) {
             if(snapshot.connectionState == ConnectionState.waiting) {
@@ -96,17 +89,18 @@ class _SearchResultState extends State<SearchResult> {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (snapshot.hasData) {
               final data = snapshot.data;
-              return _buildUI(data!);
+              return layoutChange 
+                ? _buildUIGridView(data!) 
+                : _buildUIListView(data!);
             } else {
               return const Center(child: Text("No data found"));
             }
           }
         ),
-      ),
-    );
+      );
   }
 
-  Widget _buildUI( List<MangaModel> data) {
+  Widget _buildUIListView(List<MangaModel> data) {
     return ListView.builder(
       itemCount: data.length,
       itemBuilder: (context, index) {
@@ -197,6 +191,101 @@ class _SearchResultState extends State<SearchResult> {
                 )
               ],
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildUIGridView(List<MangaModel> data) {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 10,
+        childAspectRatio: 0.48,
+      ),
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            // ignore: deprecated_member_use
+            color: Color(0xffFFFFFF).withOpacity(0.2)
+          ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                padding: EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xff2BD2FF),
+                      Color(0xff2BFF88)
+                    ]
+                  ),
+                  borderRadius: BorderRadius.circular(12)
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(data[index].storyimage, fit: BoxFit.cover),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8, left: 8),
+              child: Text(
+                data[index].storyname,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.bold
+                ), 
+              ),
+            ),
+            const SizedBox(height: 5),
+            GestureDetector(
+              onTap: () {
+               Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
+                storyid: data[index].storyid, 
+                storyname: data[index].storyname, 
+                storyothername: data[index].storyothername, 
+                storyimage: data[index].storyimage, 
+                storydes: data[index].storydes, 
+                storygenres: data[index].storygenres, 
+                urllinkcraw: data[index].urllinkcraw, 
+                storytauthor: data[index].storytauthor, views: data[index].views)));
+              },
+              child: Container(
+                padding: const EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  gradient: LinearGradient(
+                    colors: [
+                       Color(0xff2BD2FF),
+                       Color(0xff2BFF88)
+                    ],
+                  ),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Text(
+                      'Đọc chuyện', 
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold
+                      )),
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
         );
       }
