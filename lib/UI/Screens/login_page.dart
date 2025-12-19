@@ -22,17 +22,18 @@ class _LoginPageState extends State<LoginPage> {
     try {
      await authService.value.signIn(
       email: emailText.text, 
-      password: passwordText.text
-      );  
+      password: passwordText.text);
     final prefs = await SharedPreferences.getInstance();
     final user = FirebaseAuth.instance.currentUser;
     prefs.setString('userID', user!.uid);
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message ?? "something gone wrong";
+        errorMessage = "Mật khẩu hoặc email bạn đã điền sai, vui lòng điền lại";
       });
     }
   }
+
+  
 
   @override
   Widget build(BuildContext context) {

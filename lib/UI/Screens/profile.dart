@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/account_information.dart';
 import 'package:manga_app/UI/Screens/change_password.dart';
-import 'package:manga_app/UI/Screens/login_page.dart';
 import 'package:manga_app/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,11 +56,7 @@ class _ProfileState extends State<Profile> {
 
   void logout() async {
     await authService.value.signOut();
-    Navigator.pushAndRemoveUntil(
-      context, 
-      MaterialPageRoute(builder: (context) => const LoginPage()), 
-      (route) => false);
-    }
+  }
 
   @override
   Widget build(BuildContext context) {

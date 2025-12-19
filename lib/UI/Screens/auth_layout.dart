@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/login_page.dart';
-import 'package:manga_app/UI/Screens/splash.dart';
-import 'package:manga_app/auth_service.dart';
+import 'package:manga_app/UI/Screens/navigation.dart';
 
 class AuthLayout extends StatefulWidget {
   const AuthLayout({super.key});
@@ -13,23 +13,18 @@ class AuthLayout extends StatefulWidget {
 class _AuthLayoutState extends State<AuthLayout> {
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: authService,
-      builder: (context, authService, child){
-        return StreamBuilder(
-          stream: authService.authStateChanges, 
-          builder: (context, snapshot) {
-             Widget widget;
-             if(snapshot.connectionState == ConnectionState.waiting){
-              return const Center(child: CircularProgressIndicator());
-             } else if (snapshot.hasData) {
-              widget = const Splash();
-             } else {
-              widget = const LoginPage();
-             }
-             return widget;
-          }
-        );
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(), 
+      builder: (context, snapshot) {
+         Widget widget; 
+         if(snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+         } else if (snapshot.hasData) {
+          widget = const Navigation();
+         } else {
+          widget = const LoginPage();
+         }
+         return widget;
       }
     );
   }

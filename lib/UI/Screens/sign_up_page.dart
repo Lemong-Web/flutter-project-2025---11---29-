@@ -131,6 +131,7 @@ class _SignUpPageState extends State<SignUpPage> {
         return Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: TextFormField(
+            validator: (val) => val!.length < 6 ? "Password to short" : null,
             controller: controllerPassword,
             decoration: InputDecoration(
               border: OutlineInputBorder(),

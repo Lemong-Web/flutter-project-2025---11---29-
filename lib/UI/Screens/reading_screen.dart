@@ -183,8 +183,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                 barRadius: Radius.circular(6),
                 percent: processValue,
                 backgroundColor: Colors.black,
-                progressColor: Colors.pink,
-                
+                progressColor: Colors.blue
               )
             )
           ]
