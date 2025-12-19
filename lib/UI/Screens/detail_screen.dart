@@ -155,8 +155,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   _buildUIlist(chapters, chapterlist),
                   _continue(chapterlist),
                   const SizedBox(height: 15)
-                ],
-              ),
+                  ],
+                ),
             );
           } else {
             return const Center(child: Text("No data found"));
@@ -351,8 +351,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   padding: const EdgeInsets.all(3.0),
                   child: Text(
                     lastIndex == null
-                        ? "Bắt đâu đọc chuyện"
-                        : "Đọc tiếp từ chương: $lastIndex",
+                      ? "Bắt đâu đọc chuyện"
+                      : "Đọc tiếp từ chương: $lastIndex",
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: "Inter",

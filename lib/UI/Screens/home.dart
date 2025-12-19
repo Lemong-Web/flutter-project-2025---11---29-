@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
@@ -17,10 +18,14 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String searchKey = "";
   String userID = "";
+  int _current = 0;
+  final CarouselSliderController _controller = CarouselSliderController();
+  late Future <List<MangaModel>> data;
   
   @override
   void initState() {
     super.initState();
+    data = fetchData(searchText: searchKey);
     // uidGet();
   }
 
@@ -57,7 +62,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<MangaModel>>(
-      future: fetchData(searchText: searchKey), 
+      future: data, 
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -99,11 +104,10 @@ class _HomeState extends State<Home> {
                   });
                 },
                 decoration: InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.search,
-                    // ignore: deprecated_member_use
-                    color: Color(0xFF393D5E).withOpacity(0.6),
-                  ),
+                  prefixIcon: Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    onPressed: () {}, 
+                    icon: Icon(Icons.category)),
                   hint: Text (
                     "Manhua",
                     style: TextStyle(
@@ -133,7 +137,86 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-           Trending(),
+
+          Trending(),
+
+          Padding(
+            padding: const EdgeInsets.only(right: 200, bottom: 10),
+            child: const Text(
+              "Have Concluded!",
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontFamily: 'Inter')
+              ),
+          ),
+
+          Container(
+            width: 326,
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(12)
+            ),
+            padding: EdgeInsets.all(2),
+            child: CarouselSlider(
+              carouselController: _controller,
+              items: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: SizedBox.expand(
+                    child: Image.asset(
+                      "assets/img/wallpaper1.avif", fit: BoxFit.cover),
+                  ),
+                ),
+                
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: SizedBox.expand(
+                    child: Image.asset(
+                      "assets/img/wallpaper2.jpg", fit: BoxFit.cover),
+                  ),
+                ),
+
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: SizedBox.expand(
+                    child: Image.asset(
+                      "assets/img/wallpaper3.jpg", fit: BoxFit.cover),
+                  ),
+                ),
+              ], 
+              options: CarouselOptions(
+                autoPlay: true,
+                enableInfiniteScroll: true,
+                viewportFraction: 1,
+                autoPlayCurve: Curves.fastOutSlowIn,
+                autoPlayInterval: Duration(seconds: 3),
+                autoPlayAnimationDuration: Duration(microseconds: 800),
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _current = index;
+                  });
+                }
+              )
+            ),
+          ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (int i = 0; i < 3; i++)
+              Container(
+                width: 8,
+                height: 8,
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _current == i ? Colors.blue : Colors.grey
+                ),
+              )
+            ],
+          ),
+
            Padding(
              padding: const EdgeInsets.only(right: 260, top: 8),
              child: Text(
@@ -146,6 +229,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
+            
             SizedBox(
               height: 2190,
               child: GridView.builder(

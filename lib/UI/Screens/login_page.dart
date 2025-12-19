@@ -26,14 +26,13 @@ class _LoginPageState extends State<LoginPage> {
     final prefs = await SharedPreferences.getInstance();
     final user = FirebaseAuth.instance.currentUser;
     prefs.setString('userID', user!.uid);
+    // ignore: unused_catch_clause
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = "Mật khẩu hoặc email bạn đã điền sai, vui lòng điền lại";
       });
     }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
