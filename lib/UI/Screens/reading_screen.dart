@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Widget/drawerbtn.dart';
@@ -24,11 +25,35 @@ class ReadingScreen extends StatefulWidget {
 
 class _ReadingScreenState extends State<ReadingScreen> {
   bool toolBarVisible = true;
-  bool isScrolling  = false;
+  bool doubleTap = false;
   final ScrollController _scrollController = ScrollController();
   double processValue = 0.0;
   late Future<ChapterDetail> _futureStory;
   late Future<NumberModel> listchapter;
+  Timer? _hideTimer;
+  
+  void _showAppBarTemp() {
+    setState(() {
+      doubleTap = true;
+    });
+
+    _hideTimer?.cancel();
+
+    _hideTimer = Timer( const Duration(seconds: 6), () {
+      if (mounted) {
+        setState(() {
+          doubleTap = false;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _hideTimer?.cancel();
+    super.dispose();
+  }
+
 
   @override
   void initState() {
@@ -47,11 +72,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   Dio dio = Dio();
   Future <ChapterDetail> fetchStory() async {
@@ -71,32 +91,22 @@ class _ReadingScreenState extends State<ReadingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold (
+      extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFF393D5E),
-      appBar: isScrolling 
-      ? null
-      : AppBar(
+      appBar: doubleTap 
+        ? AppBar(
           automaticallyImplyLeading: true,
           leading: IconButton(
             onPressed: () => Navigator.pop(context), 
             icon: Icon(Icons.arrow_back)),
           foregroundColor: const Color(0xffffffff),
-          backgroundColor: const Color(0xFF393D5E),
-        ),
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification) {
-          if (scrollNotification is ScrollStartNotification) {
-            setState(() {
-              isScrolling = true;
-            });
-          } else if (scrollNotification is ScrollEndNotification) {
-            setState(() {
-              isScrolling = false;
-            });
-          }
-          return true;
-        },
-        child: _buildUI()
-      ),
+          // ignore: deprecated_member_use
+          backgroundColor: Color(0xFF393D5E).withOpacity(0.3),
+          elevation: 0,
+        )
+        : null,
+
+      body: _buildUI(),
       endDrawer: Drawer(
         backgroundColor: const Color(0xFF393D5E),
         width: 240,
@@ -153,30 +163,33 @@ class _ReadingScreenState extends State<ReadingScreen> {
           final listDetail = snapshot.data!;
           return Stack(
             children:<Widget>[ 
-              CustomScrollView(
-                controller: _scrollController,
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 1),
-                          child: Image.network(
-                            listDetail.lstImage[index],
-                            fit: BoxFit.contain,
-                          ),
-                        );
-                      },
-                      childCount: listDetail.lstImage.length
+              GestureDetector(
+                onDoubleTap: _showAppBarTemp,
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 1),
+                            child: Image.network(
+                              listDetail.lstImage[index],
+                              fit: BoxFit.contain,
+                            ),
+                          );
+                        },
+                        childCount: listDetail.lstImage.length
+                      )
                     )
-                  )
-                ],
+                  ],
+                ),
               ),
 
             Positioned(
               bottom: 20,
-              left: 0,
+              left: 0, 
               right: 0,
               child: LinearPercentIndicator(
                 lineHeight: 10,

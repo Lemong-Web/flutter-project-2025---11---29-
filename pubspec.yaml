@@ -19,6 +19,7 @@ dependencies:
   google_nav_bar: ^5.0.7
   image_picker: ^1.2.1
   percent_indicator: ^4.2.5
+  readmore: ^3.0.0
   shared_preferences: ^2.5.3
 
 dev_dependencies:
