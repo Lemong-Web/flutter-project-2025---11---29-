@@ -122,7 +122,7 @@ class _DetailScreenState extends State<DetailScreen> {
             title: Center(
               child: Row(
                 children: [
-                  const SizedBox(width: 100),
+                  const SizedBox(width: 80),
                   Text(
                     "Manhua",
                     style: TextStyle(
@@ -133,6 +133,10 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                   ),
                   Spacer(),
+                  IconButton( 
+                    onPressed: () {
+
+                  }, icon: Icon(Icons.share)),
                   IconButton(
                     onPressed: () {
                       saveStatus(widget.storyid);

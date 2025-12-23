@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
+import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
 import 'package:manga_app/UI/Widget/trending.dart';
 import 'package:manga_app/UI/Widget/view.dart';
+import 'package:manga_app/model/filter.dart';
 import 'package:manga_app/model/manga_model.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,26 +18,78 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String tag = '';
   String searchKey = "";
   String userID = "";
   int _current = 0;
+  bool tagSearch = false;
   final CarouselSliderController _controller = CarouselSliderController();
   late Future <List<MangaModel>> data;
+  List<Filter> selectedTagList = [];
+  List<String> selectedTag = [];
   
-  @override
-  void initState() {
-    super.initState();
-    data = fetchData(searchText: searchKey);
-    // uidGet();
-  }
-
   // void uidGet() async {
-  //   final prefs = await SharedPreferences.getInstance();
+  //   final prefs = await SharedPrefesrences.getInstance();
   //   final String? uid = prefs.getString('userID');
   //   setState(() {
   //     userID = uid ?? "";
   //   });
   // }
+
+  void openFilterDialog() async {
+    await FilterListDialog.display<Filter>(
+      context,
+      listData: filterList,
+      selectedListData: selectedTagList,
+      choiceChipLabel: (item) => item!.name,
+      validateSelectedItem: (list, item) => list!.contains(item),
+      onItemSearch: (item, query) {
+        return item.name.toLowerCase().contains(query.toLowerCase());
+      },
+      onApplyButtonClick: (list) {
+        if (list == null || list.isEmpty) {
+          setState(() {
+            selectedTagList = [];
+            selectedTag = [];
+            tagSearch = false;
+            data = fetchData();
+          });
+          return
+          Navigator.pop(context);
+        } 
+        setState(() {
+          selectedTagList = List<Filter>.from(list);
+          selectedTag = selectedTagList.map((e) => e.name).whereType<String>().toList();
+          tagSearch = true;
+          data = fetchDataTag();
+        });
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  Future<List<MangaModel>> fetchDataTag() async {
+  if (selectedTag.isEmpty) return [];
+
+  final Dio dio = Dio();
+  final response = await dio.get("https://b0ynhanghe0.github.io/comic/categorized.json");
+
+  final data = response.data;
+  if (data is! Map<String, dynamic>) return [];
+
+  List<MangaModel> result = [];
+
+  for (final tag in selectedTag) {
+    final List<dynamic> list = data[tag] ?? [];
+
+    result.addAll(
+      list.map((e) => MangaModel.fromJson(e)),
+    );
+  }
+
+  return result;
+}
+
 
   Future <List<MangaModel>> fetchData({String? searchText}) async {
     final dio = Dio();
@@ -57,6 +111,13 @@ class _HomeState extends State<Home> {
       }).toList();
     }
     return list;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    data = tagSearch ? fetchDataTag() : fetchData(searchText: searchKey);
+    // uidGet();
   }
    
   @override
@@ -101,13 +162,16 @@ class _HomeState extends State<Home> {
                 onSubmitted: (value) {
                   setState(() {
                     searchKey = value;
-                  });
+                    data = fetchData(searchText: searchKey);
+                  });   
                 },
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.search),
                   suffixIcon: IconButton(
-                    onPressed: () {}, 
-                    icon: Icon(Icons.category)),
+                    onPressed: () {
+                      openFilterDialog();
+                    }, 
+                    icon: Icon(Icons.tune)),
                   hint: Text (
                     "Manhua",
                     style: TextStyle(

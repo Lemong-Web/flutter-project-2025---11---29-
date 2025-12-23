@@ -4,6 +4,7 @@ import 'package:manga_app/UI/Screens/search_result.dart';
 import 'package:manga_app/UI/Screens/tagpage.dart';
 import 'package:manga_app/UI/Widget/tagbutton.dart';
 import 'package:manga_app/UI/Widget/trending.dart';
+import 'package:manga_app/model/filter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:manga_app/model/manga_model.dart';
 
@@ -17,6 +18,8 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   String searchKey = "";
   List<String> searchText = [];
+  List<Filter>? selectedFilterList = [];
+
 
   void searchHistory(List<String>? value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -49,6 +52,8 @@ class _SearchState extends State<Search> {
       prefs.setStringList("searchValue_$uid", searchText);
     });
   }
+  
+
 
   @override
   void initState() {
@@ -82,6 +87,10 @@ class _SearchState extends State<Search> {
                   filled: true,
                   // ignore: deprecated_member_use
                   fillColor: Color(0xFFA0A1AD),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                    }, 
+                    icon: Icon(Icons.tune))
                 ),
                 onSubmitted: (value) {
                   setState(() {
