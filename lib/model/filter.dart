@@ -10,5 +10,6 @@ class Filter {
   Filter(name: "new", id: 2),
   Filter(name: "manhua", id: 3),
   Filter(name: "action", id: 4),
-  Filter(name: "Supernatural", id: 5)
+  Filter(name: "Supernatural", id: 5),
+  Filter(name: "recommended", id: 6)
 ];

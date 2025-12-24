@@ -1,5 +1,7 @@
 // import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
+import 'package:flutter_popup/flutter_popup.dart';
 import 'package:manga_app/UI/Screens/search_result.dart';
 import 'package:manga_app/UI/Screens/tagpage.dart';
 import 'package:manga_app/UI/Widget/tagbutton.dart';
@@ -17,9 +19,10 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   String searchKey = "";
+  bool isSelected = false;
   List<String> searchText = [];
   List<Filter>? selectedFilterList = [];
-
+  List<String>? selectedTag = [];
 
   void searchHistory(List<String>? value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -52,8 +55,6 @@ class _SearchState extends State<Search> {
       prefs.setStringList("searchValue_$uid", searchText);
     });
   }
-  
-
 
   @override
   void initState() {
@@ -87,11 +88,41 @@ class _SearchState extends State<Search> {
                   filled: true,
                   // ignore: deprecated_member_use
                   fillColor: Color(0xFFA0A1AD),
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                    }, 
-                    icon: Icon(Icons.tune))
+                  suffixIcon: CustomPopup(
+                  content: StatefulBuilder(
+                    builder: (context, setPopupState) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: filterList.map((filter) {
+                            final isSelected = selectedTag!.contains(filter.name);
+
+                            return ChoiceChip(
+                              label: Text(filter.name),
+                              selected: isSelected,
+                              selectedColor: Colors.blue,
+                              onSelected: (value) {
+                                setPopupState(() {
+                                  if (value) {
+                                    selectedTag!.add(filter.name);
+                                  } else {
+                                    selectedTag!.remove(filter.name);
+                                  }
+                                });
+                                setState(() {});
+                              },
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    },
+                  ),
+                  child: const Icon(Icons.tune),
                 ),
+
+            ),
                 onSubmitted: (value) {
                   setState(() {
                     searchKey = value;

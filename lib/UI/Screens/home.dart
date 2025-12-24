@@ -43,9 +43,24 @@ class _HomeState extends State<Home> {
       selectedListData: selectedTagList,
       choiceChipLabel: (item) => item!.name,
       validateSelectedItem: (list, item) => list!.contains(item),
-      onItemSearch: (item, query) {
-        return item.name.toLowerCase().contains(query.toLowerCase());
-      },
+      onItemSearch: (item, query) => true,
+      choiceChipBuilder: (context, item, isSelected) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected! ? Colors.blue : Colors.grey,
+            )
+          ),
+          child: Text(
+            item.name,
+            style: TextStyle(
+              color: isSelected ? Colors.blue : Colors.grey),
+            ),
+          );
+        },
       onApplyButtonClick: (list) {
         if (list == null || list.isEmpty) {
           setState(() {
@@ -69,26 +84,21 @@ class _HomeState extends State<Home> {
   }
 
   Future<List<MangaModel>> fetchDataTag() async {
-  if (selectedTag.isEmpty) return [];
-
-  final Dio dio = Dio();
-  final response = await dio.get("https://b0ynhanghe0.github.io/comic/categorized.json");
-
-  final data = response.data;
-  if (data is! Map<String, dynamic>) return [];
-
-  List<MangaModel> result = [];
-
-  for (final tag in selectedTag) {
-    final List<dynamic> list = data[tag] ?? [];
-
-    result.addAll(
-      list.map((e) => MangaModel.fromJson(e)),
-    );
-  }
-
-  return result;
-}
+    if (selectedTag.isEmpty) return [];
+    final Dio dio = Dio();
+    final response = await dio.get("https://b0ynhanghe0.github.io/comic/categorized.json");
+    final data = response.data;
+    if (data is! Map<String, dynamic>) return [];
+    final Map<String, MangaModel> uniqueMap = {};
+    for (final tag in selectedTag) {
+      final List<dynamic> list = data[tag] ?? [];
+      for (final e in list) {
+        final manhua = MangaModel.fromJson(e);
+        uniqueMap[manhua.storyid] = manhua;
+      }
+    }
+  return uniqueMap.values.toList();
+ }
 
 
   Future <List<MangaModel>> fetchData({String? searchText}) async {
@@ -97,7 +107,7 @@ class _HomeState extends State<Home> {
     final response = await dio.get(url);
     final List<dynamic> body = response.data;
     List<MangaModel> list = body.map((e) {
-       return MangaModel.fromJson(e);
+      return MangaModel.fromJson(e);
     }).toList();
 
     if (searchText != null && searchText.isNotEmpty) {
@@ -295,7 +305,7 @@ class _HomeState extends State<Home> {
             ),
             
             SizedBox(
-              height: 2190,
+              height: tagSearch ? null : 2190,
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
