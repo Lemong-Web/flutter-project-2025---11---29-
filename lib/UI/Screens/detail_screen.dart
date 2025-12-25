@@ -6,6 +6,7 @@ import 'package:manga_app/UI/Screens/reading_screen.dart';
 import 'package:manga_app/UI/Widget/detailbtn.dart';
 import 'package:manga_app/model/number_model.dart';
 import 'package:readmore/readmore.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -45,6 +46,7 @@ class _DetailScreenState extends State<DetailScreen> {
   int? lastIndex;
   late Future<NumberModel> chapters;
 
+
   Dio dio = Dio();
   Future<NumberModel> fetchChapters() async {
     final response = await dio.get(
@@ -83,6 +85,11 @@ class _DetailScreenState extends State<DetailScreen> {
     setState(() {
       lastStatus = prefs.getBool("favorite_${uid}_${widget.storyid}") ?? false;
     });
+  }
+
+  void shareManhua() {
+    final String shareLink = widget.urllinkcraw;
+    Share.share(shareLink);
   }
 
   @override
@@ -135,7 +142,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   Spacer(),
                   IconButton( 
                     onPressed: () {
-
+                      shareManhua();
                   }, icon: Icon(Icons.share)),
                   IconButton(
                     onPressed: () {
