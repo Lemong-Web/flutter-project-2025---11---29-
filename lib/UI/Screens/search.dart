@@ -140,22 +140,24 @@ class _SearchState extends State<Search> {
                     ),
                   ),
         
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
                 children: selectedTag!.map<Widget>((e) {
                   return Container(
-                    
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: Colors.blue
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           e,
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                         ),
                         IconButton(
                            onPressed: () {
@@ -172,8 +174,9 @@ class _SearchState extends State<Search> {
                       ],
                     )
                   );
-                }).toList()
-              ),
+                }
+              ).toList()
+                          ),
         
               Padding(
                 padding: const EdgeInsets.only(right: 120, bottom: 10),
