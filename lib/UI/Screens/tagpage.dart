@@ -49,7 +49,13 @@ class _TagpageState extends State<Tagpage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
+            return Center(child: Text(
+              "Truyên đang được cập nhật, vui lòng quay lại sau",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Inter"
+              )));
           } else if (snapshot.hasData) {
             List<MangaModel> manga = snapshot.data!;
             return _buildUI(manga);

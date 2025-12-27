@@ -34,9 +34,9 @@ class _SignUpPageState extends State<SignUpPage> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userID', authService.value.currentUser?.uid ?? '');
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       setState(() {
-        errorMessage = e.message ?? "There is an error";
+        errorMessage = "Có lỗi trong khi tạo tài khoản, vui lòng thử lại";
       });
     }
   }
@@ -54,27 +54,33 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Color(0xFF393D5E),
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Color(0xFF393D5E),
         ),
-        body: Column(
-          children: [
-            _buildUItitle(),
-            const SizedBox(height: 10),
-            _profileImage(),
-            const SizedBox(height: 10),
-            _buildEmail(),
-            const SizedBox(height: 10),
-            _buildUsername(),
-            const SizedBox(height: 10),
-            _buildPass(),
-            const SizedBox(height: 5),
-            _buildErrorMes(),
-            const SizedBox(height: 20),
-            _buildbtn()
-          ],
+        body: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom
+          ),
+          child: Column(
+            children: [
+              _buildUItitle(),
+              const SizedBox(height: 10),
+              _profileImage(),
+              const SizedBox(height: 10),
+              _buildEmail(),
+              const SizedBox(height: 10),
+              _buildUsername(),
+              const SizedBox(height: 10),
+              _buildPass(),
+              const SizedBox(height: 5),
+              _buildErrorMes(),
+              const SizedBox(height: 20),
+              _buildbtn()
+            ],
+          ),
         ),
       );
     }
@@ -93,7 +99,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ).createShader(bound);
             },
             child: Text(
-              "Create Account",
+              "Tạo tài khoản",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 30
@@ -104,7 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
             height: 50,
             width: 300,
             child: Text(
-              "Enter you username, email and password to sign up",
+              "Điền tên người dùng, email và mật khẩu để tạo tài khoản.",
               style: TextStyle(
                 // ignore: deprecated_member_use
                 color: Colors.white.withOpacity(0.4),
@@ -115,31 +121,38 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       }
       
-      Widget _buildEmail() {
-        return Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: TextFormField(
-            controller: controllerEmail,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hint: Text("Email:")
+    Widget _buildEmail() {
+      return Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: TextFormField(
+          controller: controllerEmail,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hint: Text(
+              "Email", 
+              style: TextStyle(color: Colors.white)),
             ),
           ),
         );
       }
+      
+
       Widget _buildPass() {
         return Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: TextFormField(
-            validator: (val) => val!.length < 6 ? "Password to short" : null,
+            validator: (val) => val!.length < 6 ? "Mật khẩu quá ngắn" : null,
             controller: controllerPassword,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              hint: Text("Password:")
+              hint: Text(
+                "Mật khẩu",
+                style: TextStyle(color: Colors.white))
             )
           ),
         );
       }
+
       Widget _buildErrorMes() {
         return Text(
           errorMessage,
@@ -152,11 +165,14 @@ class _SignUpPageState extends State<SignUpPage> {
             minimumSize: Size(340, 50)
           ),
           onPressed: () async {
+            controllerEmail.clear();
+            controllerUsername.clear();
+            controllerPassword.clear();
             register();
-            Navigator.pop(context);
+            // Navigator.pop(context);
           }, 
           child: Text(
-            "Sign up",
+            "Đăng ký",
             style: TextStyle(
                fontSize: 20,
                color: Colors.black
@@ -196,9 +212,11 @@ class _SignUpPageState extends State<SignUpPage> {
             controller: controllerUsername,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              hint: Text("Username:")
-            )
-          ),
-        );
+              hint: Text(
+                "Tên người dùng",
+                style: TextStyle(color: Colors.white))
+              )
+            ),
+          );
+        }
       }
-    }

@@ -98,7 +98,7 @@ class _HomeState extends State<Home> {
       }
     }
   return uniqueMap.values.toList();
- }
+}
 
 
   Future <List<MangaModel>> fetchData({String? searchText}) async {
@@ -202,7 +202,7 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.only(right: 200, top: 10),
               child: Text(
-                "Trending Manhua",
+                "Manhua đang nổi",
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,

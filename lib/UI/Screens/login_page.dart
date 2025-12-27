@@ -97,6 +97,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               const SizedBox(height: 20),
+
               TextFormField(
                 controller: passwordText,
                 obscureText: hidePass ? true : false,
@@ -104,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                   prefixIcon: Icon(Icons.lock),
                   // ignore: deprecated_member_use
                   prefixIconColor: Colors.white.withOpacity(0.2),
-                  labelText: "Password",
+                  labelText: "Mật khẩu",
                   // ignore: deprecated_member_use
                   labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
                   suffixIcon: IconButton(
@@ -133,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
     return Text(
       errorMessage,
       style: TextStyle(color: Colors.red));
-  }
+    }
 
   Widget _buildUIbutton() {
     return Column(
@@ -147,9 +148,9 @@ class _LoginPageState extends State<LoginPage> {
             )
           ),
           onPressed: () {
-            setState(() {
-              login();
-            });
+            login();
+            emailText.clear();
+            passwordText.clear();          
           }, 
 
           child: Text(
@@ -167,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "Don't have an account?",
+          "Không có tài khoản?",
           style: TextStyle(
             color: Colors.white,
           )),
@@ -177,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
           },
           child: Text(
-            "Sign up",
+            "Đăng kí ngay.",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.white,

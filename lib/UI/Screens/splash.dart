@@ -2,8 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import 'package:manga_app/UI/Screens/navigation.dart';
+import 'package:manga_app/UI/Screens/auth_layout.dart';
 
 class Splash extends StatefulWidget {
 
@@ -24,7 +23,7 @@ class _SplashState extends State<Splash> {
       Duration(seconds: 2), () {
         Navigator.pushReplacement(
           context, 
-          MaterialPageRoute(builder: (context) => Navigation())
+          MaterialPageRoute(builder: (context) => AuthLayout())
         );
       });
     }
@@ -44,7 +43,7 @@ class _SplashState extends State<Splash> {
           bottom: 50,
           left: 155,
           child: const Text (
-            "VERSION 0.0.1",
+            "VERSION 0.0.8",
             style: TextStyle (
               color: Colors.white,
               fontSize: 15

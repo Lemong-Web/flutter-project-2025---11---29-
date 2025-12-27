@@ -79,7 +79,7 @@ Widget _buildUITitleandAvatar() {
           child: Padding(
             padding: const EdgeInsets.only(top: 50),
             child: const Text(
-              "Profile",
+              "Tài khoản",
               style: TextStyle(
                 color: Colors.white,
                 fontFamily: "Inter",
@@ -94,11 +94,11 @@ Widget _buildUITitleandAvatar() {
           ),
           const SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.only(left: 120),
+            padding: const EdgeInsets.only(left: 90),
             child: Row(
               children: [
                 Text(
-                  'Hello $username',
+                  'Xin chào $username',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -126,14 +126,14 @@ Widget _buildUITitleandAvatar() {
                   onTap: () => Navigator.push(
                   context, MaterialPageRoute(builder: (context) => AccountInformation())),
                   leading: Icon(Icons.info),
-                  title: Text('Account Infomation'),
+                  title: Text('Thông tin tài khoản'),
                   trailing: Icon(Icons.arrow_forward),
                 ),
                 ListTile(
                   onTap: () => Navigator.push(
                   context, MaterialPageRoute(builder: (context) => ChangePassword())),
                   leading: Icon(Icons.password),
-                  title: Text('Change Password'),
+                  title: Text('Đổi mật khẩu'),
                   trailing: Icon(Icons.arrow_forward),
                 ),
               ListTile(
@@ -141,14 +141,14 @@ Widget _buildUITitleandAvatar() {
                   logout();
                 },
                 leading: Icon(Icons.logout),
-                title: Text('Log out'),
+                title: Text('Đăng xuất'),
                 trailing: Icon(Icons.arrow_forward),
               ),
               ListTile(
                 onTap: () {
                   deleteData();
                   final snackBar = SnackBar(
-                  content: const Text("Data deleted succesfuly"),
+                  content: const Text("Dữ liệu đã được xóa"),
                   action: SnackBarAction(
                     label: "Ok", 
                     onPressed: () {}
@@ -157,7 +157,7 @@ Widget _buildUITitleandAvatar() {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               },
                 leading: Icon(Icons.folder_off),
-                title: Text('Delete Data'),
+                title: Text('Xóa dữ liệu'),
                 trailing: Icon(Icons.arrow_forward),
               ),
             ]

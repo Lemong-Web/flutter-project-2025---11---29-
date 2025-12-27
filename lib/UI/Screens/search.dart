@@ -176,7 +176,7 @@ class _SearchState extends State<Search> {
                   );
                 }
               ).toList()
-                          ),
+            ),
         
               Padding(
                 padding: const EdgeInsets.only(right: 120, bottom: 10),

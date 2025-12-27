@@ -89,6 +89,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   void shareManhua() {
     final String shareLink = widget.urllinkcraw;
+    // ignore: deprecated_member_use
     Share.share(shareLink);
   }
 
@@ -240,7 +241,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
           const SizedBox(height: 6),
           Text(
-            "Synopsis",
+            "Tóm tắt nội dung",
             style: TextStyle(
               color: Colors.white,
               fontFamily: "Inter",

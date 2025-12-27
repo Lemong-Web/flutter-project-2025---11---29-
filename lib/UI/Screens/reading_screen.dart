@@ -118,11 +118,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (snapshot.hasData) {
               final listChapters = snapshot.data!;
-              return GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount (
-                  crossAxisCount: 2,
-                  mainAxisExtent: 50
-                ),
+              return ListView.builder(
                   itemCount: listChapters.chapters.length,
                   itemBuilder: (context, index) {
                     return Container(
