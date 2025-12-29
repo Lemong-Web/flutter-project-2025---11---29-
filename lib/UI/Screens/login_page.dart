@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isCheck = false;
   bool hidePass = true;
   String errorMessage = '';
+  final _formKey = GlobalKey<FormState>();
 
   void login() async {
     try {
@@ -67,68 +68,87 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildUIContainer() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 30, left: 30),
-      child: Container(
-        width: double.infinity,
-        height: 150,
-        decoration: BoxDecoration(
-          // ignore: deprecated_member_use
-          color: Colors.grey.withOpacity(0),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              TextFormField(
-                controller: emailText,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.email),
-                  // ignore: deprecated_member_use
-                  prefixIconColor: Colors.white.withOpacity(0.2),
-                  labelText: "Email",
-                  // ignore: deprecated_member_use
-                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12)
-                  )
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              TextFormField(
-                controller: passwordText,
-                obscureText: hidePass ? true : false,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock),
-                  // ignore: deprecated_member_use
-                  prefixIconColor: Colors.white.withOpacity(0.2),
-                  labelText: "Mật khẩu",
-                  // ignore: deprecated_member_use
-                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState (() {
-                        hidePass = !hidePass;
-                      });
-                    }, 
-                    icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 30, left: 30),
+            child: Container(
+              width: double.infinity,
+              // height: 150,
+              decoration: BoxDecoration(
+              // ignore: deprecated_member_use
+              color: Colors.grey.withOpacity(0),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: emailText,
+                    validator: (val) {
+                      if(val == null || val.isEmpty) {
+                        return 'Trường email đang thiếu';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email),
+                      // ignore: deprecated_member_use
+                      prefixIconColor: Colors.white.withOpacity(0.2),
+                      labelText: "Email",
+                      // ignore: deprecated_member_use
+                      labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)
+                      )
+                    ),
                   ),
-                  // ignore: deprecated_member_use
-                  suffixIconColor: Colors.white.withOpacity(0.2),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12)
-                  ) 
-                ),
+        
+                  const SizedBox(height: 20),
+        
+                  TextFormField(
+                    controller: passwordText,
+                    obscureText: hidePass ? true : false,
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return "Trường mật khẩu đang thiếu";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock),
+                      // ignore: deprecated_member_use
+                      prefixIconColor: Colors.white.withOpacity(0.2),
+                      labelText: "Mật khẩu",
+                      // ignore: deprecated_member_use
+                      labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState (() {
+                            hidePass = !hidePass;
+                          });
+                        }, 
+                        icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                      ),
+                      // ignore: deprecated_member_use
+                      suffixIconColor: Colors.white.withOpacity(0.2),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)
+                      ) 
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
 
   Widget _buildUIerror() {
     return Text(
@@ -148,9 +168,9 @@ class _LoginPageState extends State<LoginPage> {
             )
           ),
           onPressed: () {
-            login();
-            emailText.clear();
-            passwordText.clear();          
+             if (_formKey.currentState!.validate()) {
+              login();
+            }         
           }, 
 
           child: Text(

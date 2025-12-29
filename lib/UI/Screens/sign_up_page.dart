@@ -14,6 +14,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
   TextEditingController controllerUsername = TextEditingController();
@@ -54,12 +55,12 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       backgroundColor: Color(0xFF393D5E),
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Color(0xFF393D5E),
         ),
+        resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom
@@ -70,12 +71,8 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(height: 10),
               _profileImage(),
               const SizedBox(height: 10),
-              _buildEmail(),
+              _buildFormField(),
               const SizedBox(height: 10),
-              _buildUsername(),
-              const SizedBox(height: 10),
-              _buildPass(),
-              const SizedBox(height: 5),
               _buildErrorMes(),
               const SizedBox(height: 20),
               _buildbtn()
@@ -120,39 +117,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ],
         );
       }
-      
-    Widget _buildEmail() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: TextFormField(
-          controller: controllerEmail,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hint: Text(
-              "Email", 
-              style: TextStyle(color: Colors.white)),
-            ),
-          ),
-        );
-      }
-      
-
-      Widget _buildPass() {
-        return Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: TextFormField(
-            validator: (val) => val!.length < 6 ? "Mật khẩu quá ngắn" : null,
-            controller: controllerPassword,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hint: Text(
-                "Mật khẩu",
-                style: TextStyle(color: Colors.white))
-            )
-          ),
-        );
-      }
-
+         
       Widget _buildErrorMes() {
         return Text(
           errorMessage,
@@ -165,11 +130,9 @@ class _SignUpPageState extends State<SignUpPage> {
             minimumSize: Size(340, 50)
           ),
           onPressed: () async {
-            controllerEmail.clear();
-            controllerUsername.clear();
-            controllerPassword.clear();
-            register();
-            // Navigator.pop(context);
+            if (_formKey.currentState!.validate()) {
+              register();
+            }
           }, 
           child: Text(
             "Đăng ký",
@@ -205,18 +168,83 @@ class _SignUpPageState extends State<SignUpPage> {
             ],
           );
         }
-        Widget _buildUsername() {
-          return Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: TextFormField(
-            controller: controllerUsername,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hint: Text(
-                "Tên người dùng",
-                style: TextStyle(color: Colors.white))
-              )
-            ),
-          );
-        }
-      }
+
+      Widget _buildFormField() {
+        return Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return 'Trường email đang thiếu';}
+                     return null;
+                    },
+                  autofocus: true,
+                  controller: controllerEmail,
+                  decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.account_circle),
+                  // ignore: deprecated_member_use
+                  prefixIconColor: Colors.white.withOpacity(0.2),
+                  border: OutlineInputBorder(),
+                  labelText: "Email",
+                    // ignore: deprecated_member_use
+                    labelStyle: TextStyle(color: Colors.white.withOpacity(0.2))
+                  ),
+                ),
+              ),
+              
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Tên người dùng còn trống';
+                  }
+                  return null;
+                },
+                controller: controllerUsername,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.email_outlined),
+                  // ignore: deprecated_member_use
+                  prefixIconColor: Colors.white.withOpacity(0.2),
+                  border: OutlineInputBorder(),
+                  labelText: "Tên người dùng",
+                  labelStyle: TextStyle(
+                    // ignore: deprecated_member_use
+                    color: Colors.white.withOpacity(0.2))
+                  )
+                ),
+              ), 
+              
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Trường mật khẩu còn trống';
+                  }
+                  return null;
+                },
+                controller: controllerPassword,
+                decoration: InputDecoration(
+                prefixIcon: Icon(Icons.password),
+                // ignore: deprecated_member_use
+                prefixIconColor: Colors.white.withOpacity(0.2),
+                border: OutlineInputBorder(),
+                labelText: "Mật khẩu",
+                labelStyle: TextStyle(
+                  // ignore: deprecated_member_use
+                  color: Colors.white.withOpacity(0.2))
+                )
+              ),
+            )
+          ],
+        )
+      );
+    }
+  }
