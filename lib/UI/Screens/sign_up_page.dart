@@ -14,10 +14,14 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  bool hidePass = true;
   final _formKey = GlobalKey<FormState>();
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
+  TextEditingController controllerConfirmPass = TextEditingController();
   TextEditingController controllerUsername = TextEditingController();
+  
+
   String errorMessage = "";
   File? _image;
     
@@ -42,6 +46,8 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+ 
+
   void selectImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
@@ -62,25 +68,31 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom
-          ),
-          child: Column(
-            children: [
-              _buildUItitle(),
-              const SizedBox(height: 10),
-              _profileImage(),
-              const SizedBox(height: 10),
-              _buildFormField(),
-              const SizedBox(height: 10),
-              _buildErrorMes(),
-              const SizedBox(height: 20),
-              _buildbtn()
-            ],
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+            ),
+            child: Column(
+              children: [
+                _buildUItitle(),
+                const SizedBox(height: 10),
+                _profileImage(),
+                const SizedBox(height: 10),
+                _buildFormField(),
+                const SizedBox(height: 10),
+                _buildErrorMes(),
+                const SizedBox(height: 20),
+                _buildbtn(),
+              ],
+            ),
           ),
         ),
       );
     }
+  
     Widget _buildUItitle() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,60 +182,55 @@ class _SignUpPageState extends State<SignUpPage> {
         }
 
       Widget _buildFormField() {
-        return Form(
+        return Form(    
           key: _formKey,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: TextFormField(
-                  validator: (val) {
-                    if (val == null || val.isEmpty) {
-                      return 'Trường email đang thiếu';}
-                     return null;
-                    },
-                  autofocus: true,
-                  controller: controllerEmail,
-                  decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.account_circle),
-                  // ignore: deprecated_member_use
-                  prefixIconColor: Colors.white.withOpacity(0.2),
-                  border: OutlineInputBorder(),
-                  labelText: "Email",
-                    // ignore: deprecated_member_use
-                    labelStyle: TextStyle(color: Colors.white.withOpacity(0.2))
-                  ),
-                ),
-              ),
-              
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: TextFormField(
+             TextFormField(
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Tên người dùng còn trống';
+                    return 'Trường email còn trống';
+                  }
+                  return null;
+                },
+                controller: controllerEmail,
+                decoration: InputDecoration(
+                prefixIcon: Icon(Icons.email_outlined),
+                // ignore: deprecated_member_use
+                prefixIconColor: Colors.white.withOpacity(0.2),
+                border: OutlineInputBorder(),
+                labelText: "Email",
+                labelStyle: TextStyle(
+                  // ignore: deprecated_member_use
+                  color: Colors.white.withOpacity(0.2))
+                )
+              ),
+              
+            const SizedBox(height: 20),
+             TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Tên người dùng còn thiếu';
                   }
                   return null;
                 },
                 controller: controllerUsername,
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.email_outlined),
+                prefixIcon: Icon(Icons.person),
+                // ignore: deprecated_member_use
+                prefixIconColor: Colors.white.withOpacity(0.2),
+                border: OutlineInputBorder(),
+                labelText: "Tên người dùng",
+                labelStyle: TextStyle(
                   // ignore: deprecated_member_use
-                  prefixIconColor: Colors.white.withOpacity(0.2),
-                  border: OutlineInputBorder(),
-                  labelText: "Tên người dùng",
-                  labelStyle: TextStyle(
-                    // ignore: deprecated_member_use
-                    color: Colors.white.withOpacity(0.2))
-                  )
-                ),
-              ), 
+                  color: Colors.white.withOpacity(0.2))
+                )
+              ),
               
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: TextFormField(
+              const SizedBox(height: 20),
+              TextFormField(
+                obscureText: hidePass ? true : false,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Trường mật khẩu còn trống';
@@ -232,17 +239,63 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
                 controller: controllerPassword,
                 decoration: InputDecoration(
-                prefixIcon: Icon(Icons.password),
-                // ignore: deprecated_member_use
-                prefixIconColor: Colors.white.withOpacity(0.2),
-                border: OutlineInputBorder(),
-                labelText: "Mật khẩu",
-                labelStyle: TextStyle(
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        hidePass = !hidePass;
+                      });
+                    }, 
+                    icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                  ),
+                  // ignore: deprecated_member_use
+                  suffixIconColor: Colors.white.withOpacity(0.2),
+                  prefixIcon: Icon(Icons.lock),
+                  // ignore: deprecated_member_use
+                  prefixIconColor: Colors.white.withOpacity(0.2),
+                  border: OutlineInputBorder(),
+                  labelText: "Mật khẩu",
+                  labelStyle: TextStyle(
                   // ignore: deprecated_member_use
                   color: Colors.white.withOpacity(0.2))
                 )
               ),
-            )
+
+            const SizedBox(height: 20),
+            
+            TextFormField(
+              obscureText: hidePass ? true : false,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng xác nhận lại mật khẩu';
+                } if (value !=  controllerPassword.text) {
+                  return 'Mật khẩu không trùng khớp';
+                }
+                return null;  
+              },
+              controller: controllerConfirmPass,
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      hidePass = !hidePass;
+                    });
+                  }, 
+                  icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                ),
+                // ignore: deprecated_member_use
+                suffixIconColor: Colors.white.withOpacity(0.2),
+                prefixIcon: Icon(Icons.lock),
+                // ignore: deprecated_member_use
+                prefixIconColor: Colors.white.withOpacity(0.2),
+                border: OutlineInputBorder(),
+                labelText: "Xác nhận mật khẩu",
+                labelStyle: TextStyle(
+                // ignore: deprecated_member_use
+                 color: Colors.white.withOpacity(0.2))
+              )
+            ),
+
+            const SizedBox(height: 20),
           ],
         )
       );
