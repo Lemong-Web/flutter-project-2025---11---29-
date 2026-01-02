@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +16,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   bool hidePass = true;
+  bool hideWord = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
@@ -46,8 +48,6 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
- 
-
   void selectImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
@@ -58,6 +58,21 @@ class _SignUpPageState extends State<SignUpPage> {
       });
     }
   
+  void handleTimer() {
+    setState(() {
+      hideWord =! hideWord;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controllerEmail.dispose();
+    controllerPassword.dispose();
+    controllerConfirmPass.dispose();
+    controllerUsername.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,8 +99,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 _buildFormField(),
                 const SizedBox(height: 10),
                 _buildErrorMes(),
-                const SizedBox(height: 20),
                 _buildbtn(),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -188,6 +203,10 @@ class _SignUpPageState extends State<SignUpPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
              TextFormField(
+              onTap: () {
+                Timer(Duration(seconds: 1), handleTimer);
+              },
+              obscureText: hideWord ? false : true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Trường email còn trống';
@@ -209,6 +228,10 @@ class _SignUpPageState extends State<SignUpPage> {
               
             const SizedBox(height: 20),
              TextFormField(
+               onTap: () {
+                Timer(Duration(seconds: 1), handleTimer);
+              },
+              obscureText: hideWord ? false : true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Tên người dùng còn thiếu';
@@ -294,8 +317,7 @@ class _SignUpPageState extends State<SignUpPage> {
                  color: Colors.white.withOpacity(0.2))
               )
             ),
-
-            const SizedBox(height: 20),
+            const SizedBox(height: 5),
           ],
         )
       );
