@@ -94,6 +94,10 @@ class _LoginPageState extends State<LoginPage> {
                       }
                       return null;
                     },
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                    textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email),
                       // ignore: deprecated_member_use
@@ -118,6 +122,9 @@ class _LoginPageState extends State<LoginPage> {
                       }
                       return null;
                     },
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.lock),
                       // ignore: deprecated_member_use

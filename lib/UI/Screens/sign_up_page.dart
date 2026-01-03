@@ -22,10 +22,9 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController controllerPassword = TextEditingController();
   TextEditingController controllerConfirmPass = TextEditingController();
   TextEditingController controllerUsername = TextEditingController();
-  
-
   String errorMessage = "";
   File? _image;
+  FocusNode textSecondFocusNode = FocusNode();
     
   void register() async {
     try {
@@ -202,50 +201,63 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-             TextFormField(
-              onTap: () {
-                Timer(Duration(seconds: 1), handleTimer);
-              },
-              obscureText: hideWord ? false : true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Trường email còn trống';
-                  }
-                  return null;
-                },
-                controller: controllerEmail,
-                decoration: InputDecoration(
-                prefixIcon: Icon(Icons.email_outlined),
-                // ignore: deprecated_member_use
-                prefixIconColor: Colors.white.withOpacity(0.2),
-                border: OutlineInputBorder(),
-                labelText: "Email",
-                labelStyle: TextStyle(
+             Builder(
+              builder: (fieldContext) {
+                return TextFormField(
+                  onTap: () {
+                    Scrollable.ensureVisible(
+                      fieldContext,
+                      alignment: 0.5,
+                      duration: Duration(milliseconds: 300)
+                    );
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Trường email còn trống';
+                    }
+                    return null;
+                  },
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                  textInputAction: TextInputAction.next,
+                  controller: controllerEmail,
+                  decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.email_outlined),
                   // ignore: deprecated_member_use
-                  color: Colors.white.withOpacity(0.2))
-                )
-              ),
+                  prefixIconColor: Colors.white.withOpacity(0.2),
+                  border: OutlineInputBorder(),
+                  labelText: "Email",
+                  labelStyle: TextStyle(
+                    // ignore: deprecated_member_use
+                    color: Colors.white.withOpacity(0.2))
+                  )
+                );
+              }
+             ),
               
             const SizedBox(height: 20),
              TextFormField(
                onTap: () {
-                Timer(Duration(seconds: 1), handleTimer);
               },
-              obscureText: hideWord ? false : true,
+              style: TextStyle(
+                color: Colors.white
+              ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Tên người dùng còn thiếu';
                   }
                   return null;
                 },
+                textInputAction: TextInputAction.next,
                 controller: controllerUsername,
                 decoration: InputDecoration(
-                prefixIcon: Icon(Icons.person),
-                // ignore: deprecated_member_use
-                prefixIconColor: Colors.white.withOpacity(0.2),
-                border: OutlineInputBorder(),
-                labelText: "Tên người dùng",
-                labelStyle: TextStyle(
+                  prefixIcon: Icon(Icons.person),
+                  // ignore: deprecated_member_use
+                  prefixIconColor: Colors.white.withOpacity(0.2),
+                  border: OutlineInputBorder(),
+                  labelText: "Tên người dùng",
+                  labelStyle: TextStyle(
                   // ignore: deprecated_member_use
                   color: Colors.white.withOpacity(0.2))
                 )
@@ -260,6 +272,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   }
                   return null;
                 },
+                style: TextStyle(
+                  color: Colors.white
+                ),
+                onFieldSubmitted: (String val) {
+                  FocusScope.of(context).requestFocus(textSecondFocusNode);
+                },
+                textInputAction: TextInputAction.next,
                 controller: controllerPassword,
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
@@ -295,6 +314,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 }
                 return null;  
               },
+              style: TextStyle(
+                color: Colors.white
+              ),
+              focusNode: textSecondFocusNode,
+              textInputAction: TextInputAction.done,
               controller: controllerConfirmPass,
               decoration: InputDecoration(
                 suffixIcon: IconButton(
