@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:manga_app/UI/Screens/sign_up_page.dart';
 import 'package:manga_app/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -84,70 +85,79 @@ class _LoginPageState extends State<LoginPage> {
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: emailText,
-                    validator: (val) {
-                      if(val == null || val.isEmpty) {
-                        return 'Trường email đang thiếu';
-                      }
-                      return null;
-                    },
-                    style: TextStyle(
-                      color: Colors.white
-                    ),
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.email),
-                      // ignore: deprecated_member_use
-                      prefixIconColor: Colors.white.withOpacity(0.2),
-                      labelText: "Email",
-                      // ignore: deprecated_member_use
-                      labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)
-                      )
-                    ),
-                  ),
-        
-                  const SizedBox(height: 20),
-        
-                  TextFormField(
-                    controller: passwordText,
-                    obscureText: hidePass ? true : false,
-                    validator: (val) {
-                      if (val == null || val.isEmpty) {
-                        return "Trường mật khẩu đang thiếu";
-                      }
-                      return null;
-                    },
-                    style: TextStyle(
-                      color: Colors.white
-                    ),
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock),
-                      // ignore: deprecated_member_use
-                      prefixIconColor: Colors.white.withOpacity(0.2),
-                      labelText: "Mật khẩu",
-                      // ignore: deprecated_member_use
-                      labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState (() {
-                            hidePass = !hidePass;
-                          });
-                        }, 
-                        icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+              child: AutofillGroup(
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: emailText,
+                      validator: (val) {
+                        if(val == null || val.isEmpty) {
+                          return 'Trường email đang thiếu';
+                        }
+                        return null;
+                      },
+                      style: TextStyle(
+                        color: Colors.white
                       ),
-                      // ignore: deprecated_member_use
-                      suffixIconColor: Colors.white.withOpacity(0.2),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)
-                      ) 
+                      autofillHints: const [AutofillHints.email],
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email),
+                        // ignore: deprecated_member_use
+                        prefixIconColor: Colors.white.withOpacity(0.2),
+                        labelText: "Email",
+                        // ignore: deprecated_member_use
+                        labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)
+                        )
+                      ),
                     ),
-                  ),
-                ],
+                        
+                    const SizedBox(height: 20),
+                        
+                    TextFormField(
+                      controller: passwordText,
+                      obscureText: hidePass ? true : false,
+                      validator: (val) {
+                        if (val == null || val.isEmpty) {
+                          return "Trường mật khẩu đang thiếu";
+                        }
+                        return null;
+                      },
+                      style: TextStyle(
+                        color: Colors.white
+                      ),
+                      onFieldSubmitted: (value) {
+                        TextInput.finishAutofillContext();
+                      },
+                      autofillHints: const [AutofillHints.password],
+                      keyboardType: TextInputType.visiblePassword,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
+                        // ignore: deprecated_member_use
+                        prefixIconColor: Colors.white.withOpacity(0.2),
+                        labelText: "Mật khẩu",
+                        // ignore: deprecated_member_use
+                        labelStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState (() {
+                              hidePass = !hidePass;
+                            });
+                          }, 
+                          icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                        ),
+                        // ignore: deprecated_member_use
+                        suffixIconColor: Colors.white.withOpacity(0.2),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)
+                        ) 
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

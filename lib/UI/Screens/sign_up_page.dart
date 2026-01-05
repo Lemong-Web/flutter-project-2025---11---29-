@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,6 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String errorMessage = "";
   File? _image;
   FocusNode textSecondFocusNode = FocusNode();
+  final FocusNode userNameFocus = FocusNode();
     
   void register() async {
     try {
@@ -87,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
               left: 20,
               right: 20,
               top: 20,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 30,
             ),
             child: Column(
               children: [
@@ -204,13 +204,6 @@ class _SignUpPageState extends State<SignUpPage> {
              Builder(
               builder: (fieldContext) {
                 return TextFormField(
-                  onTap: () {
-                    Scrollable.ensureVisible(
-                      fieldContext,
-                      alignment: 0.5,
-                      duration: Duration(milliseconds: 300)
-                    );
-                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Trường email còn trống';
@@ -219,7 +212,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                   style: TextStyle(
                     color: Colors.white
-                  ),
+                  ),  
+                  keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   controller: controllerEmail,
                   decoration: InputDecoration(
@@ -234,12 +228,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   )
                 );
               }
-             ),
+            ),
               
             const SizedBox(height: 20),
              TextFormField(
-               onTap: () {
-              },
               style: TextStyle(
                 color: Colors.white
               ),
@@ -301,7 +293,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   color: Colors.white.withOpacity(0.2))
                 )
               ),
-
+          
             const SizedBox(height: 20),
             
             TextFormField(
@@ -343,7 +335,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             const SizedBox(height: 5),
           ],
-        )
+                  )
       );
     }
   }
