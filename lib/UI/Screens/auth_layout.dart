@@ -39,9 +39,9 @@ class _AuthLayoutState extends State<AuthLayout> {
             return isNewUser
              ? IntroSplashScreen()
              : Navigation();
-          }
-        );
-      }
-    );
+            }
+          );
+        }
+      );
+    }
   }
-}

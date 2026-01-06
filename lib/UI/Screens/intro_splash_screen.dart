@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:manga_app/UI/Screens/navigation.dart';
 import 'package:manga_app/UI/Widget/stagebuildwidget.dart';
 import 'package:manga_app/auth_service.dart';
 import 'package:manga_app/model/splash_model.dart';
@@ -14,7 +14,64 @@ class IntroSplashScreen extends StatefulWidget {
 
 class _IntroSplashScreenState extends State<IntroSplashScreen> {
   int currentIndex = 0;
+  Timer? timer;
+  int start = 14;
+  bool _hasFinished = false;
   final PageController _pageController = PageController();
+
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    timer = Timer.periodic(
+      oneSec, 
+      (Timer timer) {
+        if (start == 0 && !_hasFinished) {
+          setState(() async {
+            _hasFinished = true;
+            timer.cancel();
+            await setFalse();
+          });
+        } else {
+          setState(() {
+            start--;
+          });
+        }
+      }
+    );
+  }
+
+  Future<void> handleTimeout() async {
+    for (int i = 0; i < screenList.length; i++) {
+      await Future.delayed(const Duration(seconds: 3));
+      if (i < screenList.length - 1) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 500), 
+          curve: Curves.easeIn
+        );
+      }
+    }
+  }
+
+  Future<void> setFalse() async {
+    final uid = authService.value.currentUser!.uid;
+      final db = FirebaseFirestore.instance;
+      await db.collection('users').doc(uid).set(
+        {'isNewUser': false},
+        SetOptions(merge: true)
+      );
+    }
+
+  @override
+  void initState() {
+    //startTimer();
+    Timer(const Duration(seconds: 3), handleTimeout); 
+    super.initState();   
+  }
+
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
+  }
   
   List<SplashModel> screenList = [
     SplashModel(
@@ -57,7 +114,7 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
               ),
               Positioned(
                 bottom: 100,
-                left: 190,
+                left: 185,
                 child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
@@ -67,107 +124,25 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
                     ),
                   ),
 
-                  currentIndex < screenList.length - 1
-                     ? Positioned(
-                        bottom: 20,
-                        width: MediaQuery.of(context).size.width,
-                        child: Row (
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ElevatedButton(
-                              onPressed: currentIndex > 0 
-                             ? () {
-                             _pageController.previousPage(
-                              duration: const Duration(milliseconds: 300), 
-                              curve: Curves.ease
-                            );
-                          }
-                             : null,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.amber,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(20.0),
-                                    bottomRight: Radius.circular(20.0)
-                                  )
-                                )
-                              ), 
-                              child: Text(
-                                "Trước",
-                                style: TextStyle(
-                                  fontSize: 18, color: Colors.green)),
-                              ),
-
-                        ElevatedButton(
-                          onPressed: currentIndex < screenList.length - 1
-                          ? () {
-                           _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300), 
-                            curve: Curves.ease);  
-                          }
-                          : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20.0),
-                                bottomLeft: Radius.circular(20.0)
-                              )
-                            )
-                          ),
-                          child: Text(
-                            "Tiếp theo",
-                            style: TextStyle(
-                              fontFamily: 'Unbuntu', 
-                              fontSize: 18,
-                              color: Colors.green),
-                          )
-                        )
-                      ],
-                    ),
-                  )
-                
-              : Positioned(
-                  bottom: 40,
-                  left: MediaQuery.of(context).size.width * 0.36,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFE0E0E0),
-                      shape:  RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
-                      )
-                    ),
-                    onPressed: () async {
-                      final uid = authService.value.currentUser!.uid;
-                      final db = FirebaseFirestore.instance;
-                      await db.collection('users').doc(uid).set(
-                        {'isNewUser': false},
-                        SetOptions(merge: true)
-                      );
-                      // Navigator.pushReplacement(
-                      //   context, 
-                      //   MaterialPageRoute(builder: (_) => Navigation()));
+                  Positioned(
+                    bottom: 30,
+                    left: 285,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final uid = authService.value.currentUser!.uid;
+                        final db = FirebaseFirestore.instance;
+                        await db.collection('users').doc(uid).set(
+                          {'isNewUser': false},
+                          SetOptions(merge: true)
+                        );
                       }, 
-                    child: ShaderMask(
-                      shaderCallback: (bounds) {
-                        return LinearGradient(
-                          colors: [
-                            Color(0xff2BFF88),
-                            Color(0xff2BD2FF),
-                            Color(0xffFA8BFF)
-                          ]
-                        ).createShader(bounds);
-                      },
-                      child: Text(
-                        "Bắt đầu",
-                        style: TextStyle(fontSize: 18, color: Colors.green)),
+                      child: Text("Bỏ qua ($start)")
                     )
-                  )
-                )
-              ],
-            ),
-          );
-        }
+                  )     
+                ],
+              ),
+            );
+          }
           
     AnimatedContainer buildDot({int? index}) {
       return AnimatedContainer(
