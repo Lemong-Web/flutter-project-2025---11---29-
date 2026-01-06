@@ -15,6 +15,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   bool hidePass = true;
+  bool hidePass2 = true;
   bool hideWord = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController controllerEmail = TextEditingController();
@@ -26,7 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
   FocusNode textSecondFocusNode = FocusNode();
   final FocusNode userNameFocus = FocusNode();
     
-  void register() async {
+  Future<void> register() async {
     try {
      await authService.value.createAccount(
       email: controllerEmail.text, 
@@ -34,9 +35,10 @@ class _SignUpPageState extends State<SignUpPage> {
     ); 
     final uid = authService.value.currentUser!.uid;
     final db = FirebaseFirestore.instance;
-    db.collection("users").doc(uid).set({
+    await db.collection("users").doc(uid).set({
       "username": controllerUsername.text,
       "email": controllerEmail.text,
+      'isNewUser': true,
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userID', authService.value.currentUser?.uid ?? '');
@@ -157,14 +159,17 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
-              register();
+              await register();
+
+              if(!mounted) return;
+              Navigator.pop(context);
             }
           }, 
           child: Text(
             "Đăng ký",
             style: TextStyle(
-               fontSize: 20,
-               color: Colors.black
+              fontSize: 20,
+              color: Colors.black
             ))
           );
         }
@@ -297,7 +302,7 @@ class _SignUpPageState extends State<SignUpPage> {
             const SizedBox(height: 20),
             
             TextFormField(
-              obscureText: hidePass ? true : false,
+              obscureText: hidePass2 ? true : false,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Vui lòng xác nhận lại mật khẩu';
@@ -316,10 +321,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 suffixIcon: IconButton(
                   onPressed: () {
                     setState(() {
-                      hidePass = !hidePass;
+                      hidePass2 = !hidePass2;
                     });
                   }, 
-                  icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                  icon: hidePass2 ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
                 ),
                 // ignore: deprecated_member_use
                 suffixIconColor: Colors.white.withOpacity(0.2),
@@ -335,7 +340,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             const SizedBox(height: 5),
           ],
-                  )
+        )
       );
     }
   }

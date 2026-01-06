@@ -215,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
           },
           child: Text(
-            "Đăng kí ngay.",
+            "Đăng kí ngay",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.white,
