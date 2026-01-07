@@ -19,16 +19,16 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
   bool _hasFinished = false;
   final PageController _pageController = PageController();
 
-  void startTimer() {
+  void startTimer() async {
     const oneSec = Duration(seconds: 1);
     timer = Timer.periodic(
       oneSec, 
       (Timer timer) {
         if (start == 0 && !_hasFinished) {
-          setState(() async {
+          setState(()  {
             _hasFinished = true;
             timer.cancel();
-            await setFalse();
+            setFalse();
           });
         } else {
           setState(() {
@@ -41,12 +41,14 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
 
   Future<void> handleTimeout() async {
     for (int i = 0; i < screenList.length; i++) {
-      await Future.delayed(const Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 2));
       if (i < screenList.length - 1) {
-        _pageController.nextPage(
+        if(_pageController.hasClients) {
+          _pageController.nextPage(
           duration: const Duration(milliseconds: 500), 
           curve: Curves.easeIn
-        );
+          );
+        }
       }
     }
   }
@@ -62,7 +64,7 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
 
   @override
   void initState() {
-    //startTimer();
+    startTimer();
     Timer(const Duration(seconds: 3), handleTimeout); 
     super.initState();   
   }
@@ -70,6 +72,7 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
   @override
   void dispose() {
     timer!.cancel();
+    _pageController.dispose();
     super.dispose();
   }
   
