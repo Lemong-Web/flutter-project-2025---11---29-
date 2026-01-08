@@ -17,7 +17,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool hidePass = true;
   bool hidePass2 = true;
   bool hideWord = false;
-  bool isScroll = false;
+  bool isScroll = true;
   final _formKey = GlobalKey<FormState>();
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
@@ -91,7 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
               left: 20,
               right: 20,
               top: 20,
-              bottom: isScroll ? 30 : MediaQuery.of(context).viewInsets.bottom + 200
+              bottom: isScroll ? 30 : MediaQuery.of(context).viewInsets.bottom + 260
             ),
             child: Column(
               children: [
@@ -212,17 +212,22 @@ class _SignUpPageState extends State<SignUpPage> {
               builder: (fieldContext) {
                 return TextFormField(
                   onTap: () async {
-                    Scrollable.ensureVisible(
+                    setState(() {
+                      isScroll = false;
+                    });
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Scrollable.ensureVisible(
                       fieldContext,
                       duration: Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                       alignment: 0.0
                     );
+                    });
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Trường email còn trống';
-                    } if (!value.contains('@') || !value.contains("gmail") || !value.contains('.com'))  {
+                    } if (!value.contains('@gmail.com'))  {
                       return 'Định dạnh Email không hợp lệ';
                     }
                     return null;

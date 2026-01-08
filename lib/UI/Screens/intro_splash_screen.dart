@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:manga_app/UI/Screens/intro_ask.dart';
 import 'package:manga_app/UI/Widget/stagebuildwidget.dart';
-import 'package:manga_app/auth_service.dart';
 import 'package:manga_app/model/splash_model.dart';
 
 class IntroSplashScreen extends StatefulWidget {
@@ -28,7 +27,7 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
           setState(()  {
             _hasFinished = true;
             timer.cancel();
-            setFalse();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => IntroAsk()));
           });
         } else {
           setState(() {
@@ -52,15 +51,6 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
       }
     }
   }
-
-  Future<void> setFalse() async {
-    final uid = authService.value.currentUser!.uid;
-      final db = FirebaseFirestore.instance;
-      await db.collection('users').doc(uid).set(
-        {'isNewUser': false},
-        SetOptions(merge: true)
-      );
-    }
 
   @override
   void initState() {
@@ -132,12 +122,8 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
                     left: 285,
                     child: ElevatedButton(
                       onPressed: () async {
-                        final uid = authService.value.currentUser!.uid;
-                        final db = FirebaseFirestore.instance;
-                        await db.collection('users').doc(uid).set(
-                          {'isNewUser': false},
-                          SetOptions(merge: true)
-                        );
+                        timer!.cancel();
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => IntroAsk()));
                       }, 
                       child: Text("Bỏ qua ($start)")
                     )
@@ -160,7 +146,3 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
       );
     }
   }
-  
- 
-
-

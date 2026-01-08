@@ -56,7 +56,6 @@ class _ProfileState extends State<Profile> {
 
   void logout() async {
     await authService.value.signOut();
-    if (!mounted) return;
   }
 
   @override

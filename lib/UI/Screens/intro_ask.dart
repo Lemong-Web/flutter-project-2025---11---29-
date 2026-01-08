@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:manga_app/UI/Screens/auth_layout.dart';
+import 'package:manga_app/auth_service.dart';
 import 'package:manga_app/model/category.dart';
 
 class IntroAsk extends StatefulWidget {
@@ -153,7 +156,17 @@ class _IntroAskState extends State<IntroAsk> {
     return Padding(
       padding: const EdgeInsets.only(left: 280),
       child: ElevatedButton(
-        onPressed: () {}, 
+        onPressed: () async {
+          final uid = authService.value.currentUser!.uid;
+            final db = FirebaseFirestore.instance;
+            await db.collection('users').doc(uid).set(
+              {'isNewUser': false},
+              SetOptions(merge: true),
+          );
+          if (!mounted) return;
+
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AuthLayout()));
+        }, 
         child: Text("Hoàn thành")
       ),
     );
