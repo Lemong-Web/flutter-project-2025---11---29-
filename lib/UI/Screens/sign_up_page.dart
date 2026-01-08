@@ -17,6 +17,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool hidePass = true;
   bool hidePass2 = true;
   bool hideWord = false;
+  bool isScroll = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
@@ -84,12 +85,13 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Padding(
             padding: EdgeInsets.only(
               left: 20,
               right: 20,
               top: 20,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 30,
+              bottom: isScroll ? 30 : MediaQuery.of(context).viewInsets.bottom + 200
             ),
             child: Column(
               children: [
@@ -101,7 +103,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 10),
                 _buildErrorMes(),
                 _buildbtn(),
-                const SizedBox(height: 20),
+                const SizedBox(height: 20), 
               ],
             ),
           ),
@@ -209,16 +211,26 @@ class _SignUpPageState extends State<SignUpPage> {
              Builder(
               builder: (fieldContext) {
                 return TextFormField(
+                  onTap: () async {
+                    Scrollable.ensureVisible(
+                      fieldContext,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      alignment: 0.0
+                    );
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Trường email còn trống';
+                    } if (!value.contains('@') || !value.contains("gmail") || !value.contains('.com'))  {
+                      return 'Định dạnh Email không hợp lệ';
                     }
                     return null;
-                  },
+                  },  
                   style: TextStyle(
                     color: Colors.white
                   ),  
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.emailAddress, 
                   textInputAction: TextInputAction.next,
                   controller: controllerEmail,
                   decoration: InputDecoration(
@@ -236,107 +248,119 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
               
             const SizedBox(height: 20),
-             TextFormField(
-              style: TextStyle(
-                color: Colors.white
-              ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Tên người dùng còn thiếu';
-                  }
-                  return null;
-                },
-                textInputAction: TextInputAction.next,
-                controller: controllerUsername,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.person),
-                  // ignore: deprecated_member_use
-                  prefixIconColor: Colors.white.withOpacity(0.2),
-                  border: OutlineInputBorder(),
-                  labelText: "Tên người dùng",
-                  labelStyle: TextStyle(
-                  // ignore: deprecated_member_use
-                  color: Colors.white.withOpacity(0.2))
-                )
-              ),
-              
-              const SizedBox(height: 20),
               TextFormField(
-                obscureText: hidePass ? true : false,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Trường mật khẩu còn trống';
-                  }
-                  return null;
-                },
                 style: TextStyle(
                   color: Colors.white
                 ),
-                onFieldSubmitted: (String val) {
-                  FocusScope.of(context).requestFocus(textSecondFocusNode);
-                },
-                textInputAction: TextInputAction.next,
-                controller: controllerPassword,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        hidePass = !hidePass;
-                      });
-                    }, 
-                    icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Tên người dùng còn thiếu';
+                    }
+                    return null;
+                  },
+                  textInputAction: TextInputAction.next,
+                  controller: controllerUsername,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.person),
+                    // ignore: deprecated_member_use
+                    prefixIconColor: Colors.white.withOpacity(0.2),
+                    border: OutlineInputBorder(),
+                    labelText: "Tên người dùng",
+                    labelStyle: TextStyle(
+                    // ignore: deprecated_member_use
+                    color: Colors.white.withOpacity(0.2))
+                  )
+                ),
+              
+              const SizedBox(height: 20),
+                TextFormField(
+
+                  obscureText: hidePass ? true : false,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Trường mật khẩu còn trống';
+                    } if (value.length < 6) {
+                      return 'Mật khẩu phải có ít nhất 6 ký tự';
+                    }
+                    return null;
+                  },
+                  style: TextStyle(
+                    color: Colors.white
                   ),
-                  // ignore: deprecated_member_use
-                  suffixIconColor: Colors.white.withOpacity(0.2),
-                  prefixIcon: Icon(Icons.lock),
-                  // ignore: deprecated_member_use
-                  prefixIconColor: Colors.white.withOpacity(0.2),
-                  border: OutlineInputBorder(),
-                  labelText: "Mật khẩu",
-                  labelStyle: TextStyle(
-                  // ignore: deprecated_member_use
-                  color: Colors.white.withOpacity(0.2))
-                )
-              ),
+                  onFieldSubmitted: (String val) {
+                    FocusScope.of(context).requestFocus(textSecondFocusNode);
+                  },
+                  textInputAction: TextInputAction.next,
+                  controller: controllerPassword,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          hidePass = !hidePass;
+                        });
+                      }, 
+                      icon: hidePass ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                    ),
+                    // ignore: deprecated_member_use
+                    suffixIconColor: Colors.white.withOpacity(0.2),
+                    prefixIcon: Icon(Icons.lock),
+                    // ignore: deprecated_member_use
+                    prefixIconColor: Colors.white.withOpacity(0.2),
+                    border: OutlineInputBorder(),
+                    labelText: "Mật khẩu",
+                    labelStyle: TextStyle(
+                    // ignore: deprecated_member_use
+                    color: Colors.white.withOpacity(0.2))
+                  )
+                ),
           
             const SizedBox(height: 20),
             
-            TextFormField(
-              obscureText: hidePass2 ? true : false,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Vui lòng xác nhận lại mật khẩu';
-                } if (value !=  controllerPassword.text) {
-                  return 'Mật khẩu không trùng khớp';
-                }
-                return null;  
-              },
-              style: TextStyle(
-                color: Colors.white
-              ),
-              focusNode: textSecondFocusNode,
-              textInputAction: TextInputAction.done,
-              controller: controllerConfirmPass,
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                  onPressed: () {
+            Builder(
+              builder: (fieldContext) {
+                return TextFormField(
+                  onFieldSubmitted: (value) {
                     setState(() {
-                      hidePass2 = !hidePass2;
+                      isScroll = true;
                     });
-                  }, 
-                  icon: hidePass2 ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
-                ),
-                // ignore: deprecated_member_use
-                suffixIconColor: Colors.white.withOpacity(0.2),
-                prefixIcon: Icon(Icons.lock),
-                // ignore: deprecated_member_use
-                prefixIconColor: Colors.white.withOpacity(0.2),
-                border: OutlineInputBorder(),
-                labelText: "Xác nhận mật khẩu",
-                labelStyle: TextStyle(
-                // ignore: deprecated_member_use
-                 color: Colors.white.withOpacity(0.2))
-              )
+                  },
+                  obscureText: hidePass2 ? true : false,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng xác nhận lại mật khẩu';
+                    } if (value !=  controllerPassword.text) {
+                      return 'Mật khẩu không trùng khớp';
+                    }
+                    return null;    
+                  },
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                  focusNode: textSecondFocusNode,
+                  textInputAction: TextInputAction.done,
+                  controller: controllerConfirmPass,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          hidePass2 = !hidePass2;
+                        });
+                      }, 
+                      icon: hidePass2 ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                    ),
+                    // ignore: deprecated_member_use
+                    suffixIconColor: Colors.white.withOpacity(0.2),
+                    prefixIcon: Icon(Icons.lock),
+                    // ignore: deprecated_member_use
+                    prefixIconColor: Colors.white.withOpacity(0.2),
+                    border: OutlineInputBorder(),
+                    labelText: "Xác nhận mật khẩu",
+                    labelStyle: TextStyle(
+                    // ignore: deprecated_member_use
+                    color: Colors.white.withOpacity(0.2))
+                  )
+                );
+              }
             ),
             const SizedBox(height: 5),
           ],

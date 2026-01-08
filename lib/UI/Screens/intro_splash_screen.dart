@@ -85,7 +85,7 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
       "assets/img/ClickFavo.avif", 
       "Tạo danh sách Manhua yêu thích của riêng bạn trong App, bằng cách nhấn nút yêu thích",
       "Yêu thích"),
-    SplashModel(
+    SplashModel(  
       'assets/img/share_stories.avif', 
       'Chia sẻ những câu chuyện yêu thích của bạn để mọi người cùng tận hưởng', 
       'Chia sẻ'),
