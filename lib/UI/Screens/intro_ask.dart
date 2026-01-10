@@ -22,6 +22,7 @@ class _IntroAskState extends State<IntroAsk> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: const Text(
@@ -162,7 +163,7 @@ class _IntroAskState extends State<IntroAsk> {
             await db.collection('users').doc(uid).set(
               {'isNewUser': false},
               SetOptions(merge: true),
-          );
+            );
           if (!mounted) return;
 
           Navigator.push(context, MaterialPageRoute(builder: (context) => AuthLayout()));

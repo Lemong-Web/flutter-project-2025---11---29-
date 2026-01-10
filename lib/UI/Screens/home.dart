@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:filter_list/filter_list.dart';
@@ -21,12 +22,17 @@ class _HomeState extends State<Home> {
   String tag = '';
   String searchKey = "";
   String userID = "";
+  String urlData = "https://b0ynhanghe0.github.io/comic/home.json";
   int _current = 0;
   bool tagSearch = false;
+  bool isInternetConnected = true;
+  final Dio dio = Dio();
   final CarouselSliderController _controller = CarouselSliderController();
   late Future <List<MangaModel>> data;
   List<Filter> selectedTagList = [];
   List<String> selectedTag = [];
+  StreamSubscription? _streamSubscription;
+
   
   // void uidGet() async {
   //   final prefs = await SharedPrefesrences.getInstance();
@@ -85,7 +91,6 @@ class _HomeState extends State<Home> {
 
   Future<List<MangaModel>> fetchDataTag() async {
     if (selectedTag.isEmpty) return [];
-    final Dio dio = Dio();
     final response = await dio.get("https://b0ynhanghe0.github.io/comic/categorized.json");
     final data = response.data;
     if (data is! Map<String, dynamic>) return [];
@@ -101,12 +106,12 @@ class _HomeState extends State<Home> {
 }
 
 
-  Future <List<MangaModel>> fetchData({String? searchText}) async {
-    final dio = Dio();
-    String url = "https://b0ynhanghe0.github.io/comic/home.json";
-    final response = await dio.get(url);
+  Future <List<MangaModel>> fetchData({String? searchText}) async { 
+    List<MangaModel> list = [];
+    try {
+    final response = await dio.get(urlData);
     final List<dynamic> body = response.data;
-    List<MangaModel> list = body.map((e) {
+    list = body.map((e) {
       return MangaModel.fromJson(e);
     }).toList();
 
@@ -120,14 +125,32 @@ class _HomeState extends State<Home> {
         return manga.storyname.toLowerCase().contains(searchText.toLowerCase());
       }).toList();
     }
-    return list;
-  }
+  } on DioException {
+      isInternetConnected = false;
+    }
+  return list;
+}
+
+ Future<void> retry() async {
+  setState(() {
+    isInternetConnected = true;
+    data = tagSearch
+      ? fetchDataTag()
+      : fetchData();
+  });
+}
 
   @override
   void initState() {
     super.initState();
     data = tagSearch ? fetchDataTag() : fetchData(searchText: searchKey);
     // uidGet();
+  }
+
+  @override
+  void dispose() {
+    _streamSubscription?.cancel();
+    super.dispose();
   }
    
   @override
@@ -151,8 +174,9 @@ class _HomeState extends State<Home> {
 
   Widget _buildUI(List<MangaModel> manga) {
     return Scaffold(
-      backgroundColor: const Color(0xFF393D5E),
-      body: SingleChildScrollView(
+    backgroundColor: const Color(0xFF393D5E),
+      body: isInternetConnected 
+        ? SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 40),
@@ -211,9 +235,9 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-
+    
           Trending(),
-
+    
           Padding(
             padding: const EdgeInsets.only(right: 200, bottom: 10),
             child: const Text(
@@ -224,7 +248,7 @@ class _HomeState extends State<Home> {
                 fontFamily: 'Inter')
               ),
           ),
-
+    
           Container(
             width: 326,
             decoration: BoxDecoration(
@@ -250,7 +274,7 @@ class _HomeState extends State<Home> {
                       "assets/img/wallpaper2.jpg", fit: BoxFit.cover),
                   ),
                 ),
-
+    
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: SizedBox.expand(
@@ -274,7 +298,7 @@ class _HomeState extends State<Home> {
               )
             ),
           ),
-
+    
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -290,7 +314,7 @@ class _HomeState extends State<Home> {
               )
             ],
           ),
-
+    
            Padding(
              padding: const EdgeInsets.only(right: 260, top: 8),
              child: Text(
@@ -342,7 +366,69 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-          ),
-        );
+          ) 
+          
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.wifi_off,
+                    color: Colors.white,
+                    size: 40),
+                  ShaderMask(
+                    shaderCallback: (bounds) {
+                      return LinearGradient(
+                        colors: [
+                          Color(0xff2BFF88),
+                          Color(0xff2BD2FF),
+                          Color(0xffFA8BFF)
+                        ]
+                      ).createShader(bounds);
+                    },
+                    child: Text(
+                      "Lỗi kết nối với mạng, vui lòng thử lại sau.",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Inter',
+                        fontSize: 15
+                      )),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)
+                      ),
+                    ),
+                    onPressed: () async {
+                      try {
+                        await dio.get(urlData);
+                        retry();
+                      } on DioException catch (e) {
+                        if (e.response == null) {
+                          if (!mounted) return;
+                          setState(() {
+                            isInternetConnected = false;
+                          });
+                        }
+                      }
+                    }, 
+                    child: ShaderMask(
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                          colors: [
+                            Color(0xff2BFF88),
+                            Color(0xff2BD2FF),
+                            Color(0xffFA8BFF)
+                          ]
+                        ).createShader(bounds);
+                      },
+                    child: Text("Thử lại"))
+                  ),
+                ],
+              ),
+            )
+          );
+        }
       }
-    }

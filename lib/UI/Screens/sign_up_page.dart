@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,7 +30,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final FocusNode userNameFocus = FocusNode();
     
   Future<void> register() async {
-    try {
      await authService.value.createAccount(
       email: controllerEmail.text, 
       password: controllerPassword.text,
@@ -43,12 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userID', authService.value.currentUser?.uid ?? '');
-    } on FirebaseAuthException {
-      setState(() {
-        errorMessage = "Có lỗi trong khi tạo tài khoản, vui lòng thử lại";
-      });
-    }
-  }
+    } 
 
   void selectImage() async {
     final ImagePicker picker = ImagePicker();
@@ -96,12 +91,13 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               children: [
                 _buildUItitle(),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 _profileImage(),
                 const SizedBox(height: 10),
                 _buildFormField(),
                 const SizedBox(height: 10),
                 _buildErrorMes(),
+                const SizedBox(height: 5),
                 _buildbtn(),
                 const SizedBox(height: 20), 
               ],
@@ -154,17 +150,30 @@ class _SignUpPageState extends State<SignUpPage> {
           style: TextStyle(color: Colors.redAccent), 
         );
       }
+      
       Widget _buildbtn() {
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
             minimumSize: Size(340, 50)
           ),
           onPressed: () async {
-            if (_formKey.currentState!.validate()) {
+           if (!_formKey.currentState!.validate()) return;
+            try {
               await register();
 
-              if(!mounted) return;
+              if (!mounted) return;
               Navigator.pop(context);
+
+            } on FirebaseAuthException catch (e) {
+              if (e.code == 'email-already-in-use') {
+                setState(() {
+                  errorMessage = 'Email đã được sử dụng cho 1 tài khoản khác';
+                });
+              } else {
+                setState(() {
+                  errorMessage = 'Đăng ký không thành công. Vui lòng thử lại.';
+                });
+              }
             }
           }, 
           child: Text(
@@ -227,7 +236,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Trường email còn trống';
-                    } if (!value.contains('@gmail.com'))  {
+                    } if (!EmailValidator.validate(value))  {
                       return 'Định dạnh Email không hợp lệ';
                     }
                     return null;

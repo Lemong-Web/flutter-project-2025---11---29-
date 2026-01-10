@@ -12,13 +12,17 @@ class Bookshelf extends StatefulWidget {
 }
 
 class _BookshelfState extends State<Bookshelf> {
+  Dio dio = Dio();
+  String url = "https://b0ynhanghe0.github.io/comic/home.json";
   List<MangaModel> manhuaList = [];
   List<MangaModel> favoriteManhua = [];
+  late Future<void> shelf;
+  bool isInternetConnected = true;
 
    @override
   void initState() {
     super.initState();
-    loadShelf();
+    shelf = loadShelf();
   }
 
   Future<void> loadShelf() async {
@@ -41,13 +45,28 @@ class _BookshelfState extends State<Bookshelf> {
   }
   
   Future <List<MangaModel>> fetchData() async {
-    Dio dio = Dio();
-    final response = await dio.get("https://b0ynhanghe0.github.io/comic/home.json"); 
-    List<dynamic> body = response.data;
-    return body.map((e) {
-      return MangaModel.fromJson(e);
-    }).toList();
+    try {
+      final response = await dio.get(url); 
+      List<dynamic> body = response.data;
+      return body.map((e) {
+        return MangaModel.fromJson(e);
+      }).toList();
+    } on DioException {
+      if (mounted) {
+        setState(() {
+          isInternetConnected = false;
+        });
+      }
+    }
+    return [];
   }
+  Future<void> retry() async {
+    setState(() {
+      isInternetConnected = true;
+      shelf = loadShelf();
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +84,9 @@ class _BookshelfState extends State<Bookshelf> {
         )),
       ),
       backgroundColor: Color(0xFF393D5E),
-      body: FutureBuilder(
-        future: loadShelf(), 
+      body: isInternetConnected
+        ? FutureBuilder(
+        future: shelf, 
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -132,6 +152,67 @@ class _BookshelfState extends State<Bookshelf> {
           }
         }
       )
-    );
-  }
-}
+      : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.wifi_off,
+                    color: Colors.white,
+                    size: 40),
+                  ShaderMask(
+                    shaderCallback: (bounds) {
+                      return LinearGradient(
+                        colors: [
+                          Color(0xff2BFF88),
+                          Color(0xff2BD2FF),
+                          Color(0xffFA8BFF)
+                        ]
+                      ).createShader(bounds);
+                    },
+                    child: Text(
+                      "Lỗi kết nối với mạng, vui lòng thử lại sau.",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Inter',
+                        fontSize: 15
+                      )),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)
+                      ),
+                    ),
+                    onPressed: () async {
+                      try {
+                        await dio.get(url);
+                        retry();
+                      } on DioException catch (e) {
+                        if (e.response == null) {
+                          if (!mounted) return;
+                          setState(() {
+                            isInternetConnected = false;
+                          });
+                        }
+                      }
+                    }, 
+                    child: ShaderMask(
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                          colors: [
+                            Color(0xff2BFF88),
+                            Color(0xff2BD2FF),
+                            Color(0xffFA8BFF)
+                          ]
+                        ).createShader(bounds);
+                      },
+                    child: Text("Thử lại"))
+                  ),
+                ],
+              ),
+            )
+          );
+        }
+      }

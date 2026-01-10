@@ -30,7 +30,7 @@ class MCPersonality {
     MCPersonality(personality: "Thông minh"),
     MCPersonality(personality: "Hèn nhát"),
     MCPersonality(personality: "Tích cực"),
- ];
+  ];
 
 
 class Gender {
@@ -43,5 +43,5 @@ class Gender {
    Gender(gender: "Male"),
    Gender(gender: "Female"),
    Gender(gender: "Other"),
- ];
+  ];
 

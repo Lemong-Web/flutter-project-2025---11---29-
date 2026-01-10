@@ -31,10 +31,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
   late Future<ChapterDetail> _futureStory;
   late Future<NumberModel> listchapter;
   Timer? _hideTimer;
+  late int currentChapter;
   
   void _showAppBarTemp() {
     setState(() {
-      doubleTap = true;
+      doubleTap = !doubleTap;
     });
 
     _hideTimer?.cancel();
@@ -96,6 +97,20 @@ class _ReadingScreenState extends State<ReadingScreen> {
       appBar: doubleTap 
         ? AppBar(
           automaticallyImplyLeading: true,
+          title: FutureBuilder(
+            future: listchapter, 
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const Text("Có lỗi");
+              } if (snapshot.hasData) {
+                final chapters = snapshot.data!.chapters;
+                final currentIndex = chapters.indexOf(widget.chapterID);
+                return Text("Chương $currentIndex");
+              } else {
+                return const Text("Có lỗi");
+              }
+            }
+          ),
           leading: IconButton(
             onPressed: () => Navigator.pop(context), 
             icon: Icon(Icons.arrow_back)),
@@ -188,7 +203,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
               left: 0, 
               right: 0,
               child: LinearPercentIndicator(
-                lineHeight: 10,
+                lineHeight: 10, 
                 barRadius: Radius.circular(6),
                 percent: processValue,
                 backgroundColor: Colors.black,

@@ -1,6 +1,9 @@
 // import 'package:dio/dio.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_popup/flutter_popup.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:manga_app/UI/Screens/search_result.dart';
 import 'package:manga_app/UI/Screens/search_result_tag.dart';
 import 'package:manga_app/UI/Screens/tagpage.dart';
@@ -19,10 +22,12 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   String searchKey = "";
+  bool isInternetConnected = false;
   bool isSelected = false;
   List<String> searchText = [];
   List<Filter>? selectedFilterList = [];
   List<String>? selectedTag = [];
+  StreamSubscription? _streamSubscription;
 
   void searchHistory(List<String>? value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -60,13 +65,34 @@ class _SearchState extends State<Search> {
   void initState() {
     super.initState();
     loadSearchHistory();
+    _streamSubscription =
+      InternetConnection().onStatusChange.listen((e) {
+        switch (e) {
+          case InternetStatus.connected:
+            setState(() {
+              isInternetConnected = true;
+            });
+            break;
+          case InternetStatus.disconnected:
+            setState(() {
+              isInternetConnected = false;
+            });
+            break;
+          }
+      });
+    }
+
+  @override
+  void dispose() {
+    _streamSubscription?.cancel();
+    super.dispose();
   }
  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF393D5E),
-      body: _buildUI(),
+      body: isInternetConnected ? _buildUI() : retry()
     );
   }
   
@@ -178,17 +204,17 @@ class _SearchState extends State<Search> {
               ).toList()
             ),
         
-              Padding(
-                padding: const EdgeInsets.only(right: 120, bottom: 10),
-                child: const Text(
-                  "Most Searched Manhua",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: "Ubuntu",
-                    fontWeight: FontWeight.bold)
-                  ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, bottom: 10),
+              child: const Text(
+                "Manhua đang nổi",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontFamily: "Ubuntu",
+                  fontWeight: FontWeight.bold)
                 ),
+              ),
         
               Trending(),
               Row(
@@ -338,4 +364,57 @@ class _SearchState extends State<Search> {
           ),
         );
       }
-    }
+      Widget retry() {
+        return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.wifi_off,
+                    color: Colors.white,
+                    size: 40),
+                  ShaderMask(
+                    shaderCallback: (bounds) {
+                      return LinearGradient(
+                        colors: [
+                          Color(0xff2BFF88),
+                          Color(0xff2BD2FF),
+                          Color(0xffFA8BFF)
+                        ]
+                      ).createShader(bounds);
+                    },
+                    child: Text(
+                      "Lỗi kết nối với mạng, vui lòng thử lại sau.",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Inter',
+                        fontSize: 15
+                      )),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)
+                      ),
+                    ),
+                    onPressed: () async {
+                     
+                    }, 
+                    child: ShaderMask(
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                          colors: [
+                            Color(0xff2BFF88),
+                            Color(0xff2BD2FF),
+                            Color(0xffFA8BFF)
+                          ]
+                        ).createShader(bounds);
+                      },
+                    child: Text("Thử lại"))
+                  ),
+                ],
+              ),
+            );
+          }
+        }

@@ -12,6 +12,8 @@ class AccountInformation extends StatefulWidget {
 class _AccountInformationState extends State<AccountInformation> {
   String email = '';
   String username = '';
+  late Future<String?> emailFunct;
+  late Future<String?> usernameFunct;
   
   Future<String?> fetchEmail() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -25,7 +27,7 @@ class _AccountInformationState extends State<AccountInformation> {
     return null;
   }
 
-  void loadEmail() async {
+  Future<void> loadEmail() async {
     String? accountEmail = await fetchEmail();
     setState(() {
       email = accountEmail ?? '';
@@ -44,7 +46,7 @@ class _AccountInformationState extends State<AccountInformation> {
     return null;
   }
 
-  void loadUsername() async {
+  Future<void> loadUsername() async {
     String? name = await fetchUsername();
     setState(() {
       username = name ?? '';
