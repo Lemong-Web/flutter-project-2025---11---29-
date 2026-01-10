@@ -1,6 +1,5 @@
 // import 'package:dio/dio.dart';
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -22,7 +21,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   String searchKey = "";
-  bool isInternetConnected = false;
+  bool isInternetConnected = true;
   bool isSelected = false;
   List<String> searchText = [];
   List<Filter>? selectedFilterList = [];
@@ -156,15 +155,17 @@ class _SearchState extends State<Search> {
                       searchHistory(searchText);
                   });   
                     if (selectedTag!.isNotEmpty) {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => SearchResultTag(searchQuery: searchKey, selectedTags: selectedTag)));
+                      } if (searchKey.isEmpty) {
+                        null;
+                      } else {
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => SearchResultTag(searchQuery: searchKey, selectedTags: selectedTag)));
-                        } else {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => SearchResult(searchKey: searchKey)));
-                        } 
-                      },
-                    ),
+                        builder: (context) => SearchResult(searchKey: searchKey)));
+                      }
+                    },
                   ),
+                ),
         
               Wrap(
                 spacing: 8,
@@ -205,7 +206,7 @@ class _SearchState extends State<Search> {
             ),
         
             Padding(
-              padding: const EdgeInsets.only(left: 10, bottom: 10),
+              padding: const EdgeInsets.only(right: 200, bottom: 10),
               child: const Text(
                 "Manhua đang nổi",
                 style: TextStyle(
@@ -313,11 +314,17 @@ class _SearchState extends State<Search> {
                           padding: const EdgeInsets.only(left: 33),
                           child: ListTile(
                             minTileHeight: 10,
-                            title: Text(
-                              searchText[index],
-                              style: TextStyle(
-                                color: Color(0xffB8B8B8),
-                                fontFamily: "Ubuntu"
+                            title: GestureDetector(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) 
+                                => SearchResult(searchKey: searchKey)));
+                              },
+                              child: Text(
+                                searchText[index],
+                                style: TextStyle(
+                                  color: Color(0xffB8B8B8),
+                                  fontFamily: "Ubuntu"
+                                ),
                               ),
                             ),
                           trailing: Padding(

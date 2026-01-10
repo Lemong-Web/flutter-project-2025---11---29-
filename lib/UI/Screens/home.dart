@@ -239,9 +239,9 @@ class _HomeState extends State<Home> {
           Trending(),
     
           Padding(
-            padding: const EdgeInsets.only(right: 200, bottom: 10),
+            padding: const EdgeInsets.only(right: 220, bottom: 10),
             child: const Text(
-              "Have Concluded!",
+              "Đã kết thúc!",
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,

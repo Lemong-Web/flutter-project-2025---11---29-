@@ -84,7 +84,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   Widget _buildUItitle() {
     return Center(
       child: const Text(
-        "Change Password",
+        "Đổi mật khẩu",
         style: TextStyle(
           color: Colors.white,
           fontFamily: "Inter",
@@ -102,8 +102,13 @@ class _ChangePasswordState extends State<ChangePassword> {
             const SizedBox(height: 10),
             TextFormField(
               controller: currentPasswords,
+              textInputAction: TextInputAction.next,
               decoration: InputDecoration(
-                hint: Text("Current Password"),
+                label: Text(
+                  "Mật khẩu hiện tại",
+                  style: TextStyle(
+                    color: Colors.white
+                )),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8)
                 ),
@@ -113,8 +118,13 @@ class _ChangePasswordState extends State<ChangePassword> {
             const SizedBox(height: 10),
             TextFormField(
               controller: newPasswords,
+              textInputAction: TextInputAction.done,
               decoration: InputDecoration(
-                hint: Text("New Password"),
+                label: Text(
+                  "Mật khẩu mới",
+                  style: TextStyle(
+                    color: Colors.white                  
+                 )),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8)
                 ),
@@ -135,10 +145,11 @@ class _ChangePasswordState extends State<ChangePassword> {
           updatePassword();
         }, 
         child: const Text(
-          "Change Password",
+          "Đổi mật khẩu",
             style: TextStyle(
               fontSize: 15,
-              color: Colors.white
+              color: Colors.white,
+              fontWeight: FontWeight.bold
           ))
         );
       }
