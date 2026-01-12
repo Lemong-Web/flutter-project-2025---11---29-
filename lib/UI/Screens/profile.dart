@@ -23,6 +23,11 @@ class _ProfileState extends State<Profile> {
     loadUsername();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future<String?> fetchUsername() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     final snapshot = await FirebaseFirestore.instance
@@ -138,7 +143,26 @@ Widget _buildUITitleandAvatar() {
                 ),
               ListTile(
                 onTap: () {
-                  logout();
+                  showDialog<String>(
+                    context: context, 
+                    builder: (BuildContext content) => AlertDialog(
+                      title: const Text("Cảnh báo"),
+                      content: const Text("Bạn có muốn đăng xuất không"),
+                      actions: <Widget> [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context), 
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            logout();
+                            Navigator.pop(context);
+                          }, 
+                          child: const Text('Ok')
+                        )
+                      ],
+                    )
+                  );
                 },
                 leading: Icon(Icons.logout),
                 title: Text('Đăng xuất'),

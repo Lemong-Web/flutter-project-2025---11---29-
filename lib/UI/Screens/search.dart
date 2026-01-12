@@ -222,17 +222,17 @@ class _SearchState extends State<Search> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 30),
-                    child: Tagbutton(text: "#Action", onPressed: () {
+                    child: Tagbutton(text: "#Hành động", onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => Tagpage(tag: "action")));
                     }),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: Tagbutton(text: "#Comedy", onPressed: () {}),
+                    child: Tagbutton(text: "#Hài hước", onPressed: () {}),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: Tagbutton(text: "#Fantasy", onPressed: () {}),
+                    child: Tagbutton(text: "#Viễn tưởng", onPressed: () {}),
                   )
                 ],
               ),
@@ -243,7 +243,7 @@ class _SearchState extends State<Search> {
                   Padding(
                     padding: const EdgeInsets.only(left: 30),
                     child: Tagbutton(
-                      text: "#Supernatural", 
+                      text: "#Siêu nhiên", 
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => Tagpage(tag: "Supernatural")));
                       }
@@ -257,7 +257,7 @@ class _SearchState extends State<Search> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: Tagbutton(text: "#Romance", onPressed: () {
+                    child: Tagbutton(text: "#Ngôn tình", onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => Tagpage(tag: "romance")));
                     }),
                   )
@@ -269,7 +269,7 @@ class _SearchState extends State<Search> {
                   Padding(
                     padding: const EdgeInsets.only(left: 50, right: 180),
                     child: const Text(
-                      "Recent",
+                      "Gần đây",
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: "Ubuntu",
@@ -293,7 +293,7 @@ class _SearchState extends State<Search> {
                           });
                         },
                         child: Text(
-                          "Clear",
+                          "Dọn",
                           style: TextStyle(
                             decoration: TextDecoration.underline,
                             decorationColor: Colors.white,

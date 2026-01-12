@@ -19,19 +19,23 @@ class _LoginPageState extends State<LoginPage> {
   bool hidePass = true;
   String errorMessage = '';
   final _formKey = GlobalKey<FormState>();
+  bool _progressController = false;
 
   void login() async {
     try {
+      setState(() {
+        _progressController = true;
+      });
      await authService.value.signIn(
       email: emailText.text, 
       password: passwordText.text);
     final prefs = await SharedPreferences.getInstance();
     final user = FirebaseAuth.instance.currentUser;
     prefs.setString('userID', user!.uid);
-    // ignore: unused_catch_clause
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       setState(() {
-        errorMessage = "Mật khẩu hoặc email bạn đã điền sai, vui lòng điền lại";
+        errorMessage = "Mật khẩu hoặc email bạn đã điền sai";
+        _progressController = false;
       });
     }
   }
@@ -190,15 +194,19 @@ class _LoginPageState extends State<LoginPage> {
             }         
           }, 
 
-          child: Text(
-            "Đăng Nhập",
-            style: TextStyle(
-              color: Colors.blue
-            ))
-          ),
-        ],
-      );
-    }
+          child: _progressController 
+            ? CircularProgressIndicator(
+              color: Colors.black,
+            )
+            : Text(
+              "Đăng Nhập",
+              style: TextStyle(
+                color: Colors.blue
+              ))
+            ),
+          ],
+        );
+      }
 
   Widget _buildUInew() {
     return Row(

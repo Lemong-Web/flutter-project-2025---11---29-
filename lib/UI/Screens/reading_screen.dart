@@ -26,13 +26,17 @@ class ReadingScreen extends StatefulWidget {
 class _ReadingScreenState extends State<ReadingScreen> {
   bool toolBarVisible = true;
   bool doubleTap = false;
+  bool nextChap = false;
   final ScrollController _scrollController = ScrollController();
   double processValue = 0.0;
   late Future<ChapterDetail> _futureStory;
   late Future<NumberModel> listchapter;
   Timer? _hideTimer;
   late int currentChapter;
-  
+  List<String> chapters = [];
+  // ignore: non_constant_identifier_names
+  bool chapter_loaded = false;
+    
   void _showAppBarTemp() {
     setState(() {
       doubleTap = !doubleTap;
@@ -49,30 +53,51 @@ class _ReadingScreenState extends State<ReadingScreen> {
     });
   }
 
+  String? getNextChapter() {
+    if (!chapter_loaded) return null;
+
+    final index = chapters.indexOf(widget.chapterID);
+    if(index == -1 || index + 1 >= chapters.length) return null;
+
+    return chapters[index + 1];
+  }
+
   @override
   void dispose() {
     _hideTimer?.cancel();
+    _scrollController.dispose();
     super.dispose();
   }
-
 
   @override
   void initState() {
     super.initState();
     _futureStory = fetchStory();
     listchapter = fetchListChapters();
-    _scrollController.addListener(() {
+
+    fetchListChapters().then((data) {
+      if (!mounted) return;
+      setState(() {
+        chapters = data.chapters;
+        chapter_loaded = true;
+      });
+    });
+
+     _scrollController.addListener(() {
         processValue = _scrollController.offset / _scrollController.position.maxScrollExtent;
         if (processValue < 0.0) {
           processValue = 0.0;
         } 
+        if (processValue < 1.0) {
+          nextChap = false;
+        }
         if (processValue > 1.0) {
           processValue = 1.0;
+          nextChap = true;
         }
         setState(() {});
     });
   }
-
 
   Dio dio = Dio();
   Future <ChapterDetail> fetchStory() async {
@@ -172,6 +197,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
           return Center(child: Text("Error: ${snapshot.error}"));
         } else if (snapshot.hasData) {
           final listDetail = snapshot.data!;
+         final nextChapterId = getNextChapter();
           return Stack(
             children:<Widget>[ 
               GestureDetector(
@@ -197,7 +223,45 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   ],
                 ),
               ),
-
+            
+            if (nextChap && nextChapterId != null)
+            Positioned(
+              bottom: 35,
+              left: 0,
+              right: 0,
+              child: nextChap 
+                ? Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => ReadingScreen(
+                          storyID: widget.storyID, 
+                          chapterID: nextChapterId,
+                          initalPage: 0
+                        )));
+                      }, 
+                    child: ShaderMask(
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                          colors: [
+                            Color(0xff2BFF88),
+                            Color(0xff2BD2FF),
+                            Color(0xffFA8BFF)
+                          ]
+                        ).createShader(bounds);
+                      },
+                      child: Text(
+                        "Chương tiếp theo",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold)),
+                    )),
+                  )
+                : const SizedBox.shrink()
+              ),
+            
             Positioned(
               bottom: 20,
               left: 0, 

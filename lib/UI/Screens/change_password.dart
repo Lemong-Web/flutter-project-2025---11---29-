@@ -12,12 +12,21 @@ class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController emailText = TextEditingController();
   TextEditingController currentPasswords = TextEditingController();
   TextEditingController newPasswords = TextEditingController();
+  bool _progressController = false;
+
 
   void updatePassword() async {
     try {
+      setState(() {
+        _progressController = true;
+      });
       await authService.value.resetPasswordFromCurrentPassword(
         currentPassword: currentPasswords.text, 
-        newPassword: newPasswords.text);
+        newPassword: newPasswords.text
+        );
+        setState(() {
+          _progressController = false;
+        });
         if(mounted) {
           showDialog(
             context: context, 
@@ -38,6 +47,9 @@ class _ChangePasswordState extends State<ChangePassword> {
         }
     } catch (e) {
       if(mounted) {
+        setState(() {
+          _progressController = false;
+        });
         showDialog(
           context: context, 
           builder: (context) {
@@ -103,6 +115,9 @@ class _ChangePasswordState extends State<ChangePassword> {
             TextFormField(
               controller: currentPasswords,
               textInputAction: TextInputAction.next,
+              style: TextStyle(
+                color: Colors.white
+              ),
               decoration: InputDecoration(
                 label: Text(
                   "Mật khẩu hiện tại",
@@ -110,15 +125,18 @@ class _ChangePasswordState extends State<ChangePassword> {
                     color: Colors.white
                 )),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8)
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             TextFormField(
               controller: newPasswords,
               textInputAction: TextInputAction.done,
+              style: TextStyle(
+                color: Colors.white
+              ),
               decoration: InputDecoration(
                 label: Text(
                   "Mật khẩu mới",
@@ -141,16 +159,20 @@ class _ChangePasswordState extends State<ChangePassword> {
           minimumSize: Size(350, 50),
           backgroundColor: Colors.amber
         ),
-        onPressed: () {
+        onPressed: () { 
           updatePassword();
         }, 
-        child: const Text(
+        child: _progressController 
+          ? CircularProgressIndicator(
+            color: Colors.black
+          )
+          : Text(
           "Đổi mật khẩu",
             style: TextStyle(
               fontSize: 15,
               color: Colors.white,
               fontWeight: FontWeight.bold
           ))
-        );
+        ); 
       }
     }

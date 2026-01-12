@@ -148,7 +148,23 @@ class _DetailScreenState extends State<DetailScreen> {
                   IconButton(
                     onPressed: () {
                       saveStatus(widget.storyid);
-                    },
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          action: SnackBarAction(
+                            label: "Ok",
+                            onPressed: () {}
+                          ),
+                          content: Text(lastStatus 
+                            ? "Truyện đã được xóa khỏi danh sách"
+                            : "Truyện đã được lưu vào danh sách"),
+                           duration: const Duration(milliseconds: 1500),
+                           width: 350.0,
+                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                           behavior: SnackBarBehavior.floating,
+                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                          )
+                        );
+                      },
                     icon: Icon(
                       Icons.favorite,
                       color: lastStatus ? Colors.red : Colors.white,
