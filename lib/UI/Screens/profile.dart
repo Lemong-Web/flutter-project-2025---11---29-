@@ -170,15 +170,35 @@ Widget _buildUITitleandAvatar() {
               ),
               ListTile(
                 onTap: () {
-                  deleteData();
-                  final snackBar = SnackBar(
-                  content: const Text("Dữ liệu đã được xóa"),
-                  action: SnackBarAction(
-                    label: "Ok", 
-                    onPressed: () {}
-                  ),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  showDialog<String>(
+                    context: context, 
+                    builder: (BuildContext content) => AlertDialog(
+                      title: const Text("Cảnh Báo"),
+                      content: const Text("Điều này sẽ xóa danh sach yêu thích, lịch sử tìm kiếm, đánh dấu chương\nbạn có muốn xóa không? "),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          }, 
+                          child: const Text("Hủy")),
+                        TextButton(
+                          onPressed: () {
+                            deleteData();
+                            final snackBar = SnackBar(
+                            content: const Text("Dữ liệu đã được xóa"),
+                            action: SnackBarAction(
+                              label: "Ok", 
+                              onPressed: () {}
+                            ),
+                          );
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          }, 
+                          child: Text("Ok"))
+                      ],
+                    )
+                  );
+                  
               },
                 leading: Icon(Icons.folder_off),
                 title: Text('Xóa dữ liệu'),

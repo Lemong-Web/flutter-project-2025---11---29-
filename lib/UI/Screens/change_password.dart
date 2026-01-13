@@ -160,7 +160,9 @@ class _ChangePasswordState extends State<ChangePassword> {
           backgroundColor: Colors.amber
         ),
         onPressed: () { 
-          updatePassword();
+          _progressController 
+            ? null
+            : updatePassword();
         }, 
         child: _progressController 
           ? CircularProgressIndicator(
