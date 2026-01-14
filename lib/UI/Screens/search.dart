@@ -23,10 +23,16 @@ class _SearchState extends State<Search> {
   String searchKey = "";
   bool isInternetConnected = true;
   bool isSelected = false;
+  bool history = false;
   List<String> searchText = [];
   List<Filter>? selectedFilterList = [];
   List<String>? selectedTag = [];
   StreamSubscription? _streamSubscription;
+
+  void saveHistory() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setBool('history', true);
+  }
 
   void searchHistory(List<String>? value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -64,6 +70,7 @@ class _SearchState extends State<Search> {
   void initState() {
     super.initState();
     loadSearchHistory();
+
     _streamSubscription =
       InternetConnection().onStatusChange.listen((e) {
         switch (e) {
@@ -149,19 +156,26 @@ class _SearchState extends State<Search> {
                   ),
                 ),
                   onSubmitted: (value) {
-                    setState(() {
-                      searchKey = value;
-                      searchText.add(value);
-                      searchHistory(searchText);
-                  });   
-                    if (selectedTag!.isNotEmpty) {
-                      Navigator.push(context, MaterialPageRoute(
+                      setState(() {
+                        searchKey = value;
+                        searchText.add(value);
+                        searchHistory(searchText);
+                     });   
+                    
+                      if (selectedTag!.isNotEmpty) {
+                      setState(() {
+                        history = true;
+                      });
+                        Navigator.push(context, MaterialPageRoute(
                         builder: (context) => SearchResultTag(searchQuery: searchKey, selectedTags: selectedTag)));
-                      } if (searchKey.isEmpty) {
-                        null;
-                      } else {
+                      } else if (selectedTag!.isEmpty && searchKey.isNotEmpty) {
+                        setState(() {
+                          history = true;
+                        });
                         Navigator.push(context, MaterialPageRoute(
                         builder: (context) => SearchResult(searchKey: searchKey)));
+                      } else {
+                        null;
                       }
                     },
                   ),
@@ -228,11 +242,15 @@ class _SearchState extends State<Search> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: Tagbutton(text: "#Hài hước", onPressed: () {}),
+                    child: Tagbutton(text: "#Hài hước", onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Tagpage(tag: "comedy")));
+                    }),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: Tagbutton(text: "#Viễn tưởng", onPressed: () {}),
+                    child: Tagbutton(text: "#Viễn tưởng", onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => Tagpage(tag: "Viễn tưởng")));
+                    }),
                   )
                 ],
               ),
@@ -263,49 +281,55 @@ class _SearchState extends State<Search> {
                   )
                 ],
               ),
+
               const SizedBox(height: 10),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 50, right: 180),
-                    child: const Text(
-                      "Gần đây",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Ubuntu",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16
-                      )),
-                  ),
-                    ShaderMask(
-                      shaderCallback: (bound) {
-                        return LinearGradient(
-                          colors: [
-                            Color(0xffFA8BFF),
-                            Color(0xff2BD2FF)
-                          ]
-                        ).createShader(bound);
-                      },
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            removeEntireHistory();
-                          });
+              history
+               ? Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 50, right: 180),
+                      child: const Text(
+                        "Gần đây",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Ubuntu",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                        )),
+                    ),
+                      ShaderMask(
+                        shaderCallback: (bound) {
+                          return LinearGradient(
+                            colors: [
+                              Color(0xffFA8BFF),
+                              Color(0xff2BD2FF)
+                            ]
+                          ).createShader(bound);
                         },
-                        child: Text(
-                          "Dọn",
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.white,
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                          )),
-                      ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              removeEntireHistory();
+                              history = false;
+                            });
+                          },
+                          child: Text(
+                            "Dọn",
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.white,
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold
+                            )),
+                        ),
+                        )
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+                  
+                history
+                  ? SizedBox(
                     height: 170,
                     child: ListView.builder(
                       itemCount: searchText.length,
@@ -350,6 +374,9 @@ class _SearchState extends State<Search> {
                                   onPressed: () {
                                     setState(() {
                                       removeSearchistory(index);
+                                      if (searchText.isEmpty) {
+                                        history = false;
+                                      }
                                     });
                                   }, 
                                   icon: Icon(
@@ -366,7 +393,8 @@ class _SearchState extends State<Search> {
                     }
                   ),
                 )
-              ],
+              : const SizedBox.shrink(),
+              ]
             ),
           ),
         );
