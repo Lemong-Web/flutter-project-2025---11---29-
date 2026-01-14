@@ -198,15 +198,14 @@ Widget _buildUITitleandAvatar() {
                       ],
                     )
                   );
-                  
-              },
-                leading: Icon(Icons.folder_off),
-                title: Text('Xóa dữ liệu'),
-                trailing: Icon(Icons.arrow_forward),
-              ),
-            ]
-          ).toList()
-        )
-      );
+                },
+                  leading: Icon(Icons.folder_off),
+                  title: Text('Xóa dữ liệu'),
+                  trailing: Icon(Icons.arrow_forward),
+                ),
+              ]
+            ).toList()
+          )
+        );
+      }
     }
-  }

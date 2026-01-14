@@ -49,6 +49,7 @@ class _HomeState extends State<Home> {
       selectedListData: selectedTagList,
       choiceChipLabel: (item) => item!.name,
       validateSelectedItem: (list, item) => list!.contains(item),
+      hideSearchField: true,
       onItemSearch: (item, query) => true,
       choiceChipBuilder: (context, item, isSelected) {
         return Container(
@@ -239,9 +240,9 @@ class _HomeState extends State<Home> {
           Trending(),
     
           Padding(
-            padding: const EdgeInsets.only(right: 220, bottom: 10),
+            padding: const EdgeInsets.only(right: 170, bottom: 10),
             child: const Text(
-              "Đã kết thúc!",
+              "Truyện đã kết thúc!",
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,

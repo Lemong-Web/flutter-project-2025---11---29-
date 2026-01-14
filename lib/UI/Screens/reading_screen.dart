@@ -27,6 +27,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
   bool toolBarVisible = true;
   bool doubleTap = false;
   bool nextChap = false;
+  bool loadNextChap = false;
+  bool runOutofChap = false;
+  bool chapterOne = false;
   final ScrollController _scrollController = ScrollController();
   double processValue = 0.0;
   late Future<ChapterDetail> _futureStory;
@@ -36,6 +39,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
   List<String> chapters = [];
   // ignore: non_constant_identifier_names
   bool chapter_loaded = false;
+  bool isLoadingChapter = false;
+  
+  
     
   void _showAppBarTemp() {
     setState(() {
@@ -58,9 +64,49 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
     final index = chapters.indexOf(widget.chapterID);
     if(index == -1 || index + 1 >= chapters.length) return null;
+    if(index == chapters.length) {
+      setState(() {
+        runOutofChap = true;
+      });
+    }
 
     return chapters[index + 1];
   }
+
+  void goNext() {
+    final goNextChap = getNextChapter();
+    if (goNextChap == null) return;
+
+    Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => ReadingScreen(
+        storyID: widget.storyID, 
+        chapterID: goNextChap, 
+        initalPage: 0)));
+    }
+  
+  String? previousChapter() {
+    if(!chapter_loaded) return null;
+
+    final index = chapters.indexOf(widget.chapterID);
+    if(index == - 1 || index - 1 <= -1) return null;
+    if (index == 0) {
+      setState(() => chapterOne = true);
+    }
+
+    return chapters[index - 1];
+  }
+
+  void goBack() {
+    final goBackChap = previousChapter();
+    if (goBackChap == null) return;
+
+    Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => ReadingScreen(
+        storyID: widget.storyID, 
+        chapterID: goBackChap, 
+        initalPage: 0)));
+    }
+  
 
   @override
   void dispose() {
@@ -88,14 +134,24 @@ class _ReadingScreenState extends State<ReadingScreen> {
         if (processValue < 0.0) {
           processValue = 0.0;
         } 
-        if (processValue < 1.0) {
-          nextChap = false;
-        }
         if (processValue > 1.0) {
           processValue = 1.0;
-          nextChap = true;
         }
         setState(() {});
+
+        if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent + 100 && !loadNextChap) {
+          setState(() => loadNextChap = true);
+
+          Future.delayed(const Duration(seconds: 2), () {
+            if(!mounted) return;
+            goNext();
+
+            if (!mounted) return;
+            setState(() {
+              loadNextChap = false;
+            });
+          });
+        } 
     });
   }
 
@@ -117,6 +173,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold (
+      extendBody: true,
       extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFF393D5E),
       appBar: doubleTap 
@@ -145,6 +202,37 @@ class _ReadingScreenState extends State<ReadingScreen> {
           elevation: 0,
         )
         : null,
+
+      bottomNavigationBar: doubleTap
+        ? BottomAppBar(
+          height: 40,
+          // ignore: deprecated_member_use
+          color: Color(0xFF393D5E).withOpacity(0.3),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              chapterOne 
+                ? const SizedBox.shrink()
+                : GestureDetector(
+                    onTap: () {
+                      goBack();
+                    },
+                    child: Icon(Icons.arrow_back),
+                  ),
+
+              runOutofChap
+                ? const SizedBox.shrink()
+                : GestureDetector(
+                    onTap: () {
+                      goNext();
+                    },
+                    child: Icon(Icons.arrow_forward),
+                  )
+              ],
+            ),
+          )
+        : const SizedBox.shrink(),
+
 
       body: _buildUI(),
       endDrawer: Drawer(
@@ -197,19 +285,20 @@ class _ReadingScreenState extends State<ReadingScreen> {
           return Center(child: Text("Error: ${snapshot.error}"));
         } else if (snapshot.hasData) {
           final listDetail = snapshot.data!;
-         final nextChapterId = getNextChapter();
           return Stack(
             children:<Widget>[ 
               GestureDetector(
                 onDoubleTap: _showAppBarTemp,
                 child: CustomScrollView(
                   controller: _scrollController,
-                  physics: const BouncingScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics (
+                    parent: BouncingScrollPhysics() 
+                  ),
                   slivers: [
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
-                          return Padding(
+                          return Padding (
                             padding: const EdgeInsets.symmetric(vertical: 1),
                             child: Image.network(
                               listDetail.lstImage[index],
@@ -218,50 +307,23 @@ class _ReadingScreenState extends State<ReadingScreen> {
                           );
                         },
                         childCount: listDetail.lstImage.length
+                      ),
+                    ),
+                  SliverToBoxAdapter(
+                    child: loadNextChap 
+                      ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 30),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       )
+                      : const SizedBox.shrink()
                     )
                   ],
                 ),
               ),
-            
-            if (nextChap && nextChapterId != null)
-            Positioned(
-              bottom: 35,
-              left: 0,
-              right: 0,
-              child: nextChap 
-                ? Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => ReadingScreen(
-                          storyID: widget.storyID, 
-                          chapterID: nextChapterId,
-                          initalPage: 0
-                        )));
-                      }, 
-                    child: ShaderMask(
-                      shaderCallback: (bounds) {
-                        return LinearGradient(
-                          colors: [
-                            Color(0xff2BFF88),
-                            Color(0xff2BD2FF),
-                            Color(0xffFA8BFF)
-                          ]
-                        ).createShader(bounds);
-                      },
-                      child: Text(
-                        "Chương tiếp theo",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold)),
-                    )),
-                  )
-                : const SizedBox.shrink()
-              ),
-            
+
+          
             Positioned(
               bottom: 20,
               left: 0, 

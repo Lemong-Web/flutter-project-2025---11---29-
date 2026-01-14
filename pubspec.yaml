@@ -11,7 +11,7 @@ dependencies:
   cloud_firestore: ^6.1.0
   dio: ^5.9.0
   email_validator: ^3.0.0
-  filter_list: ^1.0.3
+  filter_list: ^1.0.2
   firebase_auth: ^6.1.2
   firebase_core: ^4.2.1
   firebase_storage: ^13.0.4
