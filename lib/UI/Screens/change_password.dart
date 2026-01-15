@@ -13,8 +13,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController currentPasswords = TextEditingController();
   TextEditingController newPasswords = TextEditingController();
   bool _progressController = false;
-
-
+  
   void updatePassword() async {
     try {
       setState(() {

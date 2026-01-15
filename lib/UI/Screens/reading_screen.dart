@@ -74,7 +74,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
       context, MaterialPageRoute(builder: (context) => ReadingScreen(
         storyID: widget.storyID, 
         chapterID: goNextChap, 
-        initalPage: 0)));
+        initalPage: 0 )));
       }
   
   String? previousChapter() {
@@ -210,7 +210,26 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   ),
                 GestureDetector(
                   onTap: () {
-                    goNext();
+                    if (chapters.indexOf(widget.chapterID) + 1 >= chapters.length) {
+                      showDialog(
+                        context: context, 
+                        builder: (context) => AlertDialog(
+                         title: const Text("Thông báo"),
+                         content: const Text("Truyện đã hết chương"),
+                         actions: <Widget> [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              }, 
+                              child: const Text("Ok")
+                            )
+                         ],
+                        )
+                      );
+                    } else {
+                      goNext();
+                    }
+                    
                   },
                   child: Icon(
                     Icons.arrow_circle_right,

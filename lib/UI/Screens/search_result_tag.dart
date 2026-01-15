@@ -168,5 +168,5 @@ class _SearchResultTagState extends State<SearchResultTag> {
         }
       ),
     );
-    }
   }
+}
