@@ -23,17 +23,12 @@ class _SearchState extends State<Search> {
   String searchKey = "";
   bool isInternetConnected = true;
   bool isSelected = false;
-  bool history = false;
+  bool get history => searchText.isNotEmpty;
   List<String> searchText = [];
   List<Filter>? selectedFilterList = [];
   List<String>? selectedTag = [];
   StreamSubscription? _streamSubscription;
-
-  void saveHistory() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setBool('history', true);
-  }
-
+  
   void searchHistory(List<String>? value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final uid =prefs.getString('userID') ?? "";
@@ -65,6 +60,7 @@ class _SearchState extends State<Search> {
       prefs.setStringList("searchValue_$uid", searchText);
     });
   }
+
 
   @override
   void initState() {
@@ -156,27 +152,24 @@ class _SearchState extends State<Search> {
                   ),
                 ),
                   onSubmitted: (value) {
+                      final keyword = value.trim();
+                      if (keyword.isEmpty) return;
+
                       setState(() {
-                        searchKey = value;
-                        searchText.add(value);
+                        searchKey = keyword;
+                        if (!searchText.contains(searchKey)) {
+                          searchText.insert(0, searchKey);
+                        }
                         searchHistory(searchText);
                      });   
                     
                       if (selectedTag!.isNotEmpty) {
-                      setState(() {
-                        history = true;
-                      });
                         Navigator.push(context, MaterialPageRoute(
                         builder: (context) => SearchResultTag(searchQuery: searchKey, selectedTags: selectedTag)));
                       } else if (selectedTag!.isEmpty && searchKey.isNotEmpty) {
-                        setState(() {
-                          history = true;
-                        });
                         Navigator.push(context, MaterialPageRoute(
                         builder: (context) => SearchResult(searchKey: searchKey)));
-                      } else {
-                        null;
-                      }
+                      } 
                     },
                   ),
                 ),
@@ -310,7 +303,6 @@ class _SearchState extends State<Search> {
                           onTap: () {
                             setState(() {
                               removeEntireHistory();
-                              history = false;
                             });
                           },
                           child: Text(
@@ -374,9 +366,6 @@ class _SearchState extends State<Search> {
                                   onPressed: () {
                                     setState(() {
                                       removeSearchistory(index);
-                                      if (searchText.isEmpty) {
-                                        history = false;
-                                      }
                                     });
                                   }, 
                                   icon: Icon(

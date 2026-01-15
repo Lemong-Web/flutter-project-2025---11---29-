@@ -28,8 +28,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
   bool doubleTap = false;
   bool nextChap = false;
   bool loadNextChap = false;
-  bool runOutofChap = false;
-  bool chapterOne = false;
   final ScrollController _scrollController = ScrollController();
   double processValue = 0.0;
   late Future<ChapterDetail> _futureStory;
@@ -64,35 +62,26 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
     final index = chapters.indexOf(widget.chapterID);
     if(index == -1 || index + 1 >= chapters.length) return null;
-    if(index == chapters.length) {
-      setState(() {
-        runOutofChap = true;
-      });
-    }
-
-    return chapters[index + 1];
-  }
+    
+  return chapters[index + 1];
+}
 
   void goNext() {
     final goNextChap = getNextChapter();
     if (goNextChap == null) return;
-
+  
     Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (context) => ReadingScreen(
         storyID: widget.storyID, 
         chapterID: goNextChap, 
         initalPage: 0)));
-    }
+      }
   
   String? previousChapter() {
     if(!chapter_loaded) return null;
 
     final index = chapters.indexOf(widget.chapterID);
     if(index == - 1 || index - 1 <= -1) return null;
-    if (index == 0) {
-      setState(() => chapterOne = true);
-    }
-
     return chapters[index - 1];
   }
 
@@ -106,7 +95,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
         chapterID: goBackChap, 
         initalPage: 0)));
     }
-  
 
   @override
   void dispose() {
@@ -144,12 +132,12 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
           Future.delayed(const Duration(seconds: 2), () {
             if(!mounted) return;
-            goNext();
+              goNext();
 
             if (!mounted) return;
-            setState(() {
-              loadNextChap = false;
-            });
+              setState(() {
+                loadNextChap = false;
+              });
           });
         } 
     });
@@ -208,26 +196,21 @@ class _ReadingScreenState extends State<ReadingScreen> {
           height: 40,
           // ignore: deprecated_member_use
           color: Color(0xFF393D5E).withOpacity(0.3),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              chapterOne 
-                ? const SizedBox.shrink()
-                : GestureDetector(
-                    onTap: () {
-                      goBack();
-                    },
-                    child: Icon(Icons.arrow_back),
-                  ),
-
-              runOutofChap
-                ? const SizedBox.shrink()
-                : GestureDetector(
-                    onTap: () {
-                      goNext();
-                    },
-                    child: Icon(Icons.arrow_forward),
-                  )
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    goBack();
+                  },
+                  child: Icon(Icons.arrow_back),
+              ),
+                GestureDetector(
+                  onTap: () {
+                    goNext();
+                  },
+                  child: Icon(Icons.arrow_forward),
+                )
               ],
             ),
           )
