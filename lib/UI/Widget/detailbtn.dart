@@ -37,7 +37,7 @@ class Detailbtn extends StatelessWidget {
                 ).createShader(bounds);
               },
               child: const Text(
-                "READ",
+                " Đọc ",
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "Inter"

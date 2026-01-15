@@ -315,7 +315,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 ).createShader(bound);
               },
               child: Text(
-                "Chapter ${chapterlist.chapters[index].replaceAll('.json', '')}",
+                "Chương ${chapterlist.chapters[index].replaceAll('.json', '')}",
                 style: const TextStyle(
                   color: Colors.white,
                   fontFamily: "Inter",

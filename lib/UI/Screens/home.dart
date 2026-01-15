@@ -260,29 +260,70 @@ class _HomeState extends State<Home> {
             child: CarouselSlider(
               carouselController: _controller,
               items: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: SizedBox.expand(
-                    child: Image.asset(
-                      "assets/img/wallpaper1.avif", fit: BoxFit.cover),
-                  ),
-                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => DetailScreen(
+                        storyid: manga[3].storyid, 
+                        storyname: manga[3].storyname, 
+                        storyothername: manga[3].storyothername, 
+                        storyimage: manga[3].storyimage, 
+                        storydes: manga[3].storydes, 
+                        storygenres: manga[3].storygenres, 
+                        urllinkcraw: manga[3].urllinkcraw, storytauthor: manga[3].storytauthor, views: manga[3].views)));
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox.expand(
+                          child: Image.asset(
+                            "assets/img/wallpaper4.webp", fit: BoxFit.cover),
+                        ),
+                      ),
+                    ),
                 
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: SizedBox.expand(
-                    child: Image.asset(
-                      "assets/img/wallpaper2.jpg", fit: BoxFit.cover),
-                  ),
-                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => DetailScreen(
+                        storyid: manga[0].storyid, 
+                        storyname: manga[0].storyname, 
+                        storyothername: manga[0].storyothername, 
+                        storyimage: manga[0].storyimage, 
+                        storydes: manga[0].storydes, 
+                        storygenres: manga[0].storygenres, 
+                        urllinkcraw: manga[0].urllinkcraw, 
+                        storytauthor: manga[0].storytauthor, views: manga[0].views)));
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox.expand(
+                          child: Image.asset(
+                            "assets/img/wallpaper5.jpg", fit: BoxFit.cover),
+                        ),
+                      ),
+                    ),
     
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: SizedBox.expand(
-                    child: Image.asset(
-                      "assets/img/wallpaper3.jpg", fit: BoxFit.cover),
-                  ),
-                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => DetailScreen(
+                        storyid: manga[33].storyid, 
+                        storyname: manga[33].storyname, 
+                        storyothername: manga[33].storyothername, 
+                        storyimage: manga[33].storyimage, 
+                        storydes: manga[33].storydes, 
+                        storygenres: manga[33].storygenres, 
+                        urllinkcraw: manga[33].urllinkcraw, 
+                        storytauthor: manga[33].storytauthor, views: manga[0].views)));
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox.expand(
+                          child: Image.asset(
+                            "assets/img/wallpaper6.webp", fit: BoxFit.cover),
+                        ),
+                      ),
+                    ),
               ], 
               options: CarouselOptions(
                 autoPlay: true,
@@ -395,7 +436,7 @@ class _HomeState extends State<Home> {
                         fontFamily: 'Inter',
                         fontSize: 15
                       )),
-                  ),
+                    ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: ContinuousRectangleBorder(

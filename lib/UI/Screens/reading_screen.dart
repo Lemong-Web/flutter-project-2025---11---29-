@@ -63,7 +63,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
     final index = chapters.indexOf(widget.chapterID);
     if(index == -1 || index + 1 >= chapters.length) return null;
     
-  return chapters[index + 1];
+    return chapters[index + 1];
 }
 
   void goNext() {
@@ -203,13 +203,19 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   onTap: () {
                     goBack();
                   },
-                  child: Icon(Icons.arrow_back),
-              ),
+                  child: Icon(
+                    Icons.arrow_circle_left,
+                    size: 40,
+                    color: Colors.amberAccent,),
+                  ),
                 GestureDetector(
                   onTap: () {
                     goNext();
                   },
-                  child: Icon(Icons.arrow_forward),
+                  child: Icon(
+                    Icons.arrow_circle_right,
+                    size: 40,
+                    color: Colors.amberAccent,),
                 )
               ],
             ),
