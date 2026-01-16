@@ -333,7 +333,7 @@ class _SearchState extends State<Search> {
                             title: GestureDetector(
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) 
-                                => SearchResult(searchKey: searchKey)));
+                                => SearchResult(searchKey: searchText[index])));
                               },
                               child: Text(
                                 searchText[index],

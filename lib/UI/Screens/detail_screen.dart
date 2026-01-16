@@ -47,6 +47,7 @@ class _DetailScreenState extends State<DetailScreen> {
   late Future<NumberModel> chapters;
 
 
+
   Dio dio = Dio();
   Future<NumberModel> fetchChapters() async {
     final response = await dio.get(
@@ -292,53 +293,52 @@ class _DetailScreenState extends State<DetailScreen> {
     
 
   Widget _buildUIlist(List<NumberModel> chapters, chapterlist) {
-    return Container(
-      width: 350,
-      decoration: BoxDecoration(
-        // ignore: deprecated_member_use
-        color: Color(0xffFFFFFF).withOpacity(0.2),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Container(
+        decoration: BoxDecoration(
+          // ignore: deprecated_member_use
+          color: Color(0xffFFFFFF).withOpacity(0.2),
+          borderRadius: BorderRadius.circular(12),
         ),
-      ),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: chapterlist.chapters.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: ShaderMask(
-              shaderCallback: (bound) {
-                return LinearGradient(
-                  colors: [Color(0xff2BD2FF), Color(0xff2BFF88)],
-                ).createShader(bound);
-              },
-              child: Text(
-                "Chương ${chapterlist.chapters[index].replaceAll('.json', '')}",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontFamily: "Inter",
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: chapterlist.chapters.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: ShaderMask(
+                shaderCallback: (bound) {
+                  return LinearGradient(
+                    colors: [Color(0xff2BD2FF), Color(0xff2BFF88)],
+                  ).createShader(bound);
+                },
+                child: Text(
+                  "Chương ${chapterlist.chapters[index].replaceAll('.json', '')}",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: "Inter",
+                  ),
                 ),
               ),
-            ),
-            trailing: Detailbtn(
-              onPressed: () async {
-                saveLastIndex(index);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ReadingScreen(
-                      storyID: widget.storyid,
-                      chapterID: chapterlist.chapters[index],
-                      initalPage: index,
+              trailing: Detailbtn(
+                onPressed: () async {
+                  saveLastIndex(index);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ReadingScreen(
+                        storyID: widget.storyid,
+                        chapterID: chapterlist.chapters[index],
+                        initalPage: index,
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

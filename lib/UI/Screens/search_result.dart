@@ -116,8 +116,21 @@ class _SearchResultState extends State<SearchResult> {
             ),
             child: Row(
               children: [
-                SearchContainer(
-                  image: Image.network(data[index].storyimage)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
+                      storyid: data[index].storyid, 
+                      storyname: data[index].storyname, 
+                      storyothername: data[index].storyothername, 
+                      storyimage: data[index].storyimage, 
+                      storydes: data[index].storydes, 
+                      storygenres: data[index].storygenres, 
+                      urllinkcraw: data[index].urllinkcraw, 
+                      storytauthor: data[index].storytauthor, views: data[index].views)));
+                    },
+                  child: SearchContainer(
+                    image: Image.network(data[index].storyimage)
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
@@ -138,53 +151,17 @@ class _SearchResultState extends State<SearchResult> {
                         ),
                         SizedBox(
                           height: 70,
-                          child: SingleChildScrollView(
-                            child: Text(
-                              data[index].storydes,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
+                          child: Text(
+                            data[index].storydes,
+                            maxLines: 5,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
                             ),
                           ),
                         ),
                         const SizedBox(height: 5),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
-                              storyid: data[index].storyid, 
-                              storyname: data[index].storyname, 
-                              storyothername: data[index].storyothername, 
-                              storyimage: data[index].storyimage, 
-                              storydes: data[index].storydes, 
-                              storygenres: data[index].storygenres, 
-                              urllinkcraw: data[index].urllinkcraw, 
-                              storytauthor: data[index].storytauthor, views: data[index].views)));
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(1),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color(0xff2BD2FF),
-                                  Color(0xff2BFF88)
-                                ]
-                              ),
-                              borderRadius: BorderRadius.circular(12)
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                // ignore: deprecated_member_use
-                                color: Color(0xE6FFFFFF),
-                                borderRadius: BorderRadius.circular(12)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("Đọc truyện", style: TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -217,25 +194,38 @@ class _SearchResultState extends State<SearchResult> {
           children: [
             Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Container(
-                padding: EdgeInsets.all(1),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xff2BD2FF),
-                      Color(0xff2BFF88)
-                    ]
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
+                  storyid: data[index].storyid, 
+                  storyname: data[index].storyname, 
+                  storyothername: data[index].storyothername, 
+                  storyimage: data[index].storyimage, 
+                  storydes: data[index].storydes, 
+                  storygenres: data[index].storygenres, 
+                  urllinkcraw: data[index].urllinkcraw, 
+                  storytauthor: data[index].storytauthor, views: data[index].views)));
+                },
+                child: Container(
+                  padding: EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xff2BD2FF),
+                        Color(0xff2BFF88)
+                      ]
+                    ),
+                    borderRadius: BorderRadius.circular(12)
                   ),
-                  borderRadius: BorderRadius.circular(12)
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(data[index].storyimage, fit: BoxFit.cover),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(data[index].storyimage, fit: BoxFit.cover),
+                  ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 8, left: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 data[index].storyname,
                 style: TextStyle(
@@ -246,45 +236,6 @@ class _SearchResultState extends State<SearchResult> {
               ),
             ),
             const SizedBox(height: 5),
-            GestureDetector(
-              onTap: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
-                storyid: data[index].storyid, 
-                storyname: data[index].storyname, 
-                storyothername: data[index].storyothername, 
-                storyimage: data[index].storyimage, 
-                storydes: data[index].storydes, 
-                storygenres: data[index].storygenres, 
-                urllinkcraw: data[index].urllinkcraw, 
-                storytauthor: data[index].storytauthor, views: data[index].views)));
-              },
-              child: Container(
-                padding: const EdgeInsets.all(1),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: LinearGradient(
-                    colors: [
-                       Color(0xff2BD2FF),
-                       Color(0xff2BFF88)
-                    ],
-                  ),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.white
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Text(
-                      'Đọc chuyện', 
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold
-                      )),
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         );

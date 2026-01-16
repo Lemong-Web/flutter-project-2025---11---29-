@@ -66,6 +66,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
     return chapters[index + 1];
 }
 
+  
   void goNext() {
     final goNextChap = getNextChapter();
     if (goNextChap == null) return;
@@ -95,6 +96,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
         chapterID: goBackChap, 
         initalPage: 0)));
     }
+
 
   @override
   void dispose() {
@@ -160,6 +162,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold (
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -193,7 +196,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
       bottomNavigationBar: doubleTap
         ? BottomAppBar(
-          height: 40,
+          padding: EdgeInsets.symmetric(
+            vertical: height * 0.015, 
+            horizontal: height * 0.05),
           // ignore: deprecated_member_use
           color: Color(0xFF393D5E).withOpacity(0.3),
             child: Row(
@@ -215,31 +220,31 @@ class _ReadingScreenState extends State<ReadingScreen> {
                         context: context, 
                         builder: (context) => AlertDialog(
                          title: const Text("Thông báo"),
-                         content: const Text("Truyện đã hết chương"),
+                         content: const Text("Bạn đã đọc đến trương cuối của chuyện"),
                          actions: <Widget> [
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
+                                Navigator.pop(context);
                               }, 
                               child: const Text("Ok")
                             )
-                         ],
+                          ],
                         )
                       );
                     } else {
                       goNext();
                     }
-                    
                   },
                   child: Icon(
                     Icons.arrow_circle_right,
                     size: 40,
                     color: Colors.amberAccent,),
-                )
-              ],
-            ),
-          )
-        : const SizedBox.shrink(),
+                  )
+                ],
+              ),
+            )
+          : const SizedBox.shrink(),
 
 
       body: _buildUI(),

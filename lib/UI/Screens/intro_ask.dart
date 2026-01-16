@@ -166,7 +166,9 @@ class _IntroAskState extends State<IntroAsk> {
             );
           if (!mounted) return;
 
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AuthLayout()));
+          Navigator.pushAndRemoveUntil(
+            context, MaterialPageRoute(builder: (_) => AuthLayout()),
+            (route) => false);
         }, 
         child: Text("Hoàn thành")
       ),
