@@ -62,7 +62,10 @@ class _IntroAskState extends State<IntroAsk> {
             ),
             genderOption(),
             Spacer(),
-            nextBtn()
+            Align(
+              alignment: AlignmentGeometry.centerRight,
+              child: nextBtn()
+            )
           ],
         ),
       ),
@@ -70,30 +73,28 @@ class _IntroAskState extends State<IntroAsk> {
   }
 
   Widget categorySelect() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 5,
-        children: categoryList.map((tag) {
-          final isSelected = selectedTag.contains(tag.name);
-          return ChoiceChip(
-            label: Text(tag.name), 
-            selected: isSelected,
-            onSelected: (value) {
-              if (value) {
-                setState(() {
-                  selectedTag.add(tag.name);
-                });
-              } else {
-                setState(() {
-                  selectedTag.remove(tag.name);
-                });
-              }
-            },
-          );
-        }).toList()
-      ),
+    
+    return Wrap(
+      spacing: 8,
+      runSpacing: 5,
+      children: categoryList.map((tag) {
+        final isSelected = selectedTag.contains(tag.name);
+        return ChoiceChip(
+          label: Text(tag.name), 
+          selected: isSelected,
+          onSelected: (value) {
+            if (value) {
+              setState(() {
+                selectedTag.add(tag.name);
+              });
+            } else {
+              setState(() {
+                selectedTag.remove(tag.name);
+              });
+            }
+          },
+        );
+      }).toList()
     );
   }
 
@@ -155,8 +156,13 @@ class _IntroAskState extends State<IntroAsk> {
 
   Widget nextBtn() {
     return Padding(
-      padding: const EdgeInsets.only(left: 280),
+      padding: const EdgeInsets.only(right: 8),
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(8)
+          )
+        ),
         onPressed: () async {
           final uid = authService.value.currentUser!.uid;
             final db = FirebaseFirestore.instance;
@@ -165,13 +171,27 @@ class _IntroAskState extends State<IntroAsk> {
               SetOptions(merge: true),
             );
           if (!mounted) return;
-
-          Navigator.pushAndRemoveUntil(
-            context, MaterialPageRoute(builder: (_) => AuthLayout()),
-            (route) => false);
+      
+        Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (_) => AuthLayout()),
+          (route) => false);
         }, 
-        child: Text("Hoàn thành")
-      ),
+        child: ShaderMask(
+          shaderCallback: (bounds) {
+            return LinearGradient(
+              colors: [
+                Color(0xff2BFF88),
+                Color(0xff2BD2FF),
+                Color(0xffFA8BFF)
+              ]
+            ).createShader(bounds);
+          },
+          child: Text(
+            "Hoàn thành",
+            style: TextStyle(
+              color: Colors.white
+            )))
+          ),
     );
-  }
-}
+      }
+    }

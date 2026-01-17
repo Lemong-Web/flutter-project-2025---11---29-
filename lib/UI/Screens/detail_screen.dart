@@ -158,14 +158,15 @@ class _DetailScreenState extends State<DetailScreen> {
                           content: Text(lastStatus 
                             ? "Truyện đã được xóa khỏi danh sách"
                             : "Truyện đã được lưu vào danh sách"),
-                           duration: const Duration(milliseconds: 1500),
+                           duration: const Duration(milliseconds: 1500
+                          ),
                            width: 350.0,
                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
                            behavior: SnackBarBehavior.floating,
                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                          )
-                        );
-                      },
+                        )
+                      );
+                    },
                     icon: Icon(
                       Icons.favorite,
                       color: lastStatus ? Colors.red : Colors.white,
@@ -225,7 +226,7 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget _buildUIdetail(List<NumberModel> chapters) {
     return SizedBox(
       child: Padding(
-        padding: const EdgeInsets.only(left: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -280,7 +281,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
                 moreStyle: TextStyle(
                   decoration: TextDecoration.underline,
-                  color: Colors.green
+                  color: Colors.white
                 ),
               ),
             ),

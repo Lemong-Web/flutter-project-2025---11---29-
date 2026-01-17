@@ -224,32 +224,42 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 200, top: 10),
-              child: Text(
-                "Manhua đang nổi",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontFamily: "Ubuntu",
-                  fontWeight: FontWeight.bold
+            
+            const SizedBox(height: 10),
+
+            Align(
+              alignment: AlignmentGeometry.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Text(
+                  "Manhua đang nổi",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontFamily: "Ubuntu",
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
               ),
             ),
     
           Trending(),
     
-          Padding(
-            padding: const EdgeInsets.only(right: 170, bottom: 10),
-            child: const Text(
-              "Truyện đã kết thúc!",
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontFamily: 'Inter')
-              ),
+          Align(
+            alignment: AlignmentGeometry.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: const Text(
+                "Truyện đã kết thúc!",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontFamily: 'Inter')
+                ),
+            ),
           ),
-    
+          
+          const SizedBox(height: 10),
           Container(
             width: 326,
             decoration: BoxDecoration(
