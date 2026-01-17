@@ -94,7 +94,7 @@ class _BookshelfState extends State<Bookshelf> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (favoriteManhua.isEmpty) {
             return const Center(child: Text(
-              'No favorite manhua found.', 
+              'Trong danh sách hiện không có Manhua.', 
               style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Inter',

@@ -48,6 +48,7 @@ class _SearchResultState extends State<SearchResult> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width * 0.6;
     return Scaffold(
       backgroundColor: const Color(0xFF393D5E),
       appBar: AppBar(
@@ -56,16 +57,35 @@ class _SearchResultState extends State<SearchResult> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 100),
-              child: Text(
-                '"${widget.searchKey}"',
+            SizedBox(
+              height: 40,
+              width: width,
+              child: TextField(
                 style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "Inter",
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
-                )
+                  color: Colors.white
+                ),
+                decoration: InputDecoration(
+                  filled: true,
+                  // ignore: deprecated_member_use
+                  fillColor: Colors.white.withOpacity(0.2),
+                  hint: const Text(
+                    "Tìm kiếm",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey
+                  )),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12)
+                  ),
+                ),
+                onSubmitted: (value) {
+                  final keyword = value.trim();
+                  if (keyword.isEmpty) return;
+
+                  Navigator.pushReplacement(
+                    context, 
+                    MaterialPageRoute(builder: (context) => SearchResult(searchKey: keyword)));
+                },
               ),
             ),
             IconButton(
@@ -78,20 +98,40 @@ class _SearchResultState extends State<SearchResult> {
             )
           ],
         ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(30.0), 
+          child: Text(
+            "kết quả cho '${widget.searchKey}'",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 25
+            ))
+        ),
       ),
       
       body: FutureBuilder(
           future: searchedManhua, 
           builder: (context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (snapshot.hasData) {
               final data = snapshot.data;
+              if (data!.isEmpty) {
+                return Center( 
+                  child: Text(
+                    "Không tìm thấy '${widget.searchKey}' trong App.",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold
+                  ))
+                );
+              }
               return layoutChange 
-                ? _buildUIGridView(data!) 
-                : _buildUIListView(data!);
+                ? _buildUIGridView(data) 
+                : _buildUIListView(data);
             } else {
               return const Center(child: Text("No data found"));
             }
@@ -149,8 +189,7 @@ class _SearchResultState extends State<SearchResult> {
                             fontWeight: FontWeight.bold
                           ),
                         ),
-                        SizedBox(
-                          height: 70,
+                        Expanded(
                           child: Text(
                             data[index].storydes,
                             maxLines: 5,
@@ -228,6 +267,8 @@ class _SearchResultState extends State<SearchResult> {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 data[index].storyname,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Inter',
@@ -235,7 +276,6 @@ class _SearchResultState extends State<SearchResult> {
                 ), 
               ),
             ),
-            const SizedBox(height: 5),
             ],
           ),
         );

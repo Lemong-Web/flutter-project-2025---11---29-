@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
+import 'package:manga_app/UI/Screens/search_result.dart';
 import 'package:manga_app/model/manga_model.dart';
 
 class SearchResultTag extends StatefulWidget {
@@ -15,6 +16,7 @@ class SearchResultTag extends StatefulWidget {
 
 class _SearchResultTagState extends State<SearchResultTag> {
   Dio dio = Dio();
+  bool layoutChange = false;
   late Future<List<MangaModel>> data;
 
   Future<List<MangaModel>> fetchSearchResult({String? searchQuery, List<String>? selectedTag}) async {
@@ -54,12 +56,67 @@ class _SearchResultTagState extends State<SearchResultTag> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width * 0.6;
     return Scaffold(
       backgroundColor: const Color(0xFF393D5E),
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: const Color(0xFF393D5E),
-        title: Text(widget.searchQuery),
-      ),
+        title: Row(
+          children: [
+            SizedBox(
+              height: 40,
+              width: width,
+              child: TextField(
+                style: TextStyle(
+                  color: Colors.white
+                ),
+                decoration: InputDecoration(
+                  hint: const Text(
+                    "Tìm kiếm",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12)
+                  ),
+                ),
+                onSubmitted: (value) {
+                  final searchText = value.trim();
+                  if (searchText.isEmpty) return;
+
+                  Navigator.pushReplacement(
+                    context, 
+                    MaterialPageRoute(builder: (context) => SearchResult(searchKey: searchText)));
+                },
+              ),
+            ),
+            Spacer(),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  layoutChange = !layoutChange;
+                });
+              }, 
+              icon: Icon(Icons.layers_outlined)
+            )
+          ],
+        ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(30.0), 
+          child: Text(
+            "kết quả cho '${widget.searchQuery}'",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 25
+            ))
+          ),
+        ),
+
+        
       body: FutureBuilder(
         future: data, 
         builder: (context, snapshot) {
@@ -69,9 +126,22 @@ class _SearchResultTagState extends State<SearchResultTag> {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (snapshot.hasData) {
             List<MangaModel> manhua = snapshot.data!;
-            return _buildUI(manhua);
+            if(manhua.isEmpty) {
+              return Center(
+                child: Text(
+                  "Không có kết quả cho ${widget.searchQuery}",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Inter'
+                )),
+              );
+            }
+            return layoutChange
+              ? _buildGidView(manhua)
+              : _buildUI(manhua);
           } else {
-            return const Center(child: Text("Cannot load data"));
+            return const Center(child: Text("Không tải được dữ liệu"));
           }
         }),
       );
@@ -79,7 +149,6 @@ class _SearchResultTagState extends State<SearchResultTag> {
 
     Widget _buildUI(List<MangaModel> manhua) {
       return SizedBox(
-      height: 700,
       child: ListView.builder(
         itemCount: manhua.length,
         itemBuilder: (context, index) {
@@ -143,15 +212,16 @@ class _SearchResultTagState extends State<SearchResultTag> {
                               style: TextStyle(
                                 color: Colors.white, 
                                 fontSize: 20,
-                                fontFamily: "Ubuntu",
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.bold
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 78,
-                            width: 250,
+                          Expanded(
                             child: Text(
                               manhua[index].storydes,
+                              maxLines: 5,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: Color(0xffB8B8B8)
                               )
@@ -167,6 +237,75 @@ class _SearchResultTagState extends State<SearchResultTag> {
           );
         }
       ),
+    );
+  }
+  Widget _buildGidView(List<MangaModel> data) {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 10,
+        childAspectRatio: 0.48,
+      ),
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            // ignore: deprecated_member_use
+            color: Color(0xffFFFFFF).withOpacity(0.2)
+          ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
+                  storyid: data[index].storyid, 
+                  storyname: data[index].storyname, 
+                  storyothername: data[index].storyothername, 
+                  storyimage: data[index].storyimage, 
+                  storydes: data[index].storydes, 
+                  storygenres: data[index].storygenres, 
+                  urllinkcraw: data[index].urllinkcraw, 
+                  storytauthor: data[index].storytauthor, views: data[index].views)));
+                },
+                child: Container(
+                  padding: EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xff2BD2FF),
+                        Color(0xff2BFF88)
+                      ]
+                    ),
+                    borderRadius: BorderRadius.circular(12)
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(data[index].storyimage, fit: BoxFit.cover),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                data[index].storyname,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.bold
+                ), 
+              ),
+            ),
+            ],
+          ),
+        );
+      }
     );
   }
 }
