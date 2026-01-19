@@ -75,7 +75,7 @@ class _BookshelfState extends State<Bookshelf> {
         centerTitle: true,
         backgroundColor: Color(0xFF393D5E),
         title: Text(
-          "BookShelf",
+          "Giá Sách",
           style: TextStyle(
             color: Colors.white,
             fontFamily: "Inter",

@@ -126,8 +126,7 @@ class _SearchState extends State<Search> {
                             spacing: 8,
                             runSpacing: 8,
                             children: filterList.map((filter) {
-                              final isSelected = selectedTag!.contains(filter.name);
-        
+                              final isSelected = selectedTag!.contains(filter.name);  
                               return ChoiceChip(
                                 label: Text(filter.name),
                                 selected: isSelected,
@@ -213,14 +212,17 @@ class _SearchState extends State<Search> {
             ),
         
             Padding(
-              padding: const EdgeInsets.only(right: 200, bottom: 10),
-              child: const Text(
-                "Manhua đang nổi",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontFamily: "Ubuntu",
-                  fontWeight: FontWeight.bold)
+              padding: const EdgeInsets.only(left: 30),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  "Manhua đang nổi",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: "Ubuntu",
+                    fontWeight: FontWeight.bold)
+                  ),
                 ),
               ),
         
@@ -276,12 +278,13 @@ class _SearchState extends State<Search> {
               ),
 
               const SizedBox(height: 10),
+
               history
-               ? Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 50, right: 180),
-                      child: const Text(
+               ? SizedBox(
+                 width: MediaQuery.of(context).size.width * 0.7,
+                 child: Row(
+                    children: [
+                      const Text(
                         "Gần đây",
                         style: TextStyle(
                           color: Colors.white,
@@ -289,52 +292,57 @@ class _SearchState extends State<Search> {
                           fontWeight: FontWeight.bold,
                           fontSize: 16
                         )),
-                    ),
-                      ShaderMask(
-                        shaderCallback: (bound) {
-                          return LinearGradient(
-                            colors: [
-                              Color(0xffFA8BFF),
-                              Color(0xff2BD2FF)
-                            ]
-                          ).createShader(bound);
-                        },
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              removeEntireHistory();
-                            });
+                        const Spacer(),
+                        ShaderMask(
+                          shaderCallback: (bound) {
+                            return LinearGradient(
+                              colors: [
+                                Color(0xffFA8BFF),
+                                Color(0xff2BD2FF)
+                              ]
+                            ).createShader(bound);
                           },
-                          child: Text(
-                            "Dọn",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.white,
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold
-                            )),
-                        ),
-                        )
-                      ],
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                removeEntireHistory();
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                "Dọn",
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Colors.white,
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold
+                                )),
+                            ),
+                            ),
+                          )
+                        ],
+                      ),
                     )
                   : const SizedBox.shrink(),
                   
                 history
                   ? SizedBox(
                     height: 170,
+                    width: MediaQuery.of(context).size.width * 0.8,
                     child: ListView.builder(
                       itemCount: searchText.length,
                       itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 33),
-                          child: ListTile(
-                            minTileHeight: 10,
-                            title: GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) 
-                                => SearchResult(searchKey: searchText[index])));
-                              },
+                        return ListTile(
+                          minTileHeight: 10,
+                          title: GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) 
+                              => SearchResult(searchKey: searchText[index])));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5),
                               child: Text(
                                 searchText[index],
                                 style: TextStyle(
@@ -343,38 +351,35 @@ class _SearchState extends State<Search> {
                                 ),
                               ),
                             ),
-                          trailing: Padding(
-                            padding: const EdgeInsets.only(right: 65),
-                            child: Container(
-                              width: 26,
-                              height: 26,
-                              decoration: BoxDecoration(
+                          ),
+                        trailing: Container(
+                          width: 26,
+                          height: 26,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle
+                          ),
+                          child: ShaderMask(
+                            shaderCallback: (bounds) {
+                              return LinearGradient(
+                                colors: [
+                                  Color(0xffFA8BFF),
+                                  Color(0xff2BD2FF)
+                                ]
+                              ).createShader(bounds);
+                            },
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () {
+                                setState(() {
+                                  removeSearchistory(index);
+                                });
+                              }, 
+                              icon: Icon(
+                                Icons.clear,
+                                size: 20,
                                 color: Colors.white,
-                                shape: BoxShape.circle
-                              ),
-                              child: ShaderMask(
-                                shaderCallback: (bounds) {
-                                  return LinearGradient(
-                                    colors: [
-                                      Color(0xffFA8BFF),
-                                      Color(0xff2BD2FF)
-                                    ]
-                                  ).createShader(bounds);
-                                },
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    setState(() {
-                                      removeSearchistory(index);
-                                    });
-                                  }, 
-                                  icon: Icon(
-                                    Icons.clear,
-                                    size: 20,
-                                    color: Colors.white,
-                                  )
-                                ),
-                              ),
+                              )
                             ),
                           ),
                         ),

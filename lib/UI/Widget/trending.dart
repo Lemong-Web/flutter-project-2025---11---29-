@@ -93,7 +93,8 @@ Widget _buildUI(BuildContext context, List<MangaModel> manga) {
                     height: 35, 
                     child: Text(
                       manga[index].storyname,
-                      // overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: "Ubuntu",

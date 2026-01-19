@@ -208,7 +208,7 @@ class _HomeState extends State<Home> {
                     }, 
                     icon: Icon(Icons.tune)),
                   hint: Text (
-                    "Manhua",
+                    "Tìm kiếm truyện...",
                     style: TextStyle(
                       // ignore: deprecated_member_use
                       color: Color(0xFF393D5E).withOpacity(0.6),

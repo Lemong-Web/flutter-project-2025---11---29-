@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                       controller: emailText,
                       validator: (val) {
                         if(val == null || val.isEmpty) {
-                          return 'Trường email đang thiếu';
+                          return 'Bạn đang thiếu Email';
                         }
                         return null;
                       },
@@ -126,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: hidePass ? true : false,
                       validator: (val) {
                         if (val == null || val.isEmpty) {
-                          return "Trường mật khẩu đang thiếu";
+                          return "Bạn đang thiếu mật khẩu";
                         }
                         return null;
                       },

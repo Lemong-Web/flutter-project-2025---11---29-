@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
@@ -21,8 +20,10 @@ class SearchResult extends StatefulWidget {
 
 class _SearchResultState extends State<SearchResult> {
   bool layoutChange = false;
+  bool isSearch = true;
   Dio dio = Dio();
   late Future <List<MangaModel>> searchedManhua; 
+  TextEditingController _textEditingController = TextEditingController();
 
 
   Future <List<MangaModel>> fetchData({String? searchKey}) async {
@@ -44,6 +45,9 @@ class _SearchResultState extends State<SearchResult> {
   void initState() {
     super.initState();
     searchedManhua = fetchData(searchKey: widget.searchKey);
+    _textEditingController = TextEditingController(
+      text: widget.searchKey
+    );
   }
 
   @override
@@ -61,6 +65,7 @@ class _SearchResultState extends State<SearchResult> {
               height: 40,
               width: width,
               child: TextField(
+                controller: _textEditingController,
                 style: TextStyle(
                   color: Colors.white
                 ),
@@ -94,19 +99,9 @@ class _SearchResultState extends State<SearchResult> {
                   layoutChange = !layoutChange;
                 });
               }, 
-              icon: Icon(Icons.layers_outlined) 
+              icon: Icon( isSearch ? Icons.layers_outlined : null) 
             )
           ],
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(30.0), 
-          child: Text(
-            "kết quả cho '${widget.searchKey}'",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 25
-            ))
         ),
       ),
       
@@ -120,15 +115,22 @@ class _SearchResultState extends State<SearchResult> {
             } else if (snapshot.hasData) {
               final data = snapshot.data;
               if (data!.isEmpty) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if(mounted) {
+                    setState(() {
+                      isSearch = false;
+                    });
+                  } 
+                });
                 return Center( 
                   child: Text(
                     "Không tìm thấy '${widget.searchKey}' trong App.",
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold
-                  ))
-                );
-              }
+                    ))
+                  );
+                }
               return layoutChange 
                 ? _buildUIGridView(data) 
                 : _buildUIListView(data);
@@ -138,16 +140,15 @@ class _SearchResultState extends State<SearchResult> {
           }
         ),
       );
-  }
+    }
 
   Widget _buildUIListView(List<MangaModel> data) {
     return ListView.builder(
       itemCount: data.length,
       itemBuilder: (context, index) {
         return Padding(
-          padding: const EdgeInsets.only(right: 20, left: 20, top: 10, bottom: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Container(
-            width: 326,
             height: 157,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
@@ -175,8 +176,7 @@ class _SearchResultState extends State<SearchResult> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: SizedBox(
-                    width: 240,
-                    height: 350,
+                    width: MediaQuery.of(context).size.width * 0.55,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -213,69 +213,69 @@ class _SearchResultState extends State<SearchResult> {
     );
   }
 
-  Widget _buildUIGridView(List<MangaModel> data) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 5,
-        mainAxisSpacing: 10,
-        childAspectRatio: 0.48,
-      ),
-      itemCount: data.length,
-      itemBuilder: (context, index) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            // ignore: deprecated_member_use
-            color: Color(0xffFFFFFF).withOpacity(0.2)
-          ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
-                  storyid: data[index].storyid, 
-                  storyname: data[index].storyname, 
-                  storyothername: data[index].storyothername, 
-                  storyimage: data[index].storyimage, 
-                  storydes: data[index].storydes, 
-                  storygenres: data[index].storygenres, 
-                  urllinkcraw: data[index].urllinkcraw, 
-                  storytauthor: data[index].storytauthor, views: data[index].views)));
-                },
-                child: Container(
-                  padding: EdgeInsets.all(1),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xff2BD2FF),
-                        Color(0xff2BFF88)
-                      ]
+    Widget _buildUIGridView(List<MangaModel> data) {
+      return GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 5,
+          mainAxisSpacing: 10,
+          childAspectRatio: 0.57,
+        ),
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              // ignore: deprecated_member_use
+              color: Color(0xffFFFFFF).withOpacity(0.2)
+            ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
+                    storyid: data[index].storyid, 
+                    storyname: data[index].storyname, 
+                    storyothername: data[index].storyothername, 
+                    storyimage: data[index].storyimage, 
+                    storydes: data[index].storydes, 
+                    storygenres: data[index].storygenres, 
+                    urllinkcraw: data[index].urllinkcraw, 
+                    storytauthor: data[index].storytauthor, views: data[index].views)));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xff2BD2FF),
+                          Color(0xff2BFF88)
+                        ]
+                      ),
+                      borderRadius: BorderRadius.circular(12)
                     ),
-                    borderRadius: BorderRadius.circular(12)
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(data[index].storyimage, fit: BoxFit.cover),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(data[index].storyimage, fit: BoxFit.cover),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                data[index].storyname,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.bold
-                ), 
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(
+                  data[index].storyname,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.bold
+                  ), 
+                ),
               ),
-            ),
             ],
           ),
         );
