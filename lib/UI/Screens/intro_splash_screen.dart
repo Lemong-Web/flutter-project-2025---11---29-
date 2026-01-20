@@ -72,11 +72,11 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
       "Đọc những Manhua mới nhất, được cập nhật trên App",
       "Đọc chuyện"),
     SplashModel(
-      "assets/img/ClickFavo.avif", 
+      "assets/img/ClickFavo.jpg", 
       "Tạo danh sách Manhua yêu thích của riêng bạn trong App, bằng cách nhấn nút yêu thích",
       "Yêu thích"),
     SplashModel(  
-      'assets/img/share_stories.avif', 
+      'assets/img/share_stories.jpg', 
       'Chia sẻ những câu chuyện yêu thích của bạn để mọi người cùng tận hưởng', 
       'Chia sẻ'),
     ];
@@ -88,51 +88,51 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
         backgroundColor: const Color(0xFF393D5E),
       ),
         backgroundColor: const Color(0xFF393D5E),
-        body: Stack(
+        body: Column(
           children: [
-            PageView.builder(
-              controller: _pageController,
-              onPageChanged: (value) {
-                setState(() {
-                  currentIndex = value;
-                });
-              },
-              itemCount: screenList.length,
-              itemBuilder: (context, index) {
-                return Stagebuildwidget(
-                  imgUrl: screenList[index].imgStr,
-                  desc: screenList[index].desc,
-                  title: screenList[index].title);
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (value) {
+                  setState(() {
+                    currentIndex = value;
+                  });
+                },
+                itemCount: screenList.length,
+                itemBuilder: (context, index) {
+                   return Stagebuildwidget(
+                    imgUrl: screenList[index].imgStr, 
+                    desc: screenList[index].desc, 
+                    title: screenList[index].title
+                  );
                 }
               ),
-              Positioned(
-                bottom: 100,
-                left: 185,
-                child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        screenList.length,
-                          (index) => buildDot(index: index)
-                      ),
-                    ),
-                  ),
-
-                  Positioned(
-                    bottom: 30,
-                    left: 285,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        timer!.cancel();
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => IntroAsk()));
-                      }, 
-                      child: Text("Bỏ qua ($start)")
-                    )
-                  )     
-                ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                screenList.length,
+                (index) => buildDot(index: index)
               ),
-            );
-          }
-          
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    timer!.cancel();
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => IntroAsk()));
+                  }, 
+                  child: Text("Bỏ qua ($start)")
+                ),
+              ),
+            ),
+            const SizedBox(height: 20)
+          ],
+        ),
+      );
+    }
     AnimatedContainer buildDot({int? index}) {
       return AnimatedContainer(
         duration: kThemeAnimationDuration,
@@ -146,3 +146,6 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
       );
     }
   }
+
+   
+  

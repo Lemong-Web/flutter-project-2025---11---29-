@@ -18,6 +18,7 @@ class _HistoryState extends State<History> {
   List<MangaModel> manhuaList = [];
   List<MangaModel> historyList = [];
   late Future<void> _history;
+  bool isConnected = false;
 
   Future<List<MangaModel>> loadData() async {
     try {
@@ -27,9 +28,11 @@ class _HistoryState extends State<History> {
         return MangaModel.fromJson(e);
       }).toList();
     } on DioException {
-       if (mounted) {
-        
-       }
+        if (mounted) {
+          setState(() {
+            isConnected = true;
+          });
+        }
     }
     return [];
   }
@@ -46,6 +49,13 @@ class _HistoryState extends State<History> {
     historyList = manhuaList.where((manhua) {
       return historyIds.contains(manhua.storyid);
     }).toList();
+  }
+
+  Future<void> retry() async {
+    setState(() {
+      isConnected = true;
+      _history = loadHistory();
+    });
   }
 
   @override
@@ -103,57 +113,118 @@ class _HistoryState extends State<History> {
                 fontWeight: FontWeight.bold,
                 fontSize: 18 )));
           } else {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  childAspectRatio: 90 / 120
-                ), 
-                itemCount: historyList.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context){
-                          return DetailScreen(
-                            storyid: historyList[index].storyid, 
-                            storyname: historyList[index].storyname, 
-                            storyothername: historyList[index].storyothername, 
-                            storyimage: historyList[index].storyimage, 
-                            storydes: historyList[index].storydes, 
-                            storygenres: historyList[index].storygenres,
-                            urllinkcraw: historyList[index].urllinkcraw, 
-                            storytauthor: historyList[index].storytauthor, views: historyList[index].views);
-                        }));
+            return isConnected 
+              ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.wifi_off,
+                    color: Colors.white,
+                    size: 40),
+                  ShaderMask(
+                    shaderCallback: (bounds) {
+                      return LinearGradient(
+                        colors: [
+                          Color(0xff2BFF88),
+                          Color(0xff2BD2FF),
+                          Color(0xffFA8BFF)
+                        ]
+                      ).createShader(bounds);
+                    },
+                    child: Text(
+                      "Lỗi kết nối với mạng, vui lòng thử lại sau.",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Inter',
+                        fontSize: 15
+                      )),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)
+                      ),
+                    ),
+                    onPressed: () async {
+                      try {
+                        await dio.get(url);
+                        retry();
+                      } on DioException catch (e) {
+                        if (e.response == null) {
+                          if (!mounted) return;
+                          setState(() {
+                            isConnected = false;
+                          });
+                        }
+                      }
+                    }, 
+                    child: ShaderMask(
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                          colors: [
+                            Color(0xff2BFF88),
+                            Color(0xff2BD2FF),
+                            Color(0xffFA8BFF)
+                          ]
+                        ).createShader(bounds);
                       },
-                      child: Container(
-                        padding: EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xffFA8BFF),
-                              Color(0xff2BD2FF)
-                            ]
-                          )
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            historyList[index].storyimage,
-                            fit: BoxFit.cover,
+                    child: Text("Thử lại"))
+                  ),
+                ],
+              ),
+            )
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    childAspectRatio: 90 / 120
+                  ), 
+                  itemCount: historyList.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return DetailScreen(
+                              storyid: historyList[index].storyid, 
+                              storyname: historyList[index].storyname, 
+                              storyothername: historyList[index].storyothername, 
+                              storyimage: historyList[index].storyimage, 
+                              storydes: historyList[index].storydes, 
+                              storygenres: historyList[index].storygenres,
+                              urllinkcraw: historyList[index].urllinkcraw, 
+                              storytauthor: historyList[index].storytauthor, views: historyList[index].views);
+                          }));
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xffFA8BFF),
+                                Color(0xff2BD2FF)
+                              ]
+                            )
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              historyList[index].storyimage,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  } 
-                 
-                ),
-            );
-            }
-          }),
-        );
+                      );
+                    } 
+                  ),
+                );
+              }
+            }),
+          );
+        }
       }
-    }

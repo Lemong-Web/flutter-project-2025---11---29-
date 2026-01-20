@@ -27,6 +27,7 @@ class _HomeState extends State<Home> {
   int _current = 0;
   bool tagSearch = false;
   bool isInternetConnected = true;
+  bool search = false;
   final Dio dio = Dio();
   final CarouselSliderController _controller = CarouselSliderController();
   late Future <List<MangaModel>> data;
@@ -54,6 +55,10 @@ class _HomeState extends State<Home> {
       context,
       listData: filterList,
       selectedListData: selectedTagList,
+      selectedItemsText: "Tag đã chọn",
+      applyButtonText: "Áp dụng",
+      resetButtonText: "Xóa",
+      allButtonText: " Tất cả",
       choiceChipLabel: (item) => item!.name,
       validateSelectedItem: (list, item) => list!.contains(item),
       hideSearchField: true,
@@ -202,8 +207,10 @@ class _HomeState extends State<Home> {
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: TextField(
                 onSubmitted: (value) {
+                  if (value.isEmpty) return;
                   setState(() {
                     searchKey = value;
+                    search = true;
                     data = fetchData(searchText: searchKey);
                   });   
                 },
@@ -234,24 +241,27 @@ class _HomeState extends State<Home> {
             
             const SizedBox(height: 10),
 
-            Align(
-              alignment: AlignmentGeometry.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Text(
-                  "Manhua đang nổi",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontFamily: "Ubuntu",
-                    fontWeight: FontWeight.bold
+            search
+              ? const SizedBox.shrink()
+              : Align(
+                  alignment: AlignmentGeometry.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Text(
+                      "Manhua đang nổi",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontFamily: "Ubuntu",
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
     
-          Trending(),
-    
+          search ? const SizedBox.shrink() : Trending(),
+          
+          search ? const SizedBox.shrink() :
           Align(
             alignment: AlignmentGeometry.centerLeft,
             child: Padding(
@@ -263,10 +273,12 @@ class _HomeState extends State<Home> {
                   color: Colors.white,
                   fontFamily: 'Inter')
                 ),
+              ),
             ),
-          ),
           
           const SizedBox(height: 10),
+
+          search ? const SizedBox.shrink() :
           Container(
             width: 326,
             decoration: BoxDecoration(
@@ -357,7 +369,8 @@ class _HomeState extends State<Home> {
               )
             ),
           ),
-    
+        
+        search ? const SizedBox.shrink() :
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -375,9 +388,9 @@ class _HomeState extends State<Home> {
           ),
     
            Padding(
-             padding: const EdgeInsets.only(right: 260, top: 8),
+             padding: const EdgeInsets.symmetric(horizontal: 10),
              child: Text(
-              "Manhua!",
+              search ? "Kết quả tìm kiếm" : "Manhua!",
               style: TextStyle(
                 fontFamily: "Ubuntu",
                 fontWeight: FontWeight.bold,

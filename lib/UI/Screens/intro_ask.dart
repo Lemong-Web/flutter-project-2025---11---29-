@@ -73,28 +73,30 @@ class _IntroAskState extends State<IntroAsk> {
   }
 
   Widget categorySelect() {
-    
-    return Wrap(
-      spacing: 8,
-      runSpacing: 5,
-      children: categoryList.map((tag) {
-        final isSelected = selectedTag.contains(tag.name);
-        return ChoiceChip(
-          label: Text(tag.name), 
-          selected: isSelected,
-          onSelected: (value) {
-            if (value) {
-              setState(() {
-                selectedTag.add(tag.name);
-              });
-            } else {
-              setState(() {
-                selectedTag.remove(tag.name);
-              });
-            }
-          },
-        );
-      }).toList()
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 5,
+        children: categoryList.map((tag) {
+          final isSelected = selectedTag.contains(tag.name);
+          return ChoiceChip(
+            label: Text(tag.name), 
+            selected: isSelected,
+            onSelected: (value) {
+              if (value) {
+                setState(() {
+                  selectedTag.add(tag.name);
+                });
+              } else {
+                setState(() {
+                  selectedTag.remove(tag.name);
+                });
+              }
+            },
+          );
+        }).toList()
+      ),
     );
   }
 
@@ -192,6 +194,6 @@ class _IntroAskState extends State<IntroAsk> {
               color: Colors.white
             )))
           ),
-    );
+        );
       }
     }

@@ -21,8 +21,8 @@ class Stagebuildwidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 400,
-            height: 400,
+            width: 300,
+            height: 300,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(12)

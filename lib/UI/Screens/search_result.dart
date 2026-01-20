@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
 import 'package:manga_app/UI/Widget/search_container.dart';
 import 'package:manga_app/model/manga_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchResult extends StatefulWidget {
   final String searchKey;
@@ -39,6 +40,12 @@ class _SearchResultState extends State<SearchResult> {
       }).toList();
     }
     return manhua;
+  }
+
+  void saveHistory(String storyID) async {
+    final prefs = await SharedPreferences.getInstance();
+    final uid = prefs.getString('userID') ?? '';
+    await prefs.setString('history_${uid}_$storyID', storyID);
   }
 
   @override
@@ -153,7 +160,7 @@ class _SearchResultState extends State<SearchResult> {
       itemCount: data.length,
       itemBuilder: (context, index) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
             height: 157,
             decoration: BoxDecoration(
@@ -165,6 +172,7 @@ class _SearchResultState extends State<SearchResult> {
               children: [
                 GestureDetector(
                   onTap: () {
+                    saveHistory(data[index].storyid);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
                       storyid: data[index].storyid, 
                       storyname: data[index].storyname, 
@@ -241,6 +249,7 @@ class _SearchResultState extends State<SearchResult> {
                 padding: const EdgeInsets.all(5.0),
                 child: GestureDetector(
                   onTap: () {
+                    saveHistory(data[index].storyid);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
                     storyid: data[index].storyid, 
                     storyname: data[index].storyname, 

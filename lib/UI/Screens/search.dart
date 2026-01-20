@@ -107,6 +107,7 @@ class _SearchState extends State<Search> {
               padding: const EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
               child: TextField(
                 decoration: InputDecoration(
+                  hintText: "Tìm kiếm",
                   prefixIcon: Icon(
                     Icons.search,
                     // ignore: deprecated_member_use

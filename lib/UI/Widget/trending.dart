@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
 import 'package:manga_app/model/manga_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Trending extends StatefulWidget {
   const Trending({super.key});
@@ -16,6 +17,12 @@ class _TrendingState extends State<Trending> {
   void initState() {
     date = fetchData();
     super.initState();
+  }
+
+  void saveHistory(String storyID) async {
+    final prefs = await SharedPreferences.getInstance();
+    final uid = prefs.getString('userID') ?? '';
+    await prefs.setString('history_${uid}_$storyID', storyID);
   }
 
   Future <List<MangaModel>> fetchData() async {
@@ -45,9 +52,7 @@ class _TrendingState extends State<Trending> {
       }
     );
   }
-}
-
-Widget _buildUI(BuildContext context, List<MangaModel> manga) {
+  Widget _buildUI(BuildContext context, List<MangaModel> manga) {
   return SizedBox(
       height: 180,
       child: ListView.builder(
@@ -56,6 +61,7 @@ Widget _buildUI(BuildContext context, List<MangaModel> manga) {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
+              saveHistory(manga[index].storyid);
               Navigator.push(
                 context, 
                 MaterialPageRoute(
@@ -111,3 +117,6 @@ Widget _buildUI(BuildContext context, List<MangaModel> manga) {
       ),
     );
   }
+}
+
+
