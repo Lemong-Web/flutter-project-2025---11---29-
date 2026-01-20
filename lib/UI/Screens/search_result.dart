@@ -51,6 +51,12 @@ class _SearchResultState extends State<SearchResult> {
   }
 
   @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width * 0.6;
     return Scaffold(

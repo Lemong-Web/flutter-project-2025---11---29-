@@ -9,6 +9,7 @@ import 'package:manga_app/UI/Widget/trending.dart';
 import 'package:manga_app/UI/Widget/view.dart';
 import 'package:manga_app/model/filter.dart';
 import 'package:manga_app/model/manga_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -41,6 +42,12 @@ class _HomeState extends State<Home> {
   //     userID = uid ?? "";
   //   });
   // }
+
+  void saveHistory(String storyID) async {
+    final prefs = await SharedPreferences.getInstance();
+    final uid = prefs.getString('userID') ?? '';
+    await prefs.setString('history_${uid}_$storyID', storyID);
+  }
 
   void openFilterDialog() async {
     await FilterListDialog.display<Filter>(
@@ -394,6 +401,7 @@ class _HomeState extends State<Home> {
                   final data = manga[index];
                   return GestureDetector(
                     onTap: () {
+                      saveHistory(data.storyid);
                       Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
                         storyid: data.storyid, 
                         storyname: data.storyname, 
@@ -403,7 +411,7 @@ class _HomeState extends State<Home> {
                         storygenres: data.storydes, 
                         urllinkcraw: data.urllinkcraw, 
                         storytauthor: data.storytauthor, views: data.views)));  
-                    },
+                      },
                     child: view (
                       storyid: data.storyid, 
                       storyname: data.storyname, 

@@ -73,6 +73,7 @@ class _BookshelfState extends State<Bookshelf> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        foregroundColor: Colors.white,
         backgroundColor: Color(0xFF393D5E),
         title: Text(
           "Giá Sách",

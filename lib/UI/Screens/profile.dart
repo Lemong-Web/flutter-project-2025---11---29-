@@ -53,7 +53,7 @@ class _ProfileState extends State<Profile> {
     final keys = prefs.getKeys();
 
     for(var key in keys) {
-      if (key.startsWith('last_read_index_') || key.startsWith('favorite_')) {
+      if (key.startsWith('last_read_index_') || key.startsWith('favorite_') || key.startsWith('history_')) {
         await prefs.remove(key);
       }
     }
@@ -102,13 +102,16 @@ Widget _buildUITitleandAvatar() {
             padding: const EdgeInsets.only(left: 90),
             child: Row(
               children: [
-                Text(
-                  'Xin chào $username',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30
-                  )),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Xin chào $username',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30
+                    )),
+                ),
                   Icon(Icons.waving_hand, color: Colors.yellow, size: 20),
                 ],
               ),

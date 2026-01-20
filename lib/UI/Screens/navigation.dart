@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:manga_app/UI/Screens/bookshelf.dart';
+import 'package:manga_app/UI/Screens/history.dart';
 import 'package:manga_app/UI/Screens/home.dart';
 import 'package:manga_app/UI/Screens/profile.dart';
 import 'package:manga_app/UI/Screens/search.dart';
@@ -38,7 +38,7 @@ class _NavigationState extends State<Navigation> {
         children: [
           Home(),
           Search(),
-          Bookshelf(),
+          History(),
           Profile(),
         ],
       ),
