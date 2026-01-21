@@ -30,6 +30,7 @@ class _HomeState extends State<Home> {
   bool search = false;
   final Dio dio = Dio();
   final CarouselSliderController _controller = CarouselSliderController();
+  final TextEditingController _searchController = TextEditingController();
   late Future <List<MangaModel>> data;
   List<Filter> selectedTagList = [];
   List<String> selectedTag = [];
@@ -163,6 +164,7 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     _streamSubscription?.cancel();
+    _searchController.dispose();
     super.dispose();
   }
    
@@ -206,6 +208,7 @@ class _HomeState extends State<Home> {
             Padding (
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: TextField(
+                controller: _searchController,
                 onSubmitted: (value) {
                   if (value.isEmpty) return;
                   setState(() {
@@ -261,24 +264,6 @@ class _HomeState extends State<Home> {
     
           search ? const SizedBox.shrink() : Trending(),
           
-          search ? const SizedBox.shrink() :
-          Align(
-            alignment: AlignmentGeometry.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: const Text(
-                "Truyện đã kết thúc!",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontFamily: 'Inter')
-                ),
-              ),
-            ),
-          
-          const SizedBox(height: 10),
-
-          search ? const SizedBox.shrink() :
           Container(
             width: 326,
             decoration: BoxDecoration(
@@ -387,18 +372,18 @@ class _HomeState extends State<Home> {
             ],
           ),
     
-           Padding(
-             padding: const EdgeInsets.symmetric(horizontal: 10),
-             child: Text(
-              search ? "Kết quả tìm kiếm" : "Manhua!",
-              style: TextStyle(
-                fontFamily: "Ubuntu",
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Colors.white
-                ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+            search ? "Kết quả tìm kiếm" : "Manhua!",
+            style: TextStyle(
+              fontFamily: "Ubuntu",
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.white
               ),
             ),
+          ),
             
             SizedBox(
               height: tagSearch ? null : 2190,

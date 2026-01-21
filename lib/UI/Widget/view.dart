@@ -34,17 +34,26 @@ class view extends StatelessWidget {
             storyimage, 
             width: 90,
             height: 120,
-            fit: BoxFit.cover)),
+            fit: BoxFit.cover
+          )
+        ),
+
             const SizedBox(height: 6),
-            SizedBox(
-              height: 40,
-              width: 100,
-              child: Text(
-                storyname,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "Ubuntu"
-                )
+
+            Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: SizedBox(
+                height: 40,
+                width: 90,
+                child: Text(
+                  storyname,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "Ubuntu"
+                  )
+                ),
               ),
             ),
           ],

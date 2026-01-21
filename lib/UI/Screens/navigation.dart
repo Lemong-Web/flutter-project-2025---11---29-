@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:manga_app/UI/Screens/history.dart';
 import 'package:manga_app/UI/Screens/home.dart';
 import 'package:manga_app/UI/Screens/profile.dart';
 import 'package:manga_app/UI/Screens/search.dart';
+import 'package:manga_app/UI/Screens/tabBar.dart';
 
 class Navigation extends StatefulWidget {
   
@@ -38,7 +38,7 @@ class _NavigationState extends State<Navigation> {
         children: [
           Home(),
           Search(),
-          History(),
+          Tabbar(),
           Profile(),
         ],
       ),
@@ -72,16 +72,16 @@ class _NavigationState extends State<Navigation> {
               tabs: [
                 GButton(
                   icon: Icons.home,
-                  text: "Home"),
+                  text: "Trang chủ"),
                 GButton(
                   icon: Icons.search,
-                  text: "Search"),
+                  text: "Tìm kiếm"),
                 GButton(
                   icon: Icons.book,
-                  text: "Book"),
+                  text: "Giá sách"),
                 GButton(
                   icon: Icons.account_circle,
-                  text: "Account"),
+                  text: "Tài khoản"),
                 ],
                 selectedIndex: _selectedIndex,
                 onTabChange: _onItemTapped,

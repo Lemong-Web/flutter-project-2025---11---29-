@@ -122,7 +122,7 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
                 child: ElevatedButton(
                   onPressed: () async {
                     timer!.cancel();
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => IntroAsk()));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => IntroAsk()));
                   }, 
                   child: Text("Bỏ qua ($start)")
                 ),

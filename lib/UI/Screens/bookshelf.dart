@@ -71,19 +71,6 @@ class _BookshelfState extends State<Bookshelf> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        foregroundColor: Colors.white,
-        backgroundColor: Color(0xFF393D5E),
-        title: Text(
-          "Giá Sách",
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: "Inter",
-            fontWeight: FontWeight.bold,
-            fontSize: 24
-        )),
-      ),
       backgroundColor: Color(0xFF393D5E),
       body: isInternetConnected
         ? FutureBuilder(

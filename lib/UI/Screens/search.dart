@@ -28,6 +28,7 @@ class _SearchState extends State<Search> {
   List<Filter>? selectedFilterList = [];
   List<String>? selectedTag = [];
   StreamSubscription? _streamSubscription;
+  final TextEditingController _searchController = TextEditingController();
   
   void searchHistory(List<String>? value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -106,6 +107,7 @@ class _SearchState extends State<Search> {
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
               child: TextField(
+                controller: _searchController,
                 decoration: InputDecoration(
                   hintText: "Tìm kiếm",
                   prefixIcon: Icon(

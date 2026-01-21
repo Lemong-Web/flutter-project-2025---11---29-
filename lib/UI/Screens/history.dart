@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:manga_app/UI/Screens/bookshelf.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
+import 'package:manga_app/UI/Widget/search_container.dart';
 import 'package:manga_app/model/manga_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,6 +49,12 @@ class _HistoryState extends State<History> {
     historyList = manhuaList.where((manhua) {
       return historyIds.contains(manhua.storyid);
     }).toList();
+
+    historyList.sort((a, b) {
+      int indexA = historyIds.indexOf(a.storyid);
+      int indexB = historyIds.indexOf(b.storyid);
+      return indexB.compareTo(indexA);
+    });
   }
 
   Future<void> retry() async {
@@ -73,30 +79,6 @@ class _HistoryState extends State<History> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF393D5E),
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          "Lịch sử",
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.bold
-          ),
-        ),
-        backgroundColor: const Color(0xFF393D5E),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Bookshelf()));
-            }, 
-            icon: Icon(
-              Icons.list,
-              color: Colors.white,
-              size: 30,
-            )
-          )
-        ],
-      ),
       body: FutureBuilder(
         future: _history, 
         builder: (context, snapshot) {
@@ -176,55 +158,79 @@ class _HistoryState extends State<History> {
               ),
             )
             : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    childAspectRatio: 90 / 120
-                  ), 
+                padding: const EdgeInsets.only(top: 10, left: 0, right: 0, bottom: 10),
+                child: ListView.builder(
                   itemCount: historyList.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return DetailScreen(
-                              storyid: historyList[index].storyid, 
-                              storyname: historyList[index].storyname, 
-                              storyothername: historyList[index].storyothername, 
-                              storyimage: historyList[index].storyimage, 
-                              storydes: historyList[index].storydes, 
-                              storygenres: historyList[index].storygenres,
-                              urllinkcraw: historyList[index].urllinkcraw, 
-                              storytauthor: historyList[index].storytauthor, views: historyList[index].views);
-                          }));
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            gradient: LinearGradient(
-                              colors: [
-                                Color(0xffFA8BFF),
-                                Color(0xff2BD2FF)
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      child: Container(
+                        height: 157,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18),
+                          // ignore: deprecated_member_use
+                          color: Color(0xffFFFFFF).withOpacity(0.2)
+                        ),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => DetailScreen(
+                                    storyid: historyList[index].storyid,
+                                    storyname: historyList[index].storyname, 
+                                    storyothername: historyList[index].storyothername, 
+                                    storyimage: historyList[index].storyimage, 
+                                    storydes: historyList[index].storydes, 
+                                    storygenres: historyList[index].storygenres, 
+                                    urllinkcraw: historyList[index].urllinkcraw, 
+                                    storytauthor: historyList[index].storytauthor, views: historyList[index].views)));
+                                  },
+                                  child: SearchContainer(
+                                    image: Image.network(historyList[index].storyimage)
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.55,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          historyList[index].storyname,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "Inter",
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            historyList[index].storydes,
+                                            maxLines: 5,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                      ]
+                                    ),
+                                  ),
+                                )
                               ]
                             )
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              historyList[index].storyimage,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      );
-                    } 
-                  ),
-                );
-              }
-            }),
-          );
+                          )
+                        );
+                      }
+                    )
+                  );
+                }
+              }),
+            );
+          }
         }
-      }
