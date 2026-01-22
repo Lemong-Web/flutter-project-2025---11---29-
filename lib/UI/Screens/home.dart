@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
 import 'package:manga_app/UI/Widget/trending.dart';
 import 'package:manga_app/UI/Widget/view.dart';
+import 'package:manga_app/change_notifier.dart';
 import 'package:manga_app/model/filter.dart';
 import 'package:manga_app/model/manga_model.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,7 +32,6 @@ class _HomeState extends State<Home> {
   bool search = false;
   final Dio dio = Dio();
   final CarouselSliderController _controller = CarouselSliderController();
-  final TextEditingController _searchController = TextEditingController();
   late Future <List<MangaModel>> data;
   List<Filter> selectedTagList = [];
   List<String> selectedTag = [];
@@ -164,12 +165,12 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     _streamSubscription?.cancel();
-    _searchController.dispose();
     super.dispose();
   }
    
   @override
   Widget build(BuildContext context) {
+    final controllerManager = context.watch<ControllerManager>();
     return FutureBuilder<List<MangaModel>>(
       future: data, 
       builder: (context, snapshot) {
@@ -179,7 +180,7 @@ class _HomeState extends State<Home> {
           return Center(child: Text("Error: ${snapshot.error}"));
         } else if (snapshot.hasData) {
           List<MangaModel> manga = snapshot.data!;
-          return _buildUI(manga);
+          return _buildUI(manga, controllerManager);
         } else {
           return const Center(child: Text("Found no data"));
         }
@@ -187,7 +188,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildUI(List<MangaModel> manga) {
+  Widget _buildUI(List<MangaModel> manga, dynamic controllerManager) {
     return Scaffold(
     backgroundColor: const Color(0xFF393D5E),
       body: isInternetConnected 
@@ -208,7 +209,8 @@ class _HomeState extends State<Home> {
             Padding (
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: TextField(
-                controller: _searchController,
+                controller: controllerManager.controller,
+                textInputAction: TextInputAction.search,
                 onSubmitted: (value) {
                   if (value.isEmpty) return;
                   setState(() {

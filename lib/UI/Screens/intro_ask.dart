@@ -158,7 +158,7 @@ class _IntroAskState extends State<IntroAsk> {
 
   Widget nextBtn() {
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.only(right: 8,),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape: ContinuousRectangleBorder(

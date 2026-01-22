@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/auth_layout.dart';
+import 'package:manga_app/change_notifier.dart';
 import 'package:manga_app/firebase_options.dart';
+import 'package:provider/provider.dart';
 // import 'package:manga_app/UI/Screens/splash.dart';
 
 Future<void> main() async {
@@ -9,9 +11,13 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ControllerManager(),
+      child: const MainApp(),
+    )
+  );
 }
-
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});

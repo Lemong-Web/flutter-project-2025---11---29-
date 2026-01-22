@@ -27,7 +27,7 @@ class _IntroSplashScreenState extends State<IntroSplashScreen> {
           setState(()  {
             _hasFinished = true;
             timer.cancel();
-            Navigator.push(context, MaterialPageRoute(builder: (context) => IntroAsk()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => IntroAsk()));
           });
         } else {
           setState(() {

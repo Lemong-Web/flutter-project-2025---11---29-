@@ -8,7 +8,9 @@ import 'package:manga_app/UI/Screens/search_result_tag.dart';
 import 'package:manga_app/UI/Screens/tagpage.dart';
 import 'package:manga_app/UI/Widget/tagbutton.dart';
 import 'package:manga_app/UI/Widget/trending.dart';
+import 'package:manga_app/change_notifier.dart';
 import 'package:manga_app/model/filter.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:manga_app/model/manga_model.dart';
 
@@ -28,7 +30,6 @@ class _SearchState extends State<Search> {
   List<Filter>? selectedFilterList = [];
   List<String>? selectedTag = [];
   StreamSubscription? _streamSubscription;
-  final TextEditingController _searchController = TextEditingController();
   
   void searchHistory(List<String>? value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -93,13 +94,14 @@ class _SearchState extends State<Search> {
  
   @override
   Widget build(BuildContext context) {
+    final controllerManager = context.watch<ControllerManager>();
     return Scaffold(
       backgroundColor: const Color(0xFF393D5E),
-      body: isInternetConnected ? _buildUI() : retry()
+      body: isInternetConnected ? _buildUI(controllerManager) : retry()
     );
   }
   
-  Widget _buildUI() {
+  Widget _buildUI(dynamic controllerManager) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -107,7 +109,8 @@ class _SearchState extends State<Search> {
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
               child: TextField(
-                controller: _searchController,
+                controller: controllerManager.controller,
+                textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   hintText: "Tìm kiếm",
                   prefixIcon: Icon(

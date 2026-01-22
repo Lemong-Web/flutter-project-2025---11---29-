@@ -79,6 +79,7 @@ class _SearchResultState extends State<SearchResult> {
               width: width,
               child: TextField(
                 controller: _textEditingController,
+                textInputAction: TextInputAction.search,
                 style: TextStyle(
                   color: Colors.white
                 ),

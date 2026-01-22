@@ -19,6 +19,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool hidePass2 = true;
   bool hideWord = false;
   bool isScroll = true;
+  bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
@@ -159,6 +160,10 @@ class _SignUpPageState extends State<SignUpPage> {
           onPressed: () async {
            if (!_formKey.currentState!.validate()) return;
             try {
+              setState(() {
+                isLoading = true;
+              });
+
               await register();
 
               if (!mounted) return;
@@ -176,7 +181,9 @@ class _SignUpPageState extends State<SignUpPage> {
               }
             }
           }, 
-          child: Text(
+          child: isLoading  
+          ? CircularProgressIndicator()
+          : Text(
             "Đăng ký",
             style: TextStyle(
               fontSize: 20,

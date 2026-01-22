@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/bookshelf.dart';
 import 'package:manga_app/UI/Screens/history.dart';
