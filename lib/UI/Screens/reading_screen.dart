@@ -48,7 +48,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
     _hideTimer?.cancel();
 
-    _hideTimer = Timer( const Duration(seconds: 6), () {
+    _hideTimer = Timer(const Duration(seconds: 6), () {
       if (mounted) {
         setState(() {
           doubleTap = false;
@@ -75,8 +75,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
       context, MaterialPageRoute(builder: (context) => ReadingScreen(
         storyID: widget.storyID, 
         chapterID: goNextChap, 
-        initalPage: 0 )));
-      }
+        initalPage: 0 
+      )));
+    }
   
   String? previousChapter() {
     if(!chapter_loaded) return null;
@@ -185,7 +186,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
             }
           ),
           leading: IconButton(
-            onPressed: () => Navigator.pop(context), 
+            onPressed: () => Navigator.pop(context, true), 
             icon: Icon(Icons.arrow_back)),
           foregroundColor: const Color(0xffffffff),
           // ignore: deprecated_member_use

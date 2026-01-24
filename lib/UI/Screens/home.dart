@@ -206,43 +206,43 @@ class _HomeState extends State<Home> {
               ),
             ),
             const SizedBox(height: 10),
-            Padding (
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child: TextField(
-                controller: controllerManager.controller,
-                textInputAction: TextInputAction.search,
-                onSubmitted: (value) {
-                  if (value.isEmpty) return;
-                  setState(() {
-                    searchKey = value;
-                    search = true;
-                    data = fetchData(searchText: searchKey);
-                  });   
-                },
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      openFilterDialog();
-                    }, 
-                    icon: Icon(Icons.tune)),
-                  hint: Text (
-                    "Tìm kiếm truyện...",
-                    style: TextStyle(
-                      // ignore: deprecated_member_use
-                      color: Color(0xFF393D5E).withOpacity(0.6),
-                      fontFamily: "Ubuntu",
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: Color(0xFFA0A1AD),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12)
-                  ),
-                ),
-              ),
-            ),
+            // Padding (
+            //   padding: const EdgeInsets.only(left: 30, right: 30),
+            //   child: TextField(
+            //     controller: controllerManager.controller,
+            //     textInputAction: TextInputAction.search,
+            //     onSubmitted: (value) {
+            //       if (value.isEmpty) return;
+            //       setState(() {
+            //         searchKey = value;
+            //         search = true;
+            //         data = fetchData(searchText: searchKey);
+            //       });   
+            //     },
+            //     decoration: InputDecoration(
+            //       prefixIcon: Icon(Icons.search),
+            //       suffixIcon: IconButton(
+            //         onPressed: () {
+            //           openFilterDialog();
+            //         }, 
+            //         icon: Icon(Icons.tune)),
+            //       hint: Text (
+            //         "Tìm kiếm truyện...",
+            //         style: TextStyle(
+            //           // ignore: deprecated_member_use
+            //           color: Color(0xFF393D5E).withOpacity(0.6),
+            //           fontFamily: "Ubuntu",
+            //           fontWeight: FontWeight.bold
+            //         ),
+            //       ),
+            //       filled: true,
+            //       fillColor: Color(0xFFA0A1AD),
+            //       border: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(12)
+            //       ),
+            //     ),
+            //   ),
+            // ),
             
             const SizedBox(height: 10),
 
@@ -374,18 +374,21 @@ class _HomeState extends State<Home> {
             ],
           ),
     
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16),
             child: Text(
-            search ? "Kết quả tìm kiếm" : "Manhua!",
-            style: TextStyle(
-              fontFamily: "Ubuntu",
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Colors.white
+              search ? "Kết quả tìm kiếm" : "Danh sách truyện!",
+              style: TextStyle(
+                fontFamily: "Ubuntu",
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.white
+                ),
               ),
-            ),
           ),
+        ),
             
             SizedBox(
               height: tagSearch ? null : 2190,

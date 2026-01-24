@@ -46,8 +46,6 @@ class _DetailScreenState extends State<DetailScreen> {
   int? lastIndex;
   late Future<NumberModel> chapters;
 
-
-
   Dio dio = Dio();
   Future<NumberModel> fetchChapters() async {
     final response = await dio.get(
@@ -94,6 +92,7 @@ class _DetailScreenState extends State<DetailScreen> {
     Share.share(shareLink);
   }
 
+
   @override
   void initState() {
     super.initState();
@@ -131,7 +130,6 @@ class _DetailScreenState extends State<DetailScreen> {
             title: Center(
               child: Row(
                 children: [
-                  const SizedBox(width: 80),
                   Text(
                     "Manhua",
                     style: TextStyle(
@@ -200,7 +198,13 @@ class _DetailScreenState extends State<DetailScreen> {
                     initalPage: 0,
                   ),
                 ),
-              );
+              ).then((value) {
+                if (value = true) {
+                  setState(() {
+                    loadLastIndex();
+                  });
+                }
+              }); 
             },
             child: DetailTabbar(listchapter: listchapter, lastIndex: lastIndex,),
           )
@@ -334,7 +338,13 @@ class _DetailScreenState extends State<DetailScreen> {
                         initalPage: index,
                       ),
                     ),
-                  );
+                  ).then((value) {
+                    if (value = true) {
+                      setState(() {
+                        loadLastIndex();
+                      });
+                    }
+                  });
                 },
               ),
             );

@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/account_information.dart';
 import 'package:manga_app/UI/Screens/change_password.dart';
+import 'package:manga_app/UI/Screens/setting.dart';
 import 'package:manga_app/auth_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -46,17 +46,6 @@ class _ProfileState extends State<Profile> {
     setState(() {
       username = name ?? '';
     });
-  }
-
-  void deleteData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final keys = prefs.getKeys();
-
-    for(var key in keys) {
-      if (key.startsWith('last_read_index_') || key.startsWith('favorite_') || key.startsWith('history_')) {
-        await prefs.remove(key);
-      }
-    }
   }
 
   void logout() async {
@@ -172,43 +161,16 @@ Widget _buildUITitleandAvatar() {
                 trailing: Icon(Icons.arrow_forward),
               ),
               ListTile(
+                leading: const Icon(Icons.settings),
                 onTap: () {
-                  showDialog<String>(
-                    context: context, 
-                    builder: (BuildContext content) => AlertDialog(
-                      title: const Text("Cảnh Báo"),
-                      content: const Text("Điều này sẽ xóa danh sach yêu thích, lịch sử tìm kiếm, đánh dấu chương\nbạn có muốn xóa không? "),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          }, 
-                          child: const Text("Hủy")),
-                        TextButton(
-                          onPressed: () {
-                            deleteData();
-                            final snackBar = SnackBar(
-                            content: const Text("Dữ liệu đã được xóa"),
-                            action: SnackBarAction(
-                              label: "Ok", 
-                              onPressed: () {}
-                            ),
-                          );
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          }, 
-                          child: Text("Ok"))
-                      ],
-                    )
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Setting()));
                 },
-                  leading: Icon(Icons.folder_off),
-                  title: Text('Xóa dữ liệu'),
-                  trailing: Icon(Icons.arrow_forward),
-                ),
-              ]
-            ).toList()
-          )
-        );
-      }
+                title: const Text("Cài đặt"),
+                trailing: const Icon(Icons.arrow_forward),
+              )
+            ]
+          ).toList()
+        )
+      );
     }
+  }

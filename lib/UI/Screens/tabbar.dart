@@ -23,10 +23,10 @@ class Tabbar extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          bottom: const TabBar(
+          bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.history)),
-              Tab(icon: Icon(Icons.favorite)),
+              Tab(icon: Icon(Icons.history, color: Colors.amber)),
+              Tab(icon: Icon(Icons.favorite, color: Colors.amber,)),
             ],
           ),
         ),
