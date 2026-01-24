@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
 import 'package:manga_app/UI/Widget/trending.dart';
 import 'package:manga_app/UI/Widget/view.dart';
-import 'package:manga_app/change_notifier.dart';
 import 'package:manga_app/model/filter.dart';
 import 'package:manga_app/model/manga_model.dart';
+import 'package:manga_app/provider/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
@@ -170,7 +170,8 @@ class _HomeState extends State<Home> {
    
   @override
   Widget build(BuildContext context) {
-    final controllerManager = context.watch<ControllerManager>();
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return FutureBuilder<List<MangaModel>>(
       future: data, 
       builder: (context, snapshot) {
@@ -180,7 +181,7 @@ class _HomeState extends State<Home> {
           return Center(child: Text("Error: ${snapshot.error}"));
         } else if (snapshot.hasData) {
           List<MangaModel> manga = snapshot.data!;
-          return _buildUI(manga, controllerManager);
+          return _buildUI(manga, themeProvider);
         } else {
           return const Center(child: Text("Found no data"));
         }
@@ -188,9 +189,10 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildUI(List<MangaModel> manga, dynamic controllerManager) {
+  Widget _buildUI(List<MangaModel> manga, ThemeProvider themeProvider) {
     return Scaffold(
-    backgroundColor: const Color(0xFF393D5E),
+      backgroundColor: themeProvider.themeMode == 
+        ThemeMode.dark ? Color(0xFF393D5E) : Color(0xFFF2F3F9),
       body: isInternetConnected 
         ? SingleChildScrollView(
         child: Column(
@@ -256,7 +258,6 @@ class _HomeState extends State<Home> {
                       "Manhua đang nổi",
                       style: TextStyle(
                         fontSize: 20,
-                        color: Colors.white,
                         fontFamily: "Ubuntu",
                         fontWeight: FontWeight.bold
                       ),
@@ -384,7 +385,6 @@ class _HomeState extends State<Home> {
                 fontFamily: "Ubuntu",
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
-                color: Colors.white
                 ),
               ),
           ),

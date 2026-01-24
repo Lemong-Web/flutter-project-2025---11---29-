@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:manga_app/provider/theme.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Setting extends StatefulWidget {
@@ -9,7 +11,7 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  bool mode = false;
+
   void deleteData() async {
       final prefs = await SharedPreferences.getInstance();
       final keys = prefs.getKeys();
@@ -23,6 +25,7 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       backgroundColor: const Color(0xFF393D5E),
       appBar: AppBar(
@@ -50,16 +53,16 @@ class _SettingState extends State<Setting> {
           child: ListView(
             children: [
               ListTile(
-                leading: mode ? Icon(Icons.dark_mode) : Icon(Icons.light_mode),
-                title: mode ? Text("Tối") : Text("Sáng"),
+                leading: themeProvider.themeMode == ThemeMode.dark ? Icon(Icons.dark_mode) : Icon(Icons.light_mode),
+                title: themeProvider.themeMode == ThemeMode.dark ? Text("Tối") : Text("Sáng"),
                 trailing: Switch(
-                  value: mode,
+                  value: themeProvider.themeMode == ThemeMode.dark,
                   inactiveThumbColor: Colors.yellow,
                   inactiveTrackColor: Colors.amber,
-                  onChanged: (bool value) {
-                    setState(() {
-                      mode = value;
-                    });
+                  activeThumbColor: Colors.black ,
+                  activeTrackColor: Colors.indigo,
+                  onChanged: (value) {
+                    themeProvider.toggleTheme(value);
                   } 
                 ),
               ),

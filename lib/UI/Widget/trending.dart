@@ -102,7 +102,6 @@ class _TrendingState extends State<Trending> {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: TextStyle(
-                        color: Colors.white,
                         fontFamily: "Ubuntu",
                         fontWeight: FontWeight.bold,
                         fontSize: 12

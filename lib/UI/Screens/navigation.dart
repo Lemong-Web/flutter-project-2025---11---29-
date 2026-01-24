@@ -4,6 +4,8 @@ import 'package:manga_app/UI/Screens/home.dart';
 import 'package:manga_app/UI/Screens/profile.dart';
 import 'package:manga_app/UI/Screens/search.dart';
 import 'package:manga_app/UI/Screens/tabBar.dart';
+import 'package:manga_app/provider/theme.dart';
+import 'package:provider/provider.dart';
 
 class Navigation extends StatefulWidget {
   
@@ -26,8 +28,10 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: const Color(0xFF393D5E),
+      backgroundColor: themeProvider.themeMode == 
+        ThemeMode.dark ? Color(0xFF393D5E) : Color(0xFFF2F3F9),
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -66,8 +70,8 @@ class _NavigationState extends State<Navigation> {
               rippleColor: Colors.grey,
               hoverColor: Colors.grey,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              activeColor: Colors.yellow,
-              tabActiveBorder: Border.all(color: Colors.yellow),
+              activeColor: themeProvider.themeMode == ThemeMode.dark ? Colors.yellow : Colors.black,
+              tabActiveBorder: Border.all(color: Colors.black),
               gap: 8,
               tabs: [
                 GButton(
