@@ -71,7 +71,7 @@ class _NavigationState extends State<Navigation> {
               hoverColor: Colors.grey,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               activeColor: themeProvider.themeMode == ThemeMode.dark ? Colors.yellow : Colors.black,
-              tabActiveBorder: Border.all(color: Colors.black),
+              tabActiveBorder: Border.all(color: Colors.yellow),
               gap: 8,
               tabs: [
                 GButton(

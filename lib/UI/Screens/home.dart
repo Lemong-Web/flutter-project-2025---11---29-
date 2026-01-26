@@ -191,8 +191,8 @@ class _HomeState extends State<Home> {
 
   Widget _buildUI(List<MangaModel> manga, ThemeProvider themeProvider) {
     return Scaffold(
-      backgroundColor: themeProvider.themeMode == 
-        ThemeMode.dark ? Color(0xFF393D5E) : Color(0xFFF2F3F9),
+      // backgroundColor: themeProvider.themeMode == 
+      // ThemeMode.dark ? Color(0xFF393D5E) : Color(0xFFF2F3F9),
       body: isInternetConnected 
         ? SingleChildScrollView(
         child: Column(

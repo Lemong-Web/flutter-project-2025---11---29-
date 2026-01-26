@@ -74,10 +74,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF393D5E),
       appBar: AppBar(
-        backgroundColor: Color(0xFF393D5E),
-        foregroundColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -97,7 +94,6 @@ class _ChangePasswordState extends State<ChangePassword> {
       child: const Text(
         "Đổi mật khẩu",
         style: TextStyle(
-          color: Colors.white,
           fontFamily: "Inter",
           fontWeight: FontWeight.bold,
           fontSize: 25
@@ -115,13 +111,11 @@ class _ChangePasswordState extends State<ChangePassword> {
               controller: currentPasswords,
               textInputAction: TextInputAction.next,
               style: TextStyle(
-                color: Colors.white
               ),
               decoration: InputDecoration(
                 label: Text(
                   "Mật khẩu hiện tại",
                   style: TextStyle(
-                    color: Colors.white
                 )),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -134,13 +128,11 @@ class _ChangePasswordState extends State<ChangePassword> {
               controller: newPasswords,
               textInputAction: TextInputAction.done,
               style: TextStyle(
-                color: Colors.white
               ),
               decoration: InputDecoration(
                 label: Text(
                   "Mật khẩu mới",
                   style: TextStyle(
-                    color: Colors.white                  
                  )),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8)
@@ -171,7 +163,6 @@ class _ChangePasswordState extends State<ChangePassword> {
           "Đổi mật khẩu",
             style: TextStyle(
               fontSize: 15,
-              color: Colors.white,
               fontWeight: FontWeight.bold
           ))
         ); 

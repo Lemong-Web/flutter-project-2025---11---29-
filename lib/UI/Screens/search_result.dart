@@ -67,10 +67,7 @@ class _SearchResultState extends State<SearchResult> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width * 0.6;
     return Scaffold(
-      backgroundColor: const Color(0xFF393D5E),
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: const Color(0xFF393D5E),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -81,17 +78,13 @@ class _SearchResultState extends State<SearchResult> {
                 controller: _textEditingController,
                 textInputAction: TextInputAction.search,
                 style: TextStyle(
-                  color: Colors.white
                 ),
                 decoration: InputDecoration(
-                  filled: true,
                   // ignore: deprecated_member_use
-                  fillColor: Colors.white.withOpacity(0.2),
                   hint: const Text(
                     "Tìm kiếm",
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey
                   )),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12)
@@ -140,7 +133,6 @@ class _SearchResultState extends State<SearchResult> {
                   child: Text(
                     "Không tìm thấy '${widget.searchKey}' trong App.",
                     style: const TextStyle(
-                      color: Colors.white,
                       fontWeight: FontWeight.bold
                     ))
                   );
@@ -162,65 +154,63 @@ class _SearchResultState extends State<SearchResult> {
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: Container(
-            height: 157,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              // ignore: deprecated_member_use
-              color: Color(0xffFFFFFF).withOpacity(0.2)
-            ),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    saveHistory(data[index].storyid);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
-                      storyid: data[index].storyid, 
-                      storyname: data[index].storyname, 
-                      storyothername: data[index].storyothername, 
-                      storyimage: data[index].storyimage, 
-                      storydes: data[index].storydes, 
-                      storygenres: data[index].storygenres, 
-                      urllinkcraw: data[index].urllinkcraw, 
-                      storytauthor: data[index].storytauthor, views: data[index].views)));
-                    },
-                  child: SearchContainer(
+          child: GestureDetector(
+            onTap: () {
+               saveHistory(data[index].storyid);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
+                  storyid: data[index].storyid, 
+                  storyname: data[index].storyname, 
+                  storyothername: data[index].storyothername, 
+                  storyimage: data[index].storyimage, 
+                  storydes: data[index].storydes, 
+                  storygenres: data[index].storygenres, 
+                  urllinkcraw: data[index].urllinkcraw, 
+                  storytauthor: data[index].storytauthor, views: data[index].views)));
+               },
+            child: Container(
+              height: 157,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Theme.of(context).colorScheme.surface,
+                // ignore: deprecated_member_use
+              ),
+              child: Row(
+                children: [
+                  SearchContainer(
                     image: Image.network(data[index].storyimage)
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.55,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          data[index].storyname,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "Inter",
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            data[index].storydes,
-                            maxLines: 5,
-                            overflow: TextOverflow.ellipsis,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.55,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            data[index].storyname,
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
+                              fontFamily: "Inter",
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 5),
-                      ],
+                          Expanded(
+                            child: Text(
+                              data[index].storydes,
+                              maxLines: 5,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         );
@@ -238,63 +228,65 @@ class _SearchResultState extends State<SearchResult> {
         ),
         itemCount: data.length,
         itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              // ignore: deprecated_member_use
-              color: Color(0xffFFFFFF).withOpacity(0.2)
-            ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: GestureDetector(
-                  onTap: () {
-                    saveHistory(data[index].storyid);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
-                    storyid: data[index].storyid, 
-                    storyname: data[index].storyname, 
-                    storyothername: data[index].storyothername, 
-                    storyimage: data[index].storyimage, 
-                    storydes: data[index].storydes, 
-                    storygenres: data[index].storygenres, 
-                    urllinkcraw: data[index].urllinkcraw, 
-                    storytauthor: data[index].storytauthor, views: data[index].views)));
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(1),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xff2BD2FF),
-                          Color(0xff2BFF88)
-                        ]
+          return Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: GestureDetector(
+              onTap: () {
+                saveHistory(data[index].storyid);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(
+                storyid: data[index].storyid, 
+                storyname: data[index].storyname, 
+                storyothername: data[index].storyothername, 
+                storyimage: data[index].storyimage, 
+                storydes: data[index].storydes, 
+                storygenres: data[index].storygenres, 
+                urllinkcraw: data[index].urllinkcraw, 
+                storytauthor: data[index].storytauthor, views: data[index].views)));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Theme.of(context).colorScheme.surface,
+                  // ignore: deprecated_member_use
+                ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Container(
+                      padding: EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xff2BD2FF),
+                            Color(0xff2BFF88)
+                          ]
+                        ),
+                        borderRadius: BorderRadius.circular(12)
                       ),
-                      borderRadius: BorderRadius.circular(12)
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(data[index].storyimage, fit: BoxFit.cover),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(data[index].storyimage, fit: BoxFit.cover),
+                      ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      data[index].storyname,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.bold
+                      ), 
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  data[index].storyname,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.bold
-                  ), 
-                ),
-              ),
-            ],
-          ),
-        );
+                      ),
+            ),
+          );
       }
     );
   }

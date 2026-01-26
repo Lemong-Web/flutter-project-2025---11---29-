@@ -93,7 +93,6 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF393D5E),
       body: isInternetConnected ? _buildUI() : retry()
     );
   }
@@ -221,7 +220,6 @@ class _SearchState extends State<Search> {
                 child: const Text(
                   "Manhua đang nổi",
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 20,
                     fontFamily: "Ubuntu",
                     fontWeight: FontWeight.bold)
@@ -290,7 +288,6 @@ class _SearchState extends State<Search> {
                       const Text(
                         "Gần đây",
                         style: TextStyle(
-                          color: Colors.white,
                           fontFamily: "Ubuntu",
                           fontWeight: FontWeight.bold,
                           fontSize: 16
@@ -349,7 +346,6 @@ class _SearchState extends State<Search> {
                               child: Text(
                                 searchText[index],
                                 style: TextStyle(
-                                  color: Color(0xffB8B8B8),
                                   fontFamily: "Ubuntu"
                                 ),
                               ),

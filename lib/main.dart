@@ -30,7 +30,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.indigo,
-        scaffoldBackgroundColor: const Color(0xFF1E1E1E),
+        scaffoldBackgroundColor: Colors.white,
         
         colorScheme: ColorScheme.fromSwatch(
           brightness: Brightness.light,
@@ -38,7 +38,23 @@ class MainApp extends StatelessWidget {
           backgroundColor: Color(0xFF1E1E1E)
         ).copyWith(
           onSurface: Colors.black,
+          surface: Colors.red
         ),
+
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          // ignore: deprecated_member_use
+          fillColor: Colors.red.withOpacity(0.2),
+          focusColor: Colors.red,
+        ),
+
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.red,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+
+          surfaceTintColor: Colors.transparent,
+        )
       ),
 
       darkTheme: ThemeData(
@@ -52,6 +68,8 @@ class MainApp extends StatelessWidget {
           backgroundColor: Color(0xFF393D5E)
         ).copyWith(
           onSurface: Colors.white,
+          // ignore: deprecated_member_use
+          surface: Colors.white.withOpacity(0.2)
         ),
 
         iconTheme: const IconThemeData(
@@ -67,7 +85,7 @@ class MainApp extends StatelessWidget {
         listTileTheme: const ListTileThemeData(
           iconColor: Colors.white,
           textColor: Colors.white
-        )
+        ),
 
       ),
       themeMode: themeProvider.themeMode,

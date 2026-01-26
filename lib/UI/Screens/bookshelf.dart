@@ -71,7 +71,6 @@ class _BookshelfState extends State<Bookshelf> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF393D5E),
       body: isInternetConnected
         ? FutureBuilder(
         future: shelf, 
@@ -84,7 +83,6 @@ class _BookshelfState extends State<Bookshelf> {
             return const Center(child: Text(
               'Trong danh sách hiện không có Manhua.', 
               style: TextStyle(
-                color: Colors.white,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.bold,
                 fontSize: 18 )));

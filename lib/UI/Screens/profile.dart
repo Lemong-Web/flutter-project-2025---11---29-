@@ -55,7 +55,6 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
   return Scaffold(
-    backgroundColor: const Color(0xFF393D5E),
     body: Column(
       children: [
         _buildUITitleandAvatar(),
@@ -75,7 +74,6 @@ Widget _buildUITitleandAvatar() {
             child: const Text(
               "Tài khoản",
               style: TextStyle(
-                color: Colors.white,
                 fontFamily: "Inter",
                 fontSize: 24, fontWeight: FontWeight.bold),
               ),
@@ -96,7 +94,6 @@ Widget _buildUITitleandAvatar() {
                   child: Text(
                     'Xin chào $username',
                     style: TextStyle(
-                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 30
                     )),

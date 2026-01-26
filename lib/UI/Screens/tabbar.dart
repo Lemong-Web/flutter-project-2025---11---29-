@@ -14,7 +14,6 @@ class Tabbar extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: const Color(0xFF393D5E),
           title: const Text(
             "Giá sách",
             style: TextStyle(

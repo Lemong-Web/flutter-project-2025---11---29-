@@ -78,7 +78,6 @@ class _HistoryState extends State<History> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF393D5E),
       body: FutureBuilder(
         future: _history, 
         builder: (context, snapshot) {
@@ -90,7 +89,6 @@ class _HistoryState extends State<History> {
             return const Center(child: Text(
               "Danh sách lịch sử hiện đang trống",
                 style: TextStyle(
-                color: Colors.white,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.bold,
                 fontSize: 18 )));
@@ -118,7 +116,6 @@ class _HistoryState extends State<History> {
                     child: Text(
                       "Lỗi kết nối với mạng, vui lòng thử lại sau.",
                       style: TextStyle(
-                        color: Colors.white,
                         fontFamily: 'Inter',
                         fontSize: 15
                       )),
@@ -169,7 +166,7 @@ class _HistoryState extends State<History> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(18),
                           // ignore: deprecated_member_use
-                          color: Color(0xffFFFFFF).withOpacity(0.2)
+                          color: Theme.of(context).colorScheme.surface,
                         ),
                         child: Row(
                           children: [
@@ -200,7 +197,6 @@ class _HistoryState extends State<History> {
                                         Text(
                                           historyList[index].storyname,
                                           style: TextStyle(
-                                            color: Colors.white,
                                             fontFamily: "Inter",
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold
@@ -212,7 +208,6 @@ class _HistoryState extends State<History> {
                                             maxLines: 5,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                              color: Colors.white,
                                               fontSize: 12,
                                             ),
                                           ),

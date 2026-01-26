@@ -63,15 +63,11 @@ class _AccountInformationState extends State<AccountInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF393D5E),
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: const Color(0xFF393D5E),
+      appBar: AppBar(        
         centerTitle: true,
         title: const Text(
           "Infomation",
           style: TextStyle(
-            color: Colors.white, 
             fontWeight: FontWeight.bold)),
           ),
           body: _buildUI(),
@@ -87,13 +83,11 @@ class _AccountInformationState extends State<AccountInformation> {
               Text(
                 "Email: $email",
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 18)),
               const SizedBox(height: 10),
               Text(
                 "Username: $username",
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 18))
                 ],
               ),

@@ -22,10 +22,9 @@ class _DetailTabbarState extends State<DetailTabbar> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         height: 60,
-        decoration: BoxDecoration(color: const Color(0xFF393D5E)),
         child: Center(
           child: Container(
             padding: EdgeInsets.all(2),

@@ -27,9 +27,7 @@ class _SettingState extends State<Setting> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: const Color(0xFF393D5E),
       appBar: AppBar(
-         backgroundColor: Color(0xFF393D5E),
          foregroundColor: Colors.white,
          title: const Text(
           "Cài đặt",

@@ -122,18 +122,14 @@ class _DetailScreenState extends State<DetailScreen> {
           List<NumberModel> chapters = [snapshot.data!];
           final listchapter = snapshot.data!;
           return Scaffold(
-          backgroundColor: Color(0xFF393D5E),
           appBar: AppBar(
-            foregroundColor: Colors.white,
             centerTitle: true,
-            backgroundColor: Color(0xFF393D5E),
             title: Center(
               child: Row(
                 children: [
                   Text(
                     "Manhua",
                     style: TextStyle(
-                      color: Colors.white,
                       fontSize: 24,
                       fontFamily: "Ubuntu",
                       fontWeight: FontWeight.bold,
@@ -237,7 +233,6 @@ class _DetailScreenState extends State<DetailScreen> {
             Text(
               widget.storyname,
               style: TextStyle(
-                color: Colors.white,
                 fontFamily: "Inter",
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -255,7 +250,6 @@ class _DetailScreenState extends State<DetailScreen> {
                 Text(
                   "${chapters[0].totalChapters} Chapters",
                   style: TextStyle(
-                    color: Color(0xffABACB6),
                     fontFamily: "Inter",
                   ),
                 ),
@@ -265,7 +259,6 @@ class _DetailScreenState extends State<DetailScreen> {
           Text(
             "Tóm tắt nội dung",
             style: TextStyle(
-              color: Colors.white,
               fontFamily: "Inter",
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -280,12 +273,10 @@ class _DetailScreenState extends State<DetailScreen> {
                 widget.storydes,
                 style: TextStyle(
                   // ignore: deprecated_member_use
-                  color: Colors.white.withOpacity(0.5),
                   fontFamily: 'Inter' 
                 ),
                 moreStyle: TextStyle(
                   decoration: TextDecoration.underline,
-                  color: Colors.white
                 ),
               ),
             ),
@@ -303,7 +294,7 @@ class _DetailScreenState extends State<DetailScreen> {
       child: Container(
         decoration: BoxDecoration(
           // ignore: deprecated_member_use
-          color: Color(0xffFFFFFF).withOpacity(0.2),
+          color: Color.fromARGB(255, 106, 66, 66).withOpacity(0.2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: ListView.builder(
@@ -321,7 +312,6 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: Text(
                   "Chương ${chapterlist.chapters[index].replaceAll('.json', '')}",
                   style: const TextStyle(
-                    color: Colors.white,
                     fontFamily: "Inter",
                   ),
                 ),
