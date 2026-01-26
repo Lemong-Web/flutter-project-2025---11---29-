@@ -28,14 +28,26 @@ class view extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ClipRRect(
-          borderRadius: BorderRadiusGeometry.circular(12),
-          child: Image.network(
-            storyimage, 
-            width: 90,
-            height: 120,
-            fit: BoxFit.cover
-          )
+        Container(
+          padding: EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [
+                Color(0xffFA8BFF),
+                Color(0xff2BD2FF)
+              ]
+            )
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadiusGeometry.circular(12),
+            child: Image.network(
+              storyimage, 
+              width: 90,
+              height: 120,
+              fit: BoxFit.cover
+            )
+          ),
         ),
 
             const SizedBox(height: 6),

@@ -84,13 +84,25 @@ class _TrendingState extends State<Trending> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      manga[index].storyimage,
-                      width: 90,
-                      height: 120,
-                      fit: BoxFit.cover,
+                  Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xffFA8BFF),
+                          Color(0xff2BD2FF)
+                        ]
+                      )
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        manga[index].storyimage,
+                        width: 90,
+                        height: 120,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 6),

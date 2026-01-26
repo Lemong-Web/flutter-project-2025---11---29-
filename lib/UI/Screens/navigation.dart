@@ -66,11 +66,11 @@ class _NavigationState extends State<Navigation> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
             child: GNav(
-              color: Colors.white,
+              color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.red,
               rippleColor: Colors.grey,
               hoverColor: Colors.grey,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              activeColor: themeProvider.themeMode == ThemeMode.dark ? Colors.yellow : Colors.black,
+              activeColor: themeProvider.themeMode == ThemeMode.dark ? Colors.yellow : Colors.orange,
               tabActiveBorder: Border.all(color: Colors.yellow),
               gap: 8,
               tabs: [

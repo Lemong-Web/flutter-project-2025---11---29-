@@ -241,14 +241,14 @@ class _DetailScreenState extends State<DetailScreen> {
             Row(
               children: [
                 Text(
-                  "${widget.views} Views - ",
+                  "${widget.views} Lượt xem - ",
                   style: TextStyle(
                     color: Color(0xffABACB6),
                     fontFamily: "Inter",
                   ),
                 ),
                 Text(
-                  "${chapters[0].totalChapters} Chapters",
+                  "${chapters[0].totalChapters} Chương",
                   style: TextStyle(
                     fontFamily: "Inter",
                   ),
@@ -271,6 +271,8 @@ class _DetailScreenState extends State<DetailScreen> {
               width: 350,
               child: ReadMoreText(
                 widget.storydes,
+                trimCollapsedText: "Xem thêm",
+                trimExpandedText: "Thu gọn",
                 style: TextStyle(
                   // ignore: deprecated_member_use
                   fontFamily: 'Inter' 

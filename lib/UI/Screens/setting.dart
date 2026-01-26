@@ -55,7 +55,7 @@ class _SettingState extends State<Setting> {
                 title: themeProvider.themeMode == ThemeMode.dark ? Text("Tối") : Text("Sáng"),
                 trailing: Switch(
                   value: themeProvider.themeMode == ThemeMode.dark,
-                  inactiveThumbColor: Colors.yellow,
+                  inactiveThumbColor: Colors.red,
                   inactiveTrackColor: Colors.amber,
                   activeThumbColor: Colors.black ,
                   activeTrackColor: Colors.indigo,
@@ -70,7 +70,7 @@ class _SettingState extends State<Setting> {
                     context: context, 
                     builder: (BuildContext content) => AlertDialog(
                       title: const Text("Cảnh Báo"),
-                      content: const Text("Điều này sẽ xóa danh sach yêu thích, lịch sử tìm kiếm, đánh dấu chương\nbạn có muốn xóa không? "),
+                      content: const Text("Điều này sẽ xóa danh sách yêu thích, lịch sử tìm kiếm, đánh dấu chương\nbạn có muốn xóa không? "),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () {

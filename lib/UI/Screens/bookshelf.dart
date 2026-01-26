@@ -81,10 +81,9 @@ class _BookshelfState extends State<Bookshelf> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (favoriteManhua.isEmpty) {
             return const Center(child: Text(
-              'Trong danh sách hiện không có Manhua.', 
+              'Danh sách đang trống.', 
               style: TextStyle(
                 fontFamily: 'Inter',
-                fontWeight: FontWeight.bold,
                 fontSize: 18 )));
           } else {
             return Padding(
@@ -139,66 +138,67 @@ class _BookshelfState extends State<Bookshelf> {
         }
       )
       : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.wifi_off,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.wifi_off,
+                color: Colors.white,
+                size: 40),
+              ShaderMask(
+                shaderCallback: (bounds) {
+                  return LinearGradient(
+                    colors: [
+                      Color(0xff2BFF88),
+                      Color(0xff2BD2FF),
+                      Color(0xffFA8BFF)
+                    ]
+                  ).createShader(bounds);
+                },
+                child: Text(
+                  "Lỗi kết nối với mạng, vui lòng thử lại sau.",
+                  style: TextStyle(
                     color: Colors.white,
-                    size: 40),
-                  ShaderMask(
-                    shaderCallback: (bounds) {
-                      return LinearGradient(
-                        colors: [
-                          Color(0xff2BFF88),
-                          Color(0xff2BD2FF),
-                          Color(0xffFA8BFF)
-                        ]
-                      ).createShader(bounds);
-                    },
-                    child: Text(
-                      "Lỗi kết nối với mạng, vui lòng thử lại sau.",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                        fontSize: 15
-                      )),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: ContinuousRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)
-                      ),
-                    ),
-                    onPressed: () async {
-                      try {
-                        await dio.get(url);
-                        retry();
-                      } on DioException catch (e) {
-                        if (e.response == null) {
-                          if (!mounted) return;
-                          setState(() {
-                            isInternetConnected = false;
-                          });
-                        }
-                      }
-                    }, 
-                    child: ShaderMask(
-                      shaderCallback: (bounds) {
-                        return LinearGradient(
-                          colors: [
-                            Color(0xff2BFF88),
-                            Color(0xff2BD2FF),
-                            Color(0xffFA8BFF)
-                          ]
-                        ).createShader(bounds);
-                      },
-                    child: Text("Thử lại"))
-                  ),
-                ],
+                    fontFamily: 'Inter',
+                    fontSize: 15
+                  )),
               ),
-            )
-          );
-        }
-      }
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: ContinuousRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)
+                  ),
+                ),
+                onPressed: () async {
+                  try {
+                    await dio.get(url);
+                    retry();
+                  } on DioException catch (e) {
+                    if (e.response == null) {
+                      if (!mounted) return;
+                      setState(() {
+                        isInternetConnected = false;
+                      });
+                    }
+                  }
+                }, 
+                child: ShaderMask(
+                  shaderCallback: (bounds) {
+                    return LinearGradient(
+                      colors: [
+                        Color(0xff2BFF88),
+                        Color(0xff2BD2FF),
+                        Color(0xffFA8BFF)
+                      ]
+                    ).createShader(bounds);
+                  },
+                  
+                child: Text("Thử lại"))
+              ),
+            ],
+          ),
+        )
+      );
+    }
+  }

@@ -45,7 +45,7 @@ class _DetailTabbarState extends State<DetailTabbar> {
                   padding: const EdgeInsets.all(3.0),
                   child: Text(
                     widget.lastIndex == null
-                     ? "Bắt đâu đọc chuyện"
+                     ? "Bắt đâu đọc truyện"
                      : "Đọc tiếp từ chương: ${widget.lastIndex}",
                     style: TextStyle(
                       color: Colors.white,

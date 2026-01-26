@@ -87,10 +87,9 @@ class _HistoryState extends State<History> {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (historyList.isEmpty) {
             return const Center(child: Text(
-              "Danh sách lịch sử hiện đang trống",
+              "Lịch sử đang trống.",
                 style: TextStyle(
                 fontFamily: 'Inter',
-                fontWeight: FontWeight.bold,
                 fontSize: 18 )));
           } else {
             return isConnected 
@@ -161,64 +160,64 @@ class _HistoryState extends State<History> {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      child: Container(
-                        height: 157,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                          // ignore: deprecated_member_use
-                          color: Theme.of(context).colorScheme.surface,
-                        ),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => DetailScreen(
-                                    storyid: historyList[index].storyid,
-                                    storyname: historyList[index].storyname, 
-                                    storyothername: historyList[index].storyothername, 
-                                    storyimage: historyList[index].storyimage, 
-                                    storydes: historyList[index].storydes, 
-                                    storygenres: historyList[index].storygenres, 
-                                    urllinkcraw: historyList[index].urllinkcraw, 
-                                    storytauthor: historyList[index].storytauthor, views: historyList[index].views)));
-                                  },
-                                  child: SearchContainer(
-                                    image: Image.network(historyList[index].storyimage)
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.55,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          historyList[index].storyname,
-                                          style: TextStyle(
-                                            fontFamily: "Inter",
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            historyList[index].storydes,
-                                            maxLines: 5,
-                                            overflow: TextOverflow.ellipsis,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => DetailScreen(
+                              storyid: historyList[index].storyid,
+                              storyname: historyList[index].storyname, 
+                              storyothername: historyList[index].storyothername, 
+                              storyimage: historyList[index].storyimage, 
+                              storydes: historyList[index].storydes, 
+                              storygenres: historyList[index].storygenres, 
+                              urllinkcraw: historyList[index].urllinkcraw, 
+                              storytauthor: historyList[index].storytauthor, views: historyList[index].views)));
+                           },
+                        child: Container(
+                          height: 157,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                            // ignore: deprecated_member_use
+                            color: Theme.of(context).colorScheme.surface,
+                          ),
+                          child: Row(
+                            children: [
+                              SearchContainer(
+                                image: Image.network(historyList[index].storyimage)
+                              ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.55,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            historyList[index].storyname,
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontFamily: "Inter",
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 5),
-                                      ]
+                                          Expanded(
+                                            child: Text(
+                                              historyList[index].storydes,
+                                              maxLines: 5,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                        ]
+                                      ),
                                     ),
-                                  ),
-                                )
-                              ]
-                            )
+                                  )
+                                ]
+                              )
+                            ),
                           )
                         );
                       }
