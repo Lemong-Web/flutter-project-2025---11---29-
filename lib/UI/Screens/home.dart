@@ -439,7 +439,7 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-        ) 
+          ) 
           
           : Center(
               child: Column(

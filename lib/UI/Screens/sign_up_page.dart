@@ -29,6 +29,9 @@ class _SignUpPageState extends State<SignUpPage> {
   File? _image;
   FocusNode textSecondFocusNode = FocusNode();
   final FocusNode userNameFocus = FocusNode();
+  String? _selectedValue;
+
+  
     
   Future<void> register() async {
      await authService.value.createAccount(
@@ -41,10 +44,12 @@ class _SignUpPageState extends State<SignUpPage> {
       "username": controllerUsername.text,
       "email": controllerEmail.text,
       'isNewUser': true,
+      "nickname": _selectedValue,
+      "createdAt": FieldValue.serverTimestamp(),
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userID', authService.value.currentUser?.uid ?? '');
-    } 
+  } 
 
   void selectImage() async {
     final ImagePicker picker = ImagePicker();
@@ -292,10 +297,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Colors.white.withOpacity(0.2))
                   )
                 ),
-              
+
               const SizedBox(height: 20),
                 TextFormField(
-
                   obscureText: hidePass ? true : false,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -358,7 +362,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Colors.white
                   ),
                   focusNode: textSecondFocusNode,
-                  textInputAction: TextInputAction.done,
+                  textInputAction: TextInputAction.next,
                   controller: controllerConfirmPass,
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
@@ -381,8 +385,34 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Colors.white.withOpacity(0.2))
                   )
                 );
-              }
+              },
             ),
+
+              const SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: "Biệt danh",
+                  border: OutlineInputBorder()
+                ),
+                initialValue: _selectedValue,
+                items: ["Huyết Kiếm", "Mê Manhua", "Đạo Sĩ Trẻ", "Thiên Ma", "Vô Danh", "Bánh Bao", "Mê Truyện Tàu"]
+                  .map((value) => DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  ))
+                  .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedValue = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return 'Hãy chọn 1 biệt danh';
+                  }
+                  return null;
+                },
+              ),
             const SizedBox(height: 5),
           ],
         )

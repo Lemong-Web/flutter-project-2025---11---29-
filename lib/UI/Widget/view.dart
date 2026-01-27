@@ -50,24 +50,24 @@ class view extends StatelessWidget {
           ),
         ),
 
-            const SizedBox(height: 6),
+        const SizedBox(height: 6),
 
-            Padding(
-              padding: const EdgeInsets.only(left: 5),
-              child: SizedBox(
-                height: 40,
-                width: 90,
-                child: Text(
-                  storyname,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: "Ubuntu"
-                  )
-                ),
-              ),
+        Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: SizedBox(
+            height: 40,
+            width: 90,
+            child: Text(
+              storyname,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontFamily: "Ubuntu"
+              )
             ),
-          ],
-        );
-      }
-    }
+          ),
+        ),
+      ],
+    );
+  }
+}
