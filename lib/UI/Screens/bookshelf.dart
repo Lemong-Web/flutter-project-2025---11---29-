@@ -163,7 +163,7 @@ class _BookshelfState extends State<Bookshelf> {
                     fontFamily: 'Inter',
                     fontSize: 15
                   )),
-              ),
+                ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   shape: ContinuousRectangleBorder(

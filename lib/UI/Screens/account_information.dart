@@ -141,7 +141,7 @@ class _AccountInformationState extends State<AccountInformation> {
             padding: const EdgeInsets.all(8.0),
             child: const Text(
               "Tên người dùng",
-              style: TextStyle(
+              style: TextStyle (
                 fontWeight: FontWeight.bold
               ),
             ),

@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:manga_app/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,18 +19,28 @@ class _SignUpPageState extends State<SignUpPage> {
   bool isScroll = true;
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
+  int selectedIndex = -1;
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
   TextEditingController controllerConfirmPass = TextEditingController();
   TextEditingController controllerUsername = TextEditingController();
   String errorMessage = "";
-  File? _image;
   FocusNode textSecondFocusNode = FocusNode();
   final FocusNode userNameFocus = FocusNode();
   String? _selectedValue;
+  String? _selectedImage;
 
+  List<String> icon = [
+    "assets/img/icon1m.jpg",
+    "assets/img/icon2m.jpg",
+    "assets/img/icon3m.jpg",
+    "assets/img/icon4m.jpg",
+    "assets/img/icon1f.jpg",
+    "assets/img/icon2f.jpg",
+    "assets/img/icon3f.jpg",
+    "assets/img/iconf4.jpg"
+  ];
   
-    
   Future<void> register() async {
      await authService.value.createAccount(
       email: controllerEmail.text, 
@@ -45,22 +53,13 @@ class _SignUpPageState extends State<SignUpPage> {
       "email": controllerEmail.text,
       'isNewUser': true,
       "nickname": _selectedValue,
+      "iconUrl": _selectedImage,
       "createdAt": FieldValue.serverTimestamp(),
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userID', authService.value.currentUser?.uid ?? '');
   } 
 
-  void selectImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.gallery);
-      if (image == null) return;
-      setState(() {
-        _image = File(image.path);
-      });
-    }
-  
   void handleTimer() {
     setState(() {
       hideWord =! hideWord;
@@ -202,26 +201,78 @@ class _SignUpPageState extends State<SignUpPage> {
             children: [
               CircleAvatar(
                 radius: 64,
-                backgroundImage: (_image == null) 
-                  ? NetworkImage(
-                  'https://as2.ftcdn.net/jpg/04/62/63/65/1000_F_462636502_9cDAYuyVvBY4qYJlHjW7vqar5HYS8h8x.jpg')
-                  // as ImageProvider vì dụ nếu dùng FileImage thì nó sẽ không nhận NetworkImage vì khác kiểu dữ liệu
-                  // Phải dùng as ImgProvider vì nó yêu cầu cả 2 nhánh có cùng 1 kiểu, ép kiểu giúp cả 2 nhánh về cùng 1 type
-                  : FileImage(_image!) as ImageProvider
+                backgroundImage: (_selectedImage == null)
+                  ? AssetImage("assets/img/Iconuser.png")
+                  : AssetImage(_selectedImage!)
                 ),
               Positioned(
                 bottom: -10,
                 right: 0,
                 child: IconButton(
                   onPressed: () {
-                    selectImage();
-                  }, 
-                  icon: Icon(Icons.add_a_photo, color: Colors.black)
-                )
-              )
-            ],
-          );
-        }
+                    showDialog(
+                      context: context, 
+                      builder: (context) {
+                        return StatefulBuilder(
+                          builder: (context, setState) {
+                          return AlertDialog(
+                            title: const Text("Cho"),
+                            content: SizedBox(
+                              width: double.maxFinite,
+                              height: 300,
+                              child: GridView.builder(
+                                itemCount: icon.length,
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10
+                                ), 
+                                itemBuilder: (context, index) {
+                                  final isSelected = selectedIndex == index;
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedIndex = index;
+                                      }); 
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(3),
+                                      decoration: BoxDecoration(
+                                        color: isSelected ? Colors.amber : Colors.transparent 
+                                      ),
+                                      child: Image.asset(
+                                        icon[index],
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  if (selectedIndex == -1) return;
+                                  this.setState(() {
+                                    _selectedImage = icon[selectedIndex];
+                                  });
+                                  Navigator.pop(context);
+                                }, 
+                                child: const Text("Xác nhận")
+                              )
+                            ],
+                          );
+                        }
+                      );
+                    }
+                  );
+                },
+              icon: Icon(Icons.add_a_photo, color: Colors.black)
+            )
+          )
+        ],
+      );
+    }
 
       Widget _buildFormField() {
         return Form(    
