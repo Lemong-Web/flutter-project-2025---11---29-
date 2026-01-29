@@ -30,14 +30,10 @@ class _TagpageState extends State<Tagpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF393D5E),
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Color(0xFF393D5E),
         title: Text(
           widget.tag,
           style: TextStyle(
-            color: Colors.white,
             fontFamily: "Inter",
             fontSize: 24
           ),
@@ -52,7 +48,6 @@ class _TagpageState extends State<Tagpage> {
             return const Center(child: Text(
               "App đang cập nhật truyện, vui lòng thử lại sau",
               style: TextStyle(
-                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontFamily: "Inter"
               )));
@@ -78,8 +73,8 @@ class _TagpageState extends State<Tagpage> {
               width: 326,
               height: 157,
               decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
                 // ignore: deprecated_member_use
-                color: Color(0xffFFFFFF).withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
@@ -130,7 +125,6 @@ class _TagpageState extends State<Tagpage> {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(
-                                color: Colors.white, 
                                 fontSize: 20,
                                 fontFamily: "Ubuntu",
                               ),

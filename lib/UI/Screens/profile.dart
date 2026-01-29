@@ -16,16 +16,58 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late Future<String?> usernameData;
   String username = '';
+  String? imageUrl;
+  String? selectedImage;
+  int selectedIndex = -1;
+
+  List<String> icon = [
+    "assets/img/icon1m.jpg",
+    "assets/img/icon2m.jpg",
+    "assets/img/icon3m.jpg",
+    "assets/img/icon4m.jpg",
+    "assets/img/icon1f.jpg",
+    "assets/img/icon2f.jpg",
+    "assets/img/icon3f.jpg",
+    "assets/img/iconf4.jpg"
+  ];
   
   @override
   void initState() {
     super.initState();
     loadUsername();
+    loadIcon();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<String?> fetchIcon() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .get();
+    if(snapshot.exists) {
+      return snapshot.data()?['iconUrl'];
+    }
+    return null;
+  }
+
+  void loadIcon() async {
+    final icon = await fetchIcon();
+    setState(() {
+      imageUrl = icon ?? "";
+    });
+  }
+
+  Future<void> updateIcon() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    await FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .update({'iconUrl': selectedImage});
   }
 
   Future<String?> fetchUsername() async {
@@ -80,9 +122,73 @@ Widget _buildUITitleandAvatar() {
             ),
           ),
           const SizedBox(height: 10),
-          CircleAvatar(
-            backgroundColor: Colors.black,
-            radius: 60,
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return StatefulBuilder(
+                    builder: (context, setStateBuilder) {
+                      return AlertDialog(
+                        title: const Text("Đổi icon"),
+                        content: SizedBox(
+                          height: 300,
+                          child: GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10
+                            ), 
+                            itemCount: icon.length,
+                            itemBuilder: (context, index) {
+                              final isSelected = selectedIndex == index;
+                              return GestureDetector(
+                                onTap: () {
+                                  setStateBuilder(() {
+                                    selectedIndex = index;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? Colors.amber : Colors.transparent
+                                  ),
+                                  child: Image.asset(
+                                    icon[index],
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            }
+                          ),
+                        ),
+                         actions: [
+                          TextButton(
+                            onPressed: () {
+                              if(selectedIndex == -1) return;
+                              setState(() {
+                                selectedImage = icon[selectedIndex];
+                                updateIcon();
+                                imageUrl = selectedImage;
+                                Navigator.pop(context);
+                              });
+                            }, 
+                            child: const Text("Xác nhận")
+                          )
+                        ],
+                      );
+                    }
+                  );
+                }
+              );
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.black,
+              radius: 60,
+              backgroundImage: (imageUrl == null)
+                ? AssetImage("assets/img/icon.png")
+                : AssetImage(imageUrl!)
+            ),
           ),
           const SizedBox(height: 10),
           Padding(
