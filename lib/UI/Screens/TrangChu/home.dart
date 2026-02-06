@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
-import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_app/UI/Screens/detail_screen.dart';
 import 'package:manga_app/UI/Widget/trending.dart';
@@ -27,7 +26,6 @@ class _HomeState extends State<Home> {
   String userID = "";
   String urlData = "https://b0ynhanghe0.github.io/comic/home.json";
   int _current = 0;
-  bool tagSearch = false;
   bool isInternetConnected = true;
   bool search = false;
   bool reload = false;
@@ -54,76 +52,7 @@ class _HomeState extends State<Home> {
     await prefs.setString('history_${uid}_$storyID', storyID);
   }
 
-  void openFilterDialog() async {
-    await FilterListDialog.display<Filter>(
-      context,
-      listData: filterList,
-      selectedListData: selectedTagList,
-      selectedItemsText: "Tag đã chọn",
-      applyButtonText: "Áp dụng",
-      resetButtonText: "Xóa",
-      allButtonText: "Tất cả",
-      choiceChipLabel: (item) => item!.name,
-      validateSelectedItem: (list, item) => list!.contains(item),
-      hideSearchField: true,
-      onItemSearch: (item, query) => true,
-      choiceChipBuilder: (context, item, isSelected) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected! ? Colors.blue : Colors.grey,
-            )
-          ),
-          child: Text(
-            item.name,
-            style: TextStyle(
-              color: isSelected ? Colors.blue : Colors.grey),
-            ),
-          );
-        },
-      onApplyButtonClick: (list) {
-        if (list == null || list.isEmpty) {
-          setState(() {
-            selectedTagList = [];
-            selectedTag = [];
-            tagSearch = false;
-            data = fetchData();
-          });
-          return
-          Navigator.pop(context);
-        } 
-        setState(() {
-          selectedTagList = List<Filter>.from(list);
-          selectedTag = selectedTagList.map((e) => e.name).whereType<String>().toList();
-          tagSearch = true;
-          data = fetchDataTag();
-        });
-        Navigator.pop(context);
-      },
-    );
-  }
-
-  Future<List<MangaModel>> fetchDataTag() async {
-    if (selectedTag.isEmpty) return [];
-    final response = await dio.get("https://b0ynhanghe0.github.io/comic/categorized.json");
-    final data = response.data;
-    if (data is! Map<String, dynamic>) return [];
-    final Map<String, MangaModel> uniqueMap = {};
-    for (final tag in selectedTag) {
-      final List<dynamic> list = data[tag] ?? [];
-      for (final e in list) {
-        final manhua = MangaModel.fromJson(e);
-        uniqueMap[manhua.storyid] = manhua;
-      }
-    }
-  return uniqueMap.values.toList();
-}
-
-
-  Future <List<MangaModel>> fetchData({String? searchText}) async { 
+  Future <List<MangaModel>> fetchData() async { 
     List<MangaModel> list = [];
     try {
     final response = await dio.get(urlData);
@@ -131,17 +60,6 @@ class _HomeState extends State<Home> {
     list = body.map((e) {
       return MangaModel.fromJson(e);
     }).toList();
-
-    if (searchText != null && searchText.isNotEmpty) {
-      // Where là 1 hàm lọc filter
-      // nó duyệt qua từng phần tử trong List, kiểm tra điều kiện bên trong, và chỉ giữ lại phần tử có điều kiện = true
-      // trả về Iterable nên phải toList()
-      list = list.where((manga) {
-        // đây là điều kiện của Where
-        // nếu phần tử có chứa tên truyện trùng với nội dung Search, thì điều kiện = true và được dữ lại
-        return manga.storyname.toLowerCase().contains(searchText.toLowerCase());
-      }).toList();
-    }
   } on DioException {
       isInternetConnected = false;
     }
@@ -151,16 +69,14 @@ class _HomeState extends State<Home> {
  Future<void> retry() async {
   setState(() {
     isInternetConnected = true;
-    data = tagSearch
-      ? fetchDataTag()
-      : fetchData();
+    data = fetchData();
   });
 }
 
   @override
   void initState() {
     super.initState();
-    data = tagSearch ? fetchDataTag() : fetchData(searchText: searchKey);
+    data =  fetchData();
   }
 
   @override
@@ -192,8 +108,6 @@ class _HomeState extends State<Home> {
 
   Widget _buildUI(List<MangaModel> manga, ThemeProvider themeProvider) {
     return Scaffold(
-      // backgroundColor: themeProvider.themeMode == 
-      // ThemeMode.dark ? Color(0xFF393D5E) : Color(0xFFF2F3F9),
       body: isInternetConnected 
         ? RefreshIndicator(
           onRefresh: () async {
@@ -216,47 +130,7 @@ class _HomeState extends State<Home> {
                   )
                 ),
               ),
-              const SizedBox(height: 10),
-              // Padding (
-              //   padding: const EdgeInsets.only(left: 30, right: 30),
-              //   child: TextField(
-              //     controller: controllerManager.controller,
-              //     textInputAction: TextInputAction.search,
-              //     onSubmitted: (value) {
-              //       if (value.isEmpty) return;
-              //       setState(() {
-              //         searchKey = value;
-              //         search = true;
-              //         data = fetchData(searchText: searchKey);
-              //       });   
-              //     },
-              //     decoration: InputDecoration(
-              //       prefixIcon: Icon(Icons.search),
-              //       suffixIcon: IconButton(
-              //         onPressed: () {
-              //           openFilterDialog();
-              //         }, 
-              //         icon: Icon(Icons.tune)),
-              //       hint: Text (
-              //         "Tìm kiếm truyện...",
-              //         style: TextStyle(
-              //           // ignore: deprecated_member_use
-              //           color: Color(0xFF393D5E).withOpacity(0.6),
-              //           fontFamily: "Ubuntu",
-              //           fontWeight: FontWeight.bold
-              //         ),
-              //       ),
-              //       filled: true,
-              //       fillColor: Color(0xFFA0A1AD),
-              //       border: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(12)
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              
-              const SizedBox(height: 10),
-          
+              const SizedBox(height: 20),
               search
                 ? const SizedBox.shrink()
                 : Align(
@@ -389,24 +263,26 @@ class _HomeState extends State<Home> {
             child: Padding(
               padding: const EdgeInsets.only(left: 16),
               child: Text(
-                search ? "Kết quả tìm kiếm" : "Danh sách truyện!",
+                "Danh sách truyện!",
                 style: TextStyle(
                   fontFamily: "Ubuntu",
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                   ),
                 ),
+              ),
             ),
-          ),
               
               SizedBox(
-                height: tagSearch ? null : 2190,
                 child: GridView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    mainAxisExtent: 180
+                    mainAxisExtent: 180,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 0,
+
                   ),
                   itemCount: manga.length,
                   itemBuilder: (context, index) {

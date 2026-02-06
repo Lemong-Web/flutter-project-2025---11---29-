@@ -55,8 +55,6 @@ class view extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 5),
           child: SizedBox(
-            height: 40,
-            width: 90,
             child: Text(
               storyname,
               maxLines: 2,

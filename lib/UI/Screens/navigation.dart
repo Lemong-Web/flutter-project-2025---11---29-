@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:manga_app/UI/Screens/home.dart';
+import 'package:manga_app/UI/Screens/TrangChu/home.dart';
 import 'package:manga_app/UI/Screens/profile.dart';
 import 'package:manga_app/UI/Screens/search.dart';
 import 'package:manga_app/UI/Screens/tabBar.dart';

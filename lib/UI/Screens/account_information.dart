@@ -17,6 +17,7 @@ class _AccountInformationState extends State<AccountInformation> {
   String _nickname = "";
   String? _selectedValue;
   
+  
   Future<String?> fetchEmail() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     final snapshot = await FirebaseFirestore.instance
@@ -35,6 +36,19 @@ class _AccountInformationState extends State<AccountInformation> {
       _email.text = accountEmail ?? "";
     });
   }
+
+  Future<String?> fetchDate() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .get();
+      if (snapshot.exists) {
+        return snapshot.data()?['createdAt'];
+      }
+      return null;
+    }
+  
 
   Future<String?> fetchUsername() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -220,7 +234,7 @@ class _AccountInformationState extends State<AccountInformation> {
                 ),
               ),
 
-               Padding(
+              Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -235,9 +249,19 @@ class _AccountInformationState extends State<AccountInformation> {
                   }, 
                   child: const Icon(Icons.edit)
                 ),
-              )
+              ),
             ],
-          )
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: const Text(
+              "Ngày tạo tài khoản",
+              style: TextStyle(
+                fontWeight: FontWeight.bold
+              ),
+            ),
+          ),
         ],
       );
     }

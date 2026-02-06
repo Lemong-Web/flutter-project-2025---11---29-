@@ -1,4 +1,3 @@
-
 class MangaModel {
     String storyid;
     String storyname;
@@ -11,15 +10,15 @@ class MangaModel {
     String views;
 
     MangaModel({
-        required this.storyid,
-        required this.storyname,
-        required this.storyothername,
-        required this.storyimage,
-        required this.storydes,
-        required this.storygenres,
-        required this.urllinkcraw,
-        required this.storytauthor,
-        required this.views,
+      required this.storyid,
+      required this.storyname,
+      required this.storyothername,
+      required this.storyimage,
+      required this.storydes,
+      required this.storygenres,
+      required this.urllinkcraw,
+      required this.storytauthor,
+      required this.views,
     }
   );
 
@@ -45,5 +44,5 @@ class MangaModel {
       urllinkcraw: urllinkcraw, 
       storytauthor: storytauthor,
       views: views);
+    }
   }
-}
